@@ -1,4 +1,7 @@
-import { QueryEngine } from "@comunica/query-sparql";
+/* eslint-disable no-async-promise-executor */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { QueryEngine } from '@comunica/query-sparql';
 const engine = new QueryEngine();
 
 const NUMBER_OF_RETRY_COUNTS = 2;
@@ -13,12 +16,12 @@ export function getRelevantPublicationsWithinTimeInterval({
   eind: string;
 }): Promise<any[]> {
   return new Promise(async (resolve, _reject) => {
-    console.log("Filtering on relevant publications");
+    console.log('Filtering on relevant publications');
 
     const relevantPublications = [];
     for (const p of publications) {
       console.log(
-        "Checking for publication " + p + " whether in time interval"
+        'Checking for publication ' + p + ' whether in time interval',
       );
       relevantPublications.push(
         await engine.queryBindings(
@@ -68,8 +71,8 @@ export function getRelevantPublicationsWithinTimeInterval({
             httpTimeout: 2_000,
             httpRetryDelay: 50,
             httpRetryOnServerError: false,
-          }
-        )
+          },
+        ),
       );
     }
     resolve(Object.keys(relevantPublications));
@@ -81,7 +84,7 @@ export function getRelevantPublicationsValue({
 }: {
   publications: any[];
 }) {
-  console.log("Filtering on relevant values");
+  console.log('Filtering on relevant values');
   // const bindingsStream = await engine.queryBindings(`
   //     SELECT DISTINCT ?o
   //     WHERE {
@@ -100,7 +103,7 @@ export function getRelevantPublicationsValue({
     `,
     {
       sources: publications as any,
-    }
+    },
   );
 }
 
@@ -112,7 +115,7 @@ export function getMandatarisOfVoorzitter({
   return new Promise((resolve, reject) => {
     try {
       const mandatarissen: Array<any> = [];
-      let voorzitterString = "";
+      let voorzitterString = '';
       voorzitters.map((v: any) => (voorzitterString += ` <${v}>`));
       engine
         .queryBindings(
@@ -133,28 +136,28 @@ export function getMandatarisOfVoorzitter({
     }
         `,
           {
-            sources: ["https://dev.centrale-vindplaats.lblod.info/sparql"],
+            sources: ['https://dev.centrale-vindplaats.lblod.info/sparql'],
             lenient: true,
             httpRetryCount: NUMBER_OF_RETRY_COUNTS,
             httpTimeout: 60_000,
             httpRetryDelay: 2000,
             httpRetryOnServerError: true,
-          }
+          },
         )
         .then(function (bindingsStream) {
-          bindingsStream.on("data", (data: any) => {
-            mandatarissen.push(data.get("mandataris").value);
+          bindingsStream.on('data', (data: any) => {
+            mandatarissen.push(data.get('mandataris').value);
           });
-          bindingsStream.on("end", () => {
+          bindingsStream.on('end', () => {
             resolve(mandatarissen);
           });
-          bindingsStream.on("error", (error: Error) => {
+          bindingsStream.on('error', (error: Error) => {
             console.log(error);
             reject(error);
           });
         });
     } catch (e) {
-      console.log("jup");
+      console.log('jup');
       reject(e);
     }
   });
@@ -162,7 +165,7 @@ export function getMandatarisOfVoorzitter({
 
 export function getBlueprintOfApplicationProfile() {
   const AP =
-    "https://raw.githubusercontent.com/brechtvdv/demo-data/master/besluit-publicatie-SHACL.ttl";
+    'https://raw.githubusercontent.com/brechtvdv/demo-data/master/besluit-publicatie-SHACL.ttl';
   return new Promise((resolve, reject) => {
     try {
       const blueprint: Array<{
@@ -210,10 +213,10 @@ export function getBlueprintOfApplicationProfile() {
             httpRetryCount: NUMBER_OF_RETRY_COUNTS,
             httpRetryDelay: 2000,
             httpRetryOnServerError: true,
-          }
+          },
         )
         .then(function (bindingsStream) {
-          bindingsStream.on("data", (data: any) => {
+          bindingsStream.on('data', (data: any) => {
             const v: {
               classUri: string;
               propertyUri: string;
@@ -222,27 +225,27 @@ export function getBlueprintOfApplicationProfile() {
               name: string;
               niveau: string;
             } = {} as any;
-            v["propertyUri"] = data.get("propertyUri")
-              ? data.get("propertyUri").value
-              : "";
-            v["classUri"] = data.get("classUri")
-              ? data.get("classUri").value
-              : "";
-            v["propertyName"] = data.get("propertyName")
-              ? data.get("propertyName").value
-              : "";
-            v["className"] = data.get("className")
-              ? data.get("className").value
-              : "";
-            v["name"] = data.get("name") ? data.get("name").value : "";
-            v["niveau"] = data.get("niveau") ? data.get("niveau").value : "";
+            v['propertyUri'] = data.get('propertyUri')
+              ? data.get('propertyUri').value
+              : '';
+            v['classUri'] = data.get('classUri')
+              ? data.get('classUri').value
+              : '';
+            v['propertyName'] = data.get('propertyName')
+              ? data.get('propertyName').value
+              : '';
+            v['className'] = data.get('className')
+              ? data.get('className').value
+              : '';
+            v['name'] = data.get('name') ? data.get('name').value : '';
+            v['niveau'] = data.get('niveau') ? data.get('niveau').value : '';
 
             blueprint.push(v);
           });
-          bindingsStream.on("end", () => {
+          bindingsStream.on('end', () => {
             resolve(blueprint);
           });
-          bindingsStream.on("error", (error: Error) => {
+          bindingsStream.on('error', (error: Error) => {
             console.log(error);
             reject(error);
           });
@@ -276,8 +279,8 @@ export function getBlueprintOfMunicipalityOneByOne({
       }
       for (const p of publications) {
         console.log(
-          "check publication for blueprint of municipality " +
-            publications.length
+          'check publication for blueprint of municipality ' +
+            publications.length,
         );
         const bindingsStream = await engine.queryBindings(
           `
@@ -307,16 +310,16 @@ export function getBlueprintOfMunicipalityOneByOne({
             httpRetryCount: NUMBER_OF_RETRY_COUNTS,
             httpRetryDelay: 2000,
             httpRetryOnServerError: false,
-          }
+          },
         );
 
         const bindings = await bindingsStream.toArray();
         for (const data of bindings) {
-          const classUri = data.get("classUri")?.value;
-          const propertyUri = data.get("propertyUri")
-            ? data.get("propertyUri")?.value
-            : "";
-          const classInstance = data.get("classInstance")?.value;
+          const classUri = data.get('classUri')?.value;
+          const propertyUri = data.get('propertyUri')
+            ? data.get('propertyUri')?.value
+            : '';
+          const classInstance = data.get('classInstance')?.value;
           if (!blueprintObject[classUri!]) blueprintObject[classUri!] = {};
           if (!blueprintObject[classUri!]![propertyUri!])
             blueprintObject[classUri!]![propertyUri!] = [];
@@ -339,7 +342,7 @@ export function getBlueprintOfMunicipalityOneByOne({
 
       Promise.resolve(blueprint);
     } catch (e) {
-      console.log("LENNY");
+      console.log('LENNY');
       reject(e);
     }
   });
@@ -362,7 +365,8 @@ export function getBlueprintOfMunicipality({
       if (publications.length === 0) return Promise.resolve(blueprint);
       // for (let p of publications) {
       console.log(
-        "check publication for blueprint of municipality " + publications.length
+        'check publication for blueprint of municipality ' +
+          publications.length,
       );
       engine
         .queryBindings(
@@ -396,10 +400,10 @@ export function getBlueprintOfMunicipality({
             httpRetryCount: NUMBER_OF_RETRY_COUNTS,
             httpRetryDelay: 2000,
             httpRetryOnServerError: false,
-          }
+          },
         )
         .then(function (bindingsStream) {
-          bindingsStream.on("data", (data: any) => {
+          bindingsStream.on('data', (data: any) => {
             const tmp: {
               classUri: string;
               propertyUri: string;
@@ -407,23 +411,23 @@ export function getBlueprintOfMunicipality({
               className: string;
               propertyName: string;
             } = {} as any;
-            tmp["classUri"] = data.get("classUri").value;
-            tmp["propertyUri"] = data.get("propertyUri")
-              ? data.get("propertyUri").value
-              : "";
-            tmp["count"] = parseInt(data.get("count").value);
+            tmp['classUri'] = data.get('classUri').value;
+            tmp['propertyUri'] = data.get('propertyUri')
+              ? data.get('propertyUri').value
+              : '';
+            tmp['count'] = parseInt(data.get('count').value);
             blueprint.push(tmp);
           });
-          bindingsStream.on("end", () => {
+          bindingsStream.on('end', () => {
             Promise.resolve(blueprint);
           });
-          bindingsStream.on("error", (error: Error) => {
+          bindingsStream.on('error', (error: Error) => {
             console.log(error);
             reject(error);
           });
         });
     } catch (e) {
-      console.log("LENNY");
+      console.log('LENNY');
       reject(e);
     }
   });
@@ -462,21 +466,21 @@ export function getCollectedPublications({
             }
             `,
           {
-            sources: ["https://dev.harvesting-self-service.lblod.info/sparql"],
+            sources: ['https://dev.harvesting-self-service.lblod.info/sparql'],
             httpRetryCount: NUMBER_OF_RETRY_COUNTS,
             httpRetryDelay: 10000,
             httpRetryOnServerError: true,
-          }
+          },
         )
         .then(function (bindingsStream) {
-          bindingsStream.on("data", (data: any) => {
+          bindingsStream.on('data', (data: any) => {
             // Each variable binding is an RDFJS term
-            collectedPublications.push(data.get("cleanUrl").value);
+            collectedPublications.push(data.get('cleanUrl').value);
           });
-          bindingsStream.on("end", () => {
+          bindingsStream.on('end', () => {
             Promise.resolve(collectedPublications);
           });
-          bindingsStream.on("error", (error: any) => {
+          bindingsStream.on('error', (error: any) => {
             console.log(error);
             reject(error);
           });
