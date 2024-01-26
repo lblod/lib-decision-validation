@@ -43,6 +43,7 @@ exports.fetchDocument = exports.getPublicationFromFileContent = exports.determin
 var actor_http_proxy_1 = require("@comunica/actor-http-proxy");
 var query_sparql_1 = require("@comunica/query-sparql");
 var engine = new query_sparql_1.QueryEngine();
+var proxy = 'https://proxy.linkeddatafragments.org/';
 /* function to validate a publication
   param:
   - publication: object to be validated
@@ -97,7 +98,7 @@ function getPublicationFromFileContent(content) {
     });
 }
 exports.getPublicationFromFileContent = getPublicationFromFileContent;
-function fetchDocument(publicationLink, proxy) {
+function fetchDocument(publicationLink) {
     return __awaiter(this, void 0, void 0, function () {
         var bindingsStream;
         return __generator(this, function (_a) {

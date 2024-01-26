@@ -4,6 +4,7 @@
 import { ProxyHandlerStatic } from '@comunica/actor-http-proxy';
 import { QueryEngine } from '@comunica/query-sparql';
 const engine = new QueryEngine();
+const proxy = 'https://proxy.linkeddatafragments.org/';
 
 import { Bindings, BindingsStream } from '@comunica/types';
 
@@ -68,7 +69,6 @@ export async function getPublicationFromFileContent(
 
 export async function fetchDocument(
   publicationLink: string,
-  proxy: string,
 ): Promise<Bindings[]> {
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
