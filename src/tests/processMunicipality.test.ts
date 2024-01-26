@@ -17,15 +17,19 @@ describe('As a vendor, I want the tool to automatically determine the type of th
 
   test("determine the type of a document using a link to fetch the publication", async () => {
     const expected: string = "Besluitenlijst";
+
     const document: Bindings[] = await fetchDocument(DOC_LINK, proxy)
     const actual: string = await determineDocumentType(document);
+
     expect(actual).toBe(expected);
   });
 
   test('determine the type of a document using a string to fetch the document', async () => {
     const expected: string= "Besluitenlijst";
+
     const document = await getPublicationFromFileContent(TESTHTMLSTRING);
     const actual: string= await determineDocumentType(document)
+    
     expect(actual).toBe(expected);
   });
 });
