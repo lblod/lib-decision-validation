@@ -80,35 +80,29 @@ export async function validatePublication(publication: Bindings[], blueprint: Bi
   // check if the publication has all the necessary annotations
   // it should possess all the right shapes and properties
   // we start by collecting every shape 
-  const shapes: string[] = blueprint
+  const shapes: Bindings[] = blueprint
     .filter(b => 
       b.get("p")!.value === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" &&
         b.get("o")!.value === "http://www.w3.org/ns/shacl#NodeShape")
-    .map(shape => shape.get('s')!.value);
 
   const result: RDFShape[] = [];
   // we should save the counts of properties per subject
   shapes.forEach(shape => {
-    const fullShapes: Bindings[] = blueprint.filter(b =>
-      b.get('s')!.value === shape
-    );
-    fullShapes.forEach(newShape => {
-      switch(newShape.get('p')!.value) {
-        case "http://www.w3.org/ns/shacl#property": {
-          const newProperty = blueprint
-            .filter(b => b.get('s')!.value === newShape.get('o')!.value)
-          const validatedProperty = validateProperty(newProperty)
-          console.log(`validated property ${JSON.stringify(validatedProperty)}`)
-          break;
-        }
-        case "http://www.w3.org/ns/shacl#targetClass": {
-          break;
-        }
-        default: {
-          console.log(`default ${newShape.get('p')!.value}`)
-        }
+    switch(shape.get('p')!.value) {
+      case "http://www.w3.org/ns/shacl#property": {
+        const newProperty = blueprint
+          .filter(b => b.get('s')!.value === shape.get('o')!.value)
+        const validatedProperty = validateProperty(newProperty)
+        console.log(`validated property ${JSON.stringify(validatedProperty)}`)
+        break;
       }
-    });
+      case "http://www.w3.org/ns/shacl#targetClass": {
+        break;
+      }
+      default: {
+        console.log(`default ${shape.get('p')!.value}`)
+      }
+    }
   });
   // and reflect whether or not it exceeds or subceeds the required counts
   // This in turn will be saved in a 'status' attribute
