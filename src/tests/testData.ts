@@ -7976,6 +7976,7 @@ export const TESTSTRING2 = `
 </body>
 </html>`;
 export const TESTHTMLSTRING = `
+
 <!DOCTYPE html>
 <html lang="nl" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -7986,8 +7987,9 @@ export const TESTHTMLSTRING = `
 <body class="body besluitenlijst">
 
     <div class="body_content" prefix="eli: http://data.europa.eu/eli/ontology# prov: http://www.w3.org/ns/prov# besluit: http://data.vlaanderen.be/ns/besluit# mandaat: http://data.vlaanderen.be/ns/mandaat# persoon: https://data.vlaanderen.be/ns/persoon# org: http://www.w3.org/ns/org# dct: http://purl.org/dc/terms/"  
-         resource="https://lblod.knokke-heist.be/LBLODWeb/Home/Overzicht/131aaf1533d212103b7848956a4fa99961fcd7fa03efce4b030b665a1c73ccf8/GetPublication/?filename=BesluitenLijst_Burgemeester_31-12-2023.html"
+         resource="https://lblod.knokke-heist.be/LBLODWeb/Home/Overzicht/131aaf1533d212103b7848956a4fa99961fcd7fa03efce4b030b665a1c73ccf8/GetPublication/?filename=BesluitenLijst_Burgemeester_31-12-2023.html" typeof="foaf:Document https://data.vlaanderen.be/id/concept/BesluitDocumentType/3fa67785-ffdc-4b30-8880-2b99d97b4dee">
 
+        <meta resource="https://data.vlaanderen.be/id/concept/BesluitDocumentType/3fa67785-ffdc-4b30-8880-2b99d97b4dee" property="dct:type" />
         <meta property="eli:passed_by" resource="http://data.lblod.info/id/bestuursorganen/041749c2e7482259d70097cb01771a2acbe21893da94206b4646c48e92b5495e" typeof="besluit:Bestuursorgaan" />
         <meta property="eli:date_publication" content="2024-01-03" datatype="xsd:date" />
 

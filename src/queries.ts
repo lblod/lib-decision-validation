@@ -2,6 +2,7 @@
 import { ProxyHandlerStatic } from "@comunica/actor-http-proxy";
 import { QueryEngine } from "@comunica/query-sparql";
 import { Bindings, BindingsStream } from "@comunica/types";
+import { RDFShape, RDFProperty } from "./types";
 
 const engine = new QueryEngine();
 
@@ -10,7 +11,7 @@ const NUMBER_OF_RETRY_COUNTS = 2;
 
 export async function getPublicationFromFileContent(content: string): Promise<Bindings[]> {
     const bindingsStream: BindingsStream = await engine.queryBindings(`
-        SELECT DISTINCT ?s ?p ?o 
+        SELECT ?s ?p ?o 
         WHERE {
             ?s ?p ?o .
         }
@@ -29,7 +30,7 @@ export async function getPublicationFromFileContent(content: string): Promise<Bi
 
 export async function fetchDocument(publicationLink: string, proxy: string): Promise<Bindings[]> {
     const bindingsStream: BindingsStream = await engine.queryBindings(`
-        SELECT DISTINCT ?s ?p ?o 
+        SELECT ?s ?p ?o 
         WHERE {
             ?s ?p ?o .
         }
@@ -42,40 +43,38 @@ export async function fetchDocument(publicationLink: string, proxy: string): Pro
 }
  
 
+export async function getBlueprintOfDocumentType(documentType: string): Promise<Bindings[]> {
+    const blueprintLink: any = {
+      Notulen:
+        "https://raw.githubusercontent.com/lblod/notulen-prepublish-service/master/test/shapes/meeting.ttl",
+      BesluitenLijst:
+        "https://raw.githubusercontent.com/lblod/notulen-prepublish-service/master/test/shapes/decision-list.ttl",
+      Agenda:
+        "https://raw.githubusercontent.com/lblod/notulen-prepublish-service/master/test/shapes/basic-agenda.ttl",
+    };
+    const bindingsStream: BindingsStream = await engine.queryBindings(`
+        SELECT ?s ?p ?o 
+        WHERE {
+            ?s ?p ?o .
+        }    
+        `, {
+        sources: [blueprintLink[documentType]]
+    });
+
+    return bindingsStream.toArray();
+}
+
 export function getBlueprintOfApplicationProfile() {
-    const AP = "https://raw.githubusercontent.com/brechtvdv/demo-data/master/besluit-publicatie-SHACL.ttl";
+    const AP =
+      "https://raw.githubusercontent.com/lblod/notulen-prepublish-service/master/test/shapes/basic-agenda.ttl";
     return new Promise((resolve, reject) => {
         try {
         const blueprint: any[] = [];
         engine.queryBindings(`
-        PREFIX sh: <http://www.w3.org/ns/shacl#>
-        PREFIX lblodBesluit: <http://lblod.data.gift/vocabularies/besluit/>
-        SELECT DISTINCT ?classUri ?propertyUri ?className ?propertyName ?name ?niveau
-        WHERE {
-            {
-                ?s sh:targetClass ?classUri .
-                OPTIONAL {
-                    ?s sh:name ?name .
-                }
-                OPTIONAL {
-                    ?s lblodBesluit:maturiteitsniveau ?niveau .
-                }
-                }
-                UNION
-                {
-                ?node sh:targetClass ?classUri ;
-                        sh:property ?s ;
-                        sh:name ?className .
-                ?s sh:path ?propertyUri .
-                OPTIONAL {
-                    ?s sh:name ?propertyName .
-                }
-                OPTIONAL {
-                    ?s lblodBesluit:maturiteitsniveau ?niveau .
-                }
-                BIND (concat(?className, ' - ', ?propertyName) AS ?name)
-            }
-        }
+            SELECT ?s ?p ?o 
+            WHERE {
+                ?s ?p ?o .
+            }    
         `, {
             sources: [ AP ],
             httpRetryCount: NUMBER_OF_RETRY_COUNTS,
