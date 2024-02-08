@@ -55,7 +55,6 @@ describe('As a vendor, I want the tool to automatically determine the type of th
       const expected: any[] = testBlueprint;
       const documentType: string = "BesluitenLijst"
       const actual = `${await getBlueprintOfDocumentType(documentType)}`;
-      fs.writeFileSync("blueprint-ex.json", `${actual}`)
       expect(actual).toBe(expected);
   })
 
