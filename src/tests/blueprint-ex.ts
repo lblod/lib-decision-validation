@@ -1,0 +1,438 @@
+ export const testBlueprint: any[] = [
+    {
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+      "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "o": "http://www.w3.org/ns/shacl#NodeShape"
+    },{
+      
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+      "p": "http://www.w3.org/ns/shacl#targetClass",
+      "o": "http://data.vlaanderen.be/ns/besluit#Zitting"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+      "p": "http://www.w3.org/ns/shacl#property",
+      "o": "_:bc_0_n3-0"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+      "p": "http://www.w3.org/ns/shacl#property",
+      "o": "_:bc_0_n3-1"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+      "p": "http://www.w3.org/ns/shacl#property",
+      "o": "_:bc_0_n3-2"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+      "p": "http://www.w3.org/ns/shacl#property",
+      "o": "_:bc_0_n3-3"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+      "p": "http://www.w3.org/ns/shacl#property",
+      "o": "_:bc_0_n3-4"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+      "p": "http://www.w3.org/ns/shacl#closed",
+      "o": "\"false\"^^http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    
+    {
+      "s": "_:bc_0_n3-0",
+      "p": "http://www.w3.org/ns/shacl#name",
+      "o": "\"behandelt\""
+    },{
+      "s": "_:bc_0_n3-0",
+      "p": "http://www.w3.org/ns/shacl#description",
+      "o": "\"Een formeel vastgelegd agendapunt van de zitting.\""
+    },{
+      "s": "_:bc_0_n3-0",
+      "p": "http://www.w3.org/ns/shacl#path",
+      "o": "http://data.vlaanderen.be/ns/besluit#behandelt"
+    },{
+      "s": "_:bc_0_n3-0",
+      "p": "http://www.w3.org/ns/shacl#class",
+      "o": "http://data.vlaanderen.be/ns/besluit#Agendapunt"
+    },{
+      "s": "_:bc_0_n3-0",
+      "p": "http://www.w3.org/ns/shacl#minCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },
+    
+    {
+      "s": "_:bc_0_n3-1",
+      "p": "http://www.w3.org/ns/shacl#name",
+      "o": "\"start\""
+    },{
+      "s": "_:bc_0_n3-1",
+      "p": "http://www.w3.org/ns/shacl#description",
+      "o": "\"Tijdstip waarop de zitting begint.\""
+    },{
+      "s": "_:bc_0_n3-1",
+      "p": "http://www.w3.org/ns/shacl#path",
+      "o": "http://www.w3.org/ns/prov#startedAtTime"
+    },{
+      "s": "_:bc_0_n3-1",
+      "p": "http://www.w3.org/ns/shacl#datatype",
+      "o": "http://www.w3.org/2001/XMLSchema#dateTime"
+    },{
+      "s": "_:bc_0_n3-1",
+      "p": "http://www.w3.org/ns/shacl#minCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },{
+      "s": "_:bc_0_n3-1",
+      "p": "http://www.w3.org/ns/shacl#maxCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },
+    
+    {
+      "s": "_:bc_0_n3-2",
+      "p": "http://www.w3.org/ns/shacl#name",
+      "o": "\"eind\""
+    },{
+      "s": "_:bc_0_n3-2",
+      "p": "http://www.w3.org/ns/shacl#description",
+      "o": "\"Tijdstip waarop de zitting eindigt.\""
+    },{
+      "s": "_:bc_0_n3-2",
+      "p": "http://www.w3.org/ns/shacl#path",
+      "o": "http://www.w3.org/ns/prov#endedAtTime"
+    },{
+      "s": "_:bc_0_n3-2",
+      "p": "http://www.w3.org/ns/shacl#datatype",
+      "o": "http://www.w3.org/2001/XMLSchema#dateTime"
+    },{
+      "s": "_:bc_0_n3-2",
+      "p": "http://www.w3.org/ns/shacl#minCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },{
+      "s": "_:bc_0_n3-2",
+      "p": "http://www.w3.org/ns/shacl#maxCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },
+    
+    {
+      "s": "_:bc_0_n3-3",
+      "p": "http://www.w3.org/ns/shacl#name",
+      "o": "\"geplandeStart\""
+    },{
+      "s": "_:bc_0_n3-3",
+      "p": "http://www.w3.org/ns/shacl#description",
+      "o": "\"Het tijdstip waarop de zitting gepland is om te beginnen.\""
+    },{
+      "s": "_:bc_0_n3-3",
+      "p": "http://www.w3.org/ns/shacl#path",
+      "o": "http://data.vlaanderen.be/ns/besluit#geplandeStart"
+    },{
+      "s": "_:bc_0_n3-3",
+      "p": "http://www.w3.org/ns/shacl#datatype",
+      "o": "http://www.w3.org/2001/XMLSchema#dateTime"
+    },{
+      "s": "_:bc_0_n3-3",
+      "p": "http://www.w3.org/ns/shacl#minCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },{
+      "s": "_:bc_0_n3-3",
+      "p": "http://www.w3.org/ns/shacl#maxCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },
+    
+    {
+      "s": "_:bc_0_n3-4",
+      "p": "http://www.w3.org/ns/shacl#name",
+      "o": "\"isGehoudenDoor\""
+    },{
+      "s": "_:bc_0_n3-4",
+      "p": "http://www.w3.org/ns/shacl#description",
+      "o": "\"Duidt aan door welk orgaan de zitting is gehouden.\""
+    },{
+      "s": "_:bc_0_n3-4",
+      "p": "http://www.w3.org/ns/shacl#path",
+      "o": "http://data.vlaanderen.be/ns/besluit#isGehoudenDoor"
+    },{
+      "s": "_:bc_0_n3-4",
+      "p": "http://www.w3.org/ns/shacl#class",
+      "o": "http://data.vlaanderen.be/ns/besluit#Bestuursorgaan"
+    },{
+      "s": "_:bc_0_n3-4",
+      "p": "http://www.w3.org/ns/shacl#minCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },{
+      "s": "_:bc_0_n3-4",
+      "p": "http://www.w3.org/ns/shacl#maxCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },
+    
+    
+    {
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BehandelingVanAgendapuntShape",
+      "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "o": "http://www.w3.org/ns/shacl#NodeShape"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BehandelingVanAgendapuntShape",
+      "p": "http://www.w3.org/ns/shacl#targetClass",
+      "o": "http://data.vlaanderen.be/ns/besluit#BehandelingVanAgendapunt"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BehandelingVanAgendapuntShape",
+      "p": "http://www.w3.org/ns/shacl#property",
+      "o": "_:bc_0_n3-5"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BehandelingVanAgendapuntShape",
+      "p": "http://www.w3.org/ns/shacl#property",
+      "o": "_:bc_0_n3-6"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BehandelingVanAgendapuntShape",
+      "p": "http://www.w3.org/ns/shacl#property",
+      "o": "_:bc_0_n3-7"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BehandelingVanAgendapuntShape",
+      "p": "http://www.w3.org/ns/shacl#property",
+      "o": "_:bc_0_n3-8"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BehandelingVanAgendapuntShape",
+      "p": "http://www.w3.org/ns/shacl#property",
+      "o": "_:bc_0_n3-9"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BehandelingVanAgendapuntShape",
+      "p": "http://www.w3.org/ns/shacl#closed",
+      "o": "\"false\"^^http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    
+    {
+      "s": "_:bc_0_n3-5",
+      "p": "http://www.w3.org/ns/shacl#name",
+      "o": "\"heeftOnderwerp\""
+    },{
+      "s": "_:bc_0_n3-5",
+      "p": "http://www.w3.org/ns/shacl#description",
+      "o": "\"Het onderwerp van de activiteit.\""
+    },{
+      "s": "_:bc_0_n3-5",
+      "p": "http://www.w3.org/ns/shacl#path",
+      "o": "http://purl.org/dc/terms/subject"
+    },{
+      "s": "_:bc_0_n3-5",
+      "p": "http://www.w3.org/ns/shacl#class",
+      "o": "http://data.vlaanderen.be/ns/besluit#Agendapunt"
+    },{
+      "s": "_:bc_0_n3-5",
+      "p": "http://www.w3.org/ns/shacl#minCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },{
+      "s": "_:bc_0_n3-5",
+      "p": "http://www.w3.org/ns/shacl#maxCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },
+    
+    {
+      "s": "_:bc_0_n3-6",
+      "p": "http://www.w3.org/ns/shacl#name",
+      "o": "\"gebeurtNa\""
+    },{
+      "s": "_:bc_0_n3-6",
+      "p": "http://www.w3.org/ns/shacl#description",
+      "o": "\"Verwijzing naar het voorgaand behandeld agendapunt binnen dezelfde zitting. Laat toe om de volgorde van de behandelingen op te bouwen.\""
+    },{
+      "s": "_:bc_0_n3-6",
+      "p": "http://www.w3.org/ns/shacl#path",
+      "o": "http://data.vlaanderen.be/ns/besluit#gebeurtNa"
+    },{
+      "s": "_:bc_0_n3-6",
+      "p": "http://www.w3.org/ns/shacl#class",
+      "o": "http://data.vlaanderen.be/ns/besluit#BehandelingVanAgendapunt"
+    },{
+      "s": "_:bc_0_n3-6",
+      "p": "http://www.w3.org/ns/shacl#maxCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },
+    
+    {
+      "s": "_:bc_0_n3-7",
+      "p": "http://www.w3.org/ns/shacl#name",
+      "o": "\"geeftAanleidingTot\""
+    },{
+      "s": "_:bc_0_n3-7",
+      "p": "http://www.w3.org/ns/shacl#description",
+      "o": "\"Een besluit dat is opgemaakt naar aanleiding van de behandeling van het agendapunt.\""
+    },{
+      "s": "_:bc_0_n3-7",
+      "p": "http://www.w3.org/ns/shacl#path",
+      "o": "http://www.w3.org/ns/prov#generated"
+    },{
+      "s": "_:bc_0_n3-7",
+      "p": "http://www.w3.org/ns/shacl#class",
+      "o": "http://data.vlaanderen.be/ns/besluit#Besluit"
+    },{
+      "s": "_:bc_0_n3-7",
+      "p": "http://www.w3.org/ns/shacl#minCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },
+    
+    {
+      "s": "_:bc_0_n3-8",
+      "p": "http://www.w3.org/ns/shacl#name",
+      "o": "\"heeftStemming\""
+    },{
+      "s": "_:bc_0_n3-8",
+      "p": "http://www.w3.org/ns/shacl#description",
+      "o": "\"Een stemming die plaatsvond tijdens de behandeling van het agendapunt.\""
+    },{
+      "s": "_:bc_0_n3-8",
+      "p": "http://www.w3.org/ns/shacl#path",
+      "o": "http://data.vlaanderen.be/ns/besluit#heeftStemming"
+    },{
+      "s": "_:bc_0_n3-8",
+      "p": "http://www.w3.org/ns/shacl#class",
+      "o": "http://data.vlaanderen.be/ns/besluit#Stemming"
+    },
+    
+    {
+      "s": "_:bc_0_n3-9",
+      "p": "http://www.w3.org/ns/shacl#name",
+      "o": "\"openbaar\""
+    },{
+      "s": "_:bc_0_n3-9",
+      "p": "http://www.w3.org/ns/shacl#description",
+      "o": "\"Geeft aan of de bespreking effectief openbaar verlopen is.\""
+    },{
+      "s": "_:bc_0_n3-9",
+      "p": "http://www.w3.org/ns/shacl#path",
+      "o": "http://data.vlaanderen.be/ns/besluit#openbaar"
+    },{
+      "s": "_:bc_0_n3-9",
+      "p": "http://www.w3.org/ns/shacl#datatype",
+      "o": "http://www.w3.org/2001/XMLSchema#boolean"
+    },{
+      "s": "_:bc_0_n3-9",
+      "p": "http://www.w3.org/ns/shacl#minCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },{
+      "s": "_:bc_0_n3-9",
+      "p": "http://www.w3.org/ns/shacl#maxCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },
+    
+
+    {
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+      "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "o": "http://www.w3.org/ns/shacl#NodeShape"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+      "p": "http://www.w3.org/ns/shacl#targetClass",
+      "o": "http://data.vlaanderen.be/ns/besluit#Besluit"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+      "p": "http://www.w3.org/ns/shacl#property",
+      "o": "_:bc_0_n3-10"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+      "p": "http://www.w3.org/ns/shacl#property",
+      "o": "_:bc_0_n3-11"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+      "p": "http://www.w3.org/ns/shacl#property",
+      "o": "_:bc_0_n3-12"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+      "p": "http://www.w3.org/ns/shacl#property",
+      "o": "_:bc_0_n3-13"
+    },{
+      "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+      "p": "http://www.w3.org/ns/shacl#closed",
+      "o": "\"false\"^^http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    
+    {
+      "s": "_:bc_0_n3-10",
+      "p": "http://www.w3.org/ns/shacl#name",
+      "o": "\"beschrijving\""
+    },{
+      "s": "_:bc_0_n3-10",
+      "p": "http://www.w3.org/ns/shacl#description",
+      "o": "\"Een beknopte beschrijving van het besluit.\""
+    },{
+      "s": "_:bc_0_n3-10",
+      "p": "http://www.w3.org/ns/shacl#path",
+      "o": "http://data.europa.eu/eli/ontology#description"
+    },{
+      "s": "_:bc_0_n3-10",
+      "p": "http://www.w3.org/ns/shacl#datatype",
+      "o": "http://www.w3.org/2001/XMLSchema#string"
+    },{
+      "s": "_:bc_0_n3-10",
+      "p": "http://www.w3.org/ns/shacl#maxCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },
+    
+    {
+      "s": "_:bc_0_n3-11",
+      "p": "http://www.w3.org/ns/shacl#name",
+      "o": "\"citeeropschrift\""
+    },{
+      "s": "_:bc_0_n3-11",
+      "p": "http://www.w3.org/ns/shacl#description",
+      "o": "\"De beknopte titel of officiële korte naam van een decreet, wet, besluit... Deze wordt officieel vastgelegd. Deze benaming wordt in de praktijk gebruikt om naar de rechtsgrond te verwijzen.\""
+    },{
+      "s": "_:bc_0_n3-11",
+      "p": "http://www.w3.org/ns/shacl#path",
+      "o": "http://data.europa.eu/eli/ontology#title_short"
+    },{
+      "s": "_:bc_0_n3-11",
+      "p": "http://www.w3.org/ns/shacl#datatype",
+      "o": "http://www.w3.org/2001/XMLSchema#string"
+    },{
+      "s": "_:bc_0_n3-11",
+      "p": "http://www.w3.org/ns/shacl#maxCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },
+    
+    {
+      "s": "_:bc_0_n3-12",
+      "p": "http://www.w3.org/ns/shacl#name",
+      "o": "\"titel\""
+    },{
+      "s": "_:bc_0_n3-12",
+      "p": "http://www.w3.org/ns/shacl#description",
+      "o": "\"Titel van de legale verschijningsvorm.\""
+    },{
+      "s": "_:bc_0_n3-12",
+      "p": "http://www.w3.org/ns/shacl#path",
+      "o": "http://data.europa.eu/eli/ontology#title"
+    },{
+      "s": "_:bc_0_n3-12",
+      "p": "http://www.w3.org/ns/shacl#datatype",
+      "o": "http://www.w3.org/2001/XMLSchema#string"
+    },{
+      "s": "_:bc_0_n3-12",
+      "p": "http://www.w3.org/ns/shacl#minCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },
+    
+    {
+      "s": "_:bc_0_n3-13",
+      "p": "http://www.w3.org/ns/shacl#name",
+      "o": "\"taal\""
+    },{
+      "s": "_:bc_0_n3-13",
+      "p": "http://www.w3.org/ns/shacl#description",
+      "o": "\"De taal van de verschijningsvorm.\""
+    },{
+      "s": "_:bc_0_n3-13",
+      "p": "http://www.w3.org/ns/shacl#path",
+      "o": "http://data.europa.eu/eli/ontology#language"
+    },{
+      "s": "_:bc_0_n3-13",
+      "p": "http://www.w3.org/ns/shacl#class",
+      "o": "http://www.w3.org/2004/02/skos/core#Concept"
+    },{
+      "s": "_:bc_0_n3-13",
+      "p": "http://www.w3.org/ns/shacl#minCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },{
+      "s": "_:bc_0_n3-13",
+      "p": "http://www.w3.org/ns/shacl#maxCount",
+      "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+    },{
+      "s": "_:bc_0_n3-13",
+      "p": "http://purl.org/linked-data/cube#codeList",
+      "o": "http://publications.europa.eu/mdr/authority/language/index.html"
+    }
+ ]
