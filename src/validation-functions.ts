@@ -16,7 +16,7 @@ export function determineDocumentType(bindings: Bindings[]): string {
     b.get('o')!.value.includes("https://data.vlaanderen.be/id/concept/BesluitDocumentType/")) {
       switch(b.get("o")!.value) {
         case "https://data.vlaanderen.be/id/concept/BesluitDocumentType/8e791b27-7600-4577-b24e-c7c29e0eb773": {
-          return "Notule";
+          return "Notulen";
         }
         case "https://data.vlaanderen.be/id/concept/BesluitDocumentType/3fa67785-ffdc-4b30-8880-2b99d97b4dee": {
           return "Besluitenlijst";
