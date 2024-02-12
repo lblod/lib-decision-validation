@@ -1,14 +1,13 @@
 import * as fs from 'fs';
 
 import { Bindings } from '@comunica/types';
-import { determineDocumentType, validatePublication } from '../processMunicipality';
+import { determineDocumentType, validatePublication } from '../validation-functions';
 import { fetchDocument, getBlueprintOfDocumentType, getPublicationFromFileContent } from '../queries'; 
 
-import { AGENDA_LINK, DOC_LINK, NOTULEN_LINK, TESTHTMLSTRING, TESTSTRING2 } from './testData';
 const PROXY = "https://proxy.linkeddatafragments.org/";
 
-import { testResult } from './result-ex';
-import { testBlueprint } from './blueprint-ex';
+import { AGENDA_LINK, DOC_LINK, NOTULEN_LINK, TESTHTMLSTRING, TESTSTRING2 } from './data/testData';
+import { testResult } from './data/result-ex';
 
 describe('As a vendor, I want the tool to automatically determine the type of the document (agenda, besluitenlijst, notulen)', () => {
   test("determine the type of a document using a link to fetch the publication", async () => {
@@ -18,8 +17,6 @@ describe('As a vendor, I want the tool to automatically determine the type of th
       PROXY
     );
     const actual: string = await determineDocumentType(document);
-    console.log(`VALUE ${document}`);
-    fs.writeFileSync("decision-list-ex.json", `${document}` )
 
     expect(actual).toBe(expected);
   });
@@ -51,20 +48,22 @@ describe('As a vendor, I want the tool to automatically determine the type of th
   });
   
   // TODO: fix mock data
-  test.skip("Get the blueprint for the corresponding document type", async () => {
-      const expected: any[] = testBlueprint;
+  test("Get the blueprint for the corresponding document type", async () => {
+      const expected = `${fs.readFileSync('src/tests/data/blueprint.json')}`;
       const documentType: string = "BesluitenLijst"
       const actual = `${await getBlueprintOfDocumentType(documentType)}`;
+
       expect(actual).toBe(expected);
   })
 
   // TODO: fix any types
-  test("Validate the publication", async () => {
+  test.only("Validate the publication", async () => {
     const expected: any[] = testResult
     const blueprint: Bindings[]= await getBlueprintOfDocumentType("BesluitenLijst");
     const publication: Bindings[]= await fetchDocument(DOC_LINK, PROXY);
     const actual: any[] = await validatePublication(publication, blueprint);
-    
+    fs.writeFileSync("result.json", JSON.stringify(actual))
+
     expect(actual).toStrictEqual(expected);
   });
 });
