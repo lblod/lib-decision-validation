@@ -57,12 +57,13 @@ describe('As a vendor, I want the tool to automatically determine the type of th
   })
 
   // TODO: fix any types
-  test("Validate the publication", async () => {
+  test.only("Validate the publication", async () => {
     const expected: any[] = testResult
     const blueprint: Bindings[]= await getBlueprintOfDocumentType("BesluitenLijst");
     const publication: Bindings[]= await fetchDocument(DOC_LINK, PROXY);
     const actual: any[] = await validatePublication(publication, blueprint);
-    
+    fs.writeFileSync("result.json", JSON.stringify(actual))
+
     expect(actual).toStrictEqual(expected);
   });
 });

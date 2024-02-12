@@ -89,38 +89,42 @@ export async function validatePublication(publication: Bindings[], blueprint: Bi
   // we should save the counts of properties per subject
   subjectKeys.forEach(subjectKey => {
     const subject: Bindings[] = publication.filter(p => p.get('s')!.value === subjectKey);
-    // console.log(`subject: ${subject}`)  
     
     const subjectType: string | undefined = subject
-    .find(s => s.get('p')!.value === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+      .find(s => s.get('p')!.value === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
     )?.get('o')!.value;
     const blueprintShapeKey: string | undefined = blueprint
-    .find(b => b.get('p')!.value === "http://www.w3.org/ns/shacl#targetClass" &&
-    b.get('o')!.value === subjectType
+      .find(b => b.get('p')!.value === "http://www.w3.org/ns/shacl#targetClass" &&
+        b.get('o')!.value === subjectType
     )?.get('s')!.value
     const blueprintShape: Bindings[] = blueprint
-    .filter(b => b.get('s')!.value === blueprintShapeKey
+      .filter(b => b.get('s')!.value === blueprintShapeKey
     )
     const propertyKeys: string[] = blueprintShape
-    .filter((b) => b.get("p")!.value === "http://www.w3.org/ns/shacl#property") 
-    .map(b => b.get('o')!.value);
+      .filter((b) => b.get("p")!.value === "http://www.w3.org/ns/shacl#property") 
+      .map(b => b.get('o')!.value);
     
+    const regex: RegExp = /[^#]+$/;
     if(subject.length > 0 && blueprintShape.length > 0) {
       let resultSubject: any = {
         url: subjectKey,
         type: subjectType,
+        typeName: regex.exec(subjectType!) ? regex.exec(subjectType!)![0]: "Unknown type",
         usedShape: blueprintShapeKey,
+        name: regex.exec(blueprintShapeKey!) ? regex.exec(blueprintShapeKey!)![0]: "Unknown shape",
+        totalCount: propertyKeys.length,
+        validCount: 0,
         validatedProperties: []
       }
       propertyKeys.forEach(propertyKey => {
         const propertyShape: Bindings[] = blueprint.filter(b => b.get('s')!.value === propertyKey)
-        resultSubject.validatedProperties.push(validateProperty(subject, propertyShape))
-        // console.log(`property: ${propertyShape}`)
+        const validatedProperty: any = validateProperty(subject, propertyShape)
+        if (validatedProperty.valid) 
+          resultSubject.validCount++  
+        resultSubject.validatedProperties.push(validatedProperty)
       });
       result.push(resultSubject);
     }
   });
-  // and reflect whether or not it exceeds or subceeds the required counts
-  // This in turn will be saved in a 'status' attribute
   return result
 }
