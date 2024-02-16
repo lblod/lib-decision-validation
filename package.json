@@ -1,6 +1,6 @@
 {
   "name": "validation-monitoring-module",
-  "version": "1.0.8",
+  "version": "1.0.10-2",
   "description": "",
   "module": "dist/index.esm.js",
   "main": "dist/index.js",
@@ -9,7 +9,7 @@
     "dist/*"
   ],
   "scripts": {
-    "build": "node ./build/build.js",
+    "build": "node ./scripts/build.js",
     "test": "jest",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json"
