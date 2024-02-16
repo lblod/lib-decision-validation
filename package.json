@@ -1,14 +1,18 @@
 {
   "name": "validation-monitoring-module",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "",
-  "main": "index.js",
+  "module": "dist/index.esm.js",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "files": [
-    "dist/**/*"
+    "dist/*"
   ],
   "scripts": {
-    "dev": "tsc -w",
-    "test": "jest"
+    "build": "node ./build/build.js",
+    "test": "jest",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json"
   },
   "keywords": [],
   "include": [
@@ -20,8 +24,14 @@
     "@comunica/types": "^2.10.0",
     "@types/jest": "^29.5.11",
     "@types/jquery": "^3.5.29",
+    "esbuild": "^0.20.0",
+    "esbuild-plugin-tsc": "^0.4.0",
+    "npm-dts": "^1.3.12",
+    "prettier": "^3.2.5",
     "rdf-js": "^4.0.2",
     "ts-jest": "^29.1.1",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^5.3.3"
   },
   "dependencies": {
