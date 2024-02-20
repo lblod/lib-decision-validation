@@ -29,7 +29,7 @@ export async function getPublicationFromFileContent(content: string): Promise<Bi
   return bindingsStream.toArray();
 }
 
-export async function fetchDocument(publicationLink: string, proxy?: string): Promise<Bindings[]> {
+export async function fetchDocument(publicationLink: string, proxyURL?: string): Promise<Bindings[]> {
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
         SELECT ?s ?p ?o 
@@ -39,7 +39,7 @@ export async function fetchDocument(publicationLink: string, proxy?: string): Pr
     `,
     {
       sources: [publicationLink],
-      ...(proxy && { proxy: new ProxyHandlerStatic(proxy) }),
+      ...(proxyURL && { proxy: new ProxyHandlerStatic(proxyURL) }),
     },
   );
   return bindingsStream.toArray();
