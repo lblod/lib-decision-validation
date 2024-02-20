@@ -1,6 +1,6 @@
 {
   "name": "validation-monitoring-module",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "",
   "module": "dist/index.esm.js",
   "main": "dist/index.js",
