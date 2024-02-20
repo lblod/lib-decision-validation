@@ -1,4 +1,5 @@
-import { Bindings } from '@comunica/types';
+import type { Bindings } from '@comunica/types';
+export * from './queries';
 
 /* function to validate a publication 
   param:

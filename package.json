@@ -2,23 +2,15 @@
   "name": "validation-monitoring-module",
   "version": "1.0.14",
   "description": "",
-  "module": "dist/index.esm.js",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "files": [
-    "dist/*"
-  ],
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "node ./scripts/build.js",
-    "test": "jest",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "tslint -p tsconfig.json"
+    "build": "tsup"
   },
-  "keywords": [],
-  "include": [
-    "src/**/*"
-  ],
-  "author": "",
+  "repository": {
+    "url": "https://github.com/snenenenenenene/validation-monitoring-module"
+  },
   "license": "ISC",
   "devDependencies": {
     "@comunica/types": "^2.10.0",
@@ -35,6 +27,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@comunica/query-sparql": "^2.10.2"
+    "@comunica/query-sparql": "^2.10.2",
+    "tsup": "^8.0.2"
   }
 }
