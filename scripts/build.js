@@ -7,7 +7,7 @@ new Generator({
 }).generate();
 
 const sharedConfig = {
-  entryPoints: ["dist/index.ts"],
+  entryPoints: ["src/index.ts"],
   bundle: true,
   minify: true,
 };
