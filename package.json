@@ -1,15 +1,14 @@
 {
   "name": "validation-monitoring-module",
-  "version": "1.0.13",
+  "version": "1.0.22",
   "description": "",
-  "module": "dist/index.esm.js",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist/*"
+    "/dist"
   ],
   "scripts": {
-    "build": "node ./scripts/build.js",
+    "build": "tsc",
     "test": "jest",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json"
@@ -35,6 +34,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@comunica/query-sparql": "^2.10.2"
+    "@comunica/query-sparql": "^2.10.2",
+    "@comunica/actor-http-proxy": "^2.10.2"
   }
 }

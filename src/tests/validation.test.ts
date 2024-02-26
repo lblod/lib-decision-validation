@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
 import { Bindings } from '@comunica/types';
-import { determineDocumentType, validatePublication } from '../index';
+import { determineDocumentType, validatePublication } from '../validation';
 import { fetchDocument, getBlueprintOfDocumentType, getPublicationFromFileContent } from '../queries';
 
 const PROXY = 'https://proxy.linkeddatafragments.org/';
