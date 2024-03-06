@@ -1,7 +1,7 @@
-export const DOC_LINK: string =
+export const BESLUITEN_LINK: string =
   'https://lblod.knokke-heist.be/LBLODWeb/Home/Overzicht/131aaf1533d212103b7848956a4fa99961fcd7fa03efce4b030b665a1c73ccf8/GetPublication?filename=BesluitenLijst_Burgemeester_31-12-2023.html';
 export const AGENDA_LINK: string = 'https://raadpleeg-ham.onlinesmartcities.be/zittingen/23.1127.1873.5981/agenda';
-export const NOTULEN_LINK: string = 'https://ebesluit.antwerpen.be/zittingen/23.0926.3252.9108/agenda';
+export const NOTULEN_LINK: string = 'https://raadpleeg-aalst.onlinesmartcities.be/zittingen/20.0527.2714.7668/notulen';
 export const TESTSTRING2 = `
 <!DOCTYPE html>
 <html lang="nl" xmlns="http://www.w3.org/1999/xhtml">

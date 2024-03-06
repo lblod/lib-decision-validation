@@ -125,3 +125,11 @@ export async function validatePublication(publication: Bindings[], blueprint: Bi
   });
   return result;
 }
+
+export async function validateGeneralConnection(publication: Bindings[]) {
+
+  const result: any[] = [];
+  
+  
+
+}
