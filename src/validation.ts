@@ -113,6 +113,7 @@ export async function validatePublication(publication: Bindings[], blueprint: Bi
         totalCount: propertyKeys.length,
         validCount: 0,
         validatedProperties: [],
+        relations: []
       };
       propertyKeys.forEach((propertyKey) => {
         const propertyShape: Bindings[] = blueprint.filter((b) => b.get('s')!.value === propertyKey);
@@ -126,10 +127,16 @@ export async function validatePublication(publication: Bindings[], blueprint: Bi
   return result;
 }
 
-export async function validateGeneralConnection(publication: Bindings[]) {
+export async function validateGeneralConnection(subject: Bindings[]) {
 
   const result: any[] = [];
   
   
 
+}
+
+
+
+export async function getMaturityLevel() {
+  return
 }

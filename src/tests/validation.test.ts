@@ -2,7 +2,7 @@ import * as fs from 'fs';
 
 import { Bindings } from '@comunica/types';
 import { determineDocumentType, validateGeneralConnection, validatePublication } from '../validation';
-import { fetchDocument, getBlueprintOfDocumentType, getPublicationFromFileContent } from '../queries';
+import { fetchDocument, getBlueprintOfDocumentType, getMaturityProperties, getPublicationFromFileContent } from '../queries';
 
 const PROXY = 'https://proxy.linkeddatafragments.org/';
 
@@ -57,19 +57,30 @@ describe('As a vendor, I want the tool to automatically determine the type of th
   // TODO: fix any types
   test('Validate the publication', async () => {
     const expected: any[] = testResult;
-    const blueprint: Bindings[] = await getBlueprintOfDocumentType('BesluitenLijst');
-    const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK, PROXY);
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Notulen');
+    const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
     const actual: any[] = await validatePublication(publication, blueprint);
-    // fs.writeFileSync("resultaat.json", `${JSON.stringify(actual)}`)
+    fs.writeFileSync("resultaat.json", `${JSON.stringify(actual)}`)
     
     expect(actual).toStrictEqual(expected);
   });
   
-  test.only('Shallom', async () => {
+  test.only('Get the maturity level', async () => {
     const expected: any[] = testResult;
-    const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
+    const actual = await getMaturityProperties("Niveau 1");
+    fs.writeFileSync('maturitylevel.json', `${JSON.stringify(actual)}`);
+
+    expect(actual).toStrictEqual(expected);
+  });
+
+  test('Shallom', async () => {
+    const expected: any[] = testResult;
+    const publication: Bindings[] = await fetchDocument(
+      'https://ebesluitvorming.gent.be/zittingen/23.0818.0240.3081/notulen',
+      PROXY,
+    );
     const actual = await validateGeneralConnection(publication);
-    console.log(`shallom:  ${JSON.stringify(actual)}`);
+    // console.log(`shallom:  ${JSON.stringify(actual)}`);
     fs.writeFileSync('resultaat.json', `${JSON.stringify(publication)}`);
 
     expect(actual).toStrictEqual(expected);
