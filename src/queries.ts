@@ -115,7 +115,9 @@ export function getBlueprintOfApplicationProfile() {
 }
 
 export async function getMaturityProperties(maturityLevel: string) {
-  const source: string = "https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/notulen.ttl"
+  const source: string =
+    'https://raw.githubusercontent.com/snenenenenenene/validation-monitoring-module/master/files/notulen.ttl';
+    
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
       PREFIX lblodBesluit: <http://lblod.data.gift/vocabularies/besluit/>
