@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
 import { Bindings } from '@comunica/types';
-import { determineDocumentType, validateGeneralConnection, validatePublication } from '../validation';
+import { checkMaturity, determineDocumentType, validatePublication } from '../validation';
 import { fetchDocument, getBlueprintOfDocumentType, getMaturityProperties, getPublicationFromFileContent } from '../queries';
 
 const PROXY = 'https://proxy.linkeddatafragments.org/';
@@ -55,17 +55,17 @@ describe('As a vendor, I want the tool to automatically determine the type of th
   });
 
   // TODO: fix any types
-  test('Validate the publication', async () => {
+  test.only('Validate the publication', async () => {
     const expected: any[] = testResult;
     const blueprint: Bindings[] = await getBlueprintOfDocumentType('Notulen');
     const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
-    const actual: any[] = await validatePublication(publication, blueprint);
+    const actual = await validatePublication(publication, blueprint);
     fs.writeFileSync("resultaat.json", `${JSON.stringify(actual)}`)
     
     expect(actual).toStrictEqual(expected);
   });
   
-  test.only('Get the maturity level', async () => {
+  test('Get the maturity level', async () => {
     const expected: any[] = testResult;
     const actual = await getMaturityProperties("Niveau 1");
     fs.writeFileSync('maturitylevel.json', `${JSON.stringify(actual)}`);
@@ -73,16 +73,20 @@ describe('As a vendor, I want the tool to automatically determine the type of th
     expect(actual).toStrictEqual(expected);
   });
 
-  test('Shallom', async () => {
+    
+  test('Get the maturity level', async () => {
     const expected: any[] = testResult;
-    const publication: Bindings[] = await fetchDocument(
-      'https://ebesluitvorming.gent.be/zittingen/23.0818.0240.3081/notulen',
-      PROXY,
-    );
-    const actual = await validateGeneralConnection(publication);
-    // console.log(`shallom:  ${JSON.stringify(actual)}`);
-    fs.writeFileSync('resultaat.json', `${JSON.stringify(publication)}`);
 
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Notulen');
+    const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
+    const result: any = await validatePublication(publication, blueprint);
+    fs.writeFileSync('hero.json', `${JSON.stringify(result)}`);
+
+    const properties = await getMaturityProperties('Niveau 3');
+    const actual = checkMaturity(result, properties);
+    console.log(actual);
     expect(actual).toStrictEqual(expected);
   });
+  
+
 });

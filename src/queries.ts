@@ -1,7 +1,6 @@
 import { ProxyHandlerStatic } from '@comunica/actor-http-proxy';
 import { QueryEngine } from '@comunica/query-sparql';
 import { Bindings, BindingsStream } from '@comunica/types';
-import { getMaturityLevel } from './validation';
 
 const engine = new QueryEngine();
 
@@ -121,9 +120,11 @@ export async function getMaturityProperties(maturityLevel: string) {
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
       PREFIX lblodBesluit: <http://lblod.data.gift/vocabularies/besluit/>
-      SELECT ?s
+      PREFIX sh: <http://www.w3.org/ns/shacl#>
+      SELECT ?path
       WHERE {
-          ?s lblodBesluit:maturiteitsniveau "${maturityLevel}" .
+          ?s lblodBesluit:maturiteitsniveau "${maturityLevel}" ;
+            sh:path ?path .
       }    
       `,
     {

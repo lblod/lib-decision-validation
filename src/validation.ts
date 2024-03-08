@@ -33,7 +33,7 @@ export function determineDocumentType(bindings: Bindings[]): string {
   param:
   - subject: object to be validated
   returns:
-  - one of the following valuesL: [besluitenlijst, notulen, agenda]
+  - one of the following values: [besluitenlijst, notulen, agenda]
 */
 function validateProperty(subject: Bindings[], propertyShape: Bindings[]): any {
   const result: any = {};
@@ -64,7 +64,7 @@ function validateProperty(subject: Bindings[], propertyShape: Bindings[]): any {
         break;
       }
       default: {
-        console.log(`default ${p.get('p')!.value}`);
+        // console.log(`default ${p.get('p')!.value}`);
       }
     }
   });
@@ -82,7 +82,7 @@ function validateProperty(subject: Bindings[], propertyShape: Bindings[]): any {
   returns:
   - contains a report of all missing requirements for a publication
 */
-export async function validatePublication(publication: Bindings[], blueprint: Bindings[]) {
+export function validatePublication(publication: Bindings[], blueprint: Bindings[]) {
   // get the URI of all unique subjects and place them in an array
   const subjectKeys: string[] = [...new Set(publication.map((p) => p.get('s')!.value))];
 
@@ -113,7 +113,6 @@ export async function validatePublication(publication: Bindings[], blueprint: Bi
         totalCount: propertyKeys.length,
         validCount: 0,
         validatedProperties: [],
-        relations: []
       };
       propertyKeys.forEach((propertyKey) => {
         const propertyShape: Bindings[] = blueprint.filter((b) => b.get('s')!.value === propertyKey);
@@ -127,16 +126,15 @@ export async function validatePublication(publication: Bindings[], blueprint: Bi
   return result;
 }
 
-export async function validateGeneralConnection(subject: Bindings[]) {
-
-  const result: any[] = [];
-  
-  
-
-}
-
-
-
-export async function getMaturityLevel() {
-  return
+export function checkMaturity(result: any[], properties: void | Bindings[]) {
+  let valid: boolean = true;
+  (properties as Bindings[]).forEach((property) => {
+    return result.forEach((subject) => {
+      const found = subject.validatedProperties.find((p) => p.path === property.get('path')!.value);
+      if (found && !found.valid) {
+        valid = false
+      }
+    });
+  });
+  return valid
 }
