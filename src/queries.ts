@@ -5,7 +5,7 @@ import { Bindings, BindingsStream } from '@comunica/types';
 const engine = new QueryEngine();
 
 const NUMBER_OF_RETRY_COUNTS = 2;
-
+const proxy = 'https://corsproxy.io/? ';
 export async function getPublicationFromFileContent(content: string): Promise<Bindings[]> {
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
@@ -29,7 +29,7 @@ export async function getPublicationFromFileContent(content: string): Promise<Bi
   return bindingsStream.toArray();
 }
 
-export async function fetchDocument(publicationLink: string, proxyURL?: string): Promise<Bindings[]> {
+export async function fetchDocument(publicationLink: string, proxyOveride?: string): Promise<Bindings[]> {
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
         SELECT ?s ?p ?o 
@@ -39,7 +39,11 @@ export async function fetchDocument(publicationLink: string, proxyURL?: string):
     `,
     {
       sources: [publicationLink],
-      ...(proxyURL && { proxy: new ProxyHandlerStatic(proxyURL) }),
+      ...(proxyOveride
+        ? { httpProxyHandler: new ProxyHandlerStatic(proxyOveride) }
+        : {
+            httpProxyHandler: new ProxyHandlerStatic(proxy),
+          }),
     },
   );
   return bindingsStream.toArray();
@@ -116,7 +120,7 @@ export function getBlueprintOfApplicationProfile() {
 export async function getMaturityProperties(maturityLevel: string) {
   const source: string =
     'https://raw.githubusercontent.com/snenenenenenene/validation-monitoring-module/master/files/notulen.ttl';
-    
+
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
       PREFIX lblodBesluit: <http://lblod.data.gift/vocabularies/besluit/>
