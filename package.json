@@ -1,6 +1,6 @@
 {
   "name": "validation-monitoring-module",
-  "version": "1.0.22",
+  "version": "1.1.2",
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -8,7 +8,7 @@
     "/dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsup --dts",
     "test": "jest",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json"

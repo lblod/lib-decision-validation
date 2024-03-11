@@ -2,10 +2,13 @@ import { ProxyHandlerStatic } from '@comunica/actor-http-proxy';
 import { QueryEngine } from '@comunica/query-sparql';
 import { Bindings, BindingsStream } from '@comunica/types';
 
+export * from './queries';
+
 const engine = new QueryEngine();
 
 const NUMBER_OF_RETRY_COUNTS = 2;
 const proxy = 'https://corsproxy.io/? ';
+
 export async function getPublicationFromFileContent(content: string): Promise<Bindings[]> {
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
@@ -71,7 +74,7 @@ export async function getBlueprintOfDocumentType(documentType: string): Promise<
   return bindingsStream.toArray();
 }
 
-export function getBlueprintOfApplicationProfile() {
+export async function getBlueprintOfApplicationProfile() {
   const AP = 'https://raw.githubusercontent.com/lblod/notulen-prepublish-service/master/test/shapes/basic-agenda.ttl';
   return new Promise((resolve, reject) => {
     try {

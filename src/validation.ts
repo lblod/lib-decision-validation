@@ -6,7 +6,7 @@ import { Bindings } from '@comunica/types';
   returns:
   - one of the following valuesL: [besluitenlijst, notulen, agenda]
 */
-export function determineDocumentType(bindings: Bindings[]): string {
+export async function determineDocumentType(bindings: Bindings[]): Promise<string> {
   // Look for document type predicate if it is present
   for (const b of bindings) {
     if (
@@ -35,7 +35,7 @@ export function determineDocumentType(bindings: Bindings[]): string {
   returns:
   - one of the following values: [besluitenlijst, notulen, agenda]
 */
-function validateProperty(subject: Bindings[], propertyShape: Bindings[]): any {
+export async function validateProperty(subject: Bindings[], propertyShape: Bindings[]) {
   const result: any = {};
   propertyShape.forEach((p) => {
     switch (p.get('p')!.value) {
@@ -82,7 +82,7 @@ function validateProperty(subject: Bindings[], propertyShape: Bindings[]): any {
   returns:
   - contains a report of all missing requirements for a publication
 */
-export function validatePublication(publication: Bindings[], blueprint: Bindings[]) {
+export async function validatePublication(publication: Bindings[], blueprint: Bindings[]) {
   // get the URI of all unique subjects and place them in an array
   const subjectKeys: string[] = [...new Set(publication.map((p) => p.get('s')!.value))];
 
@@ -126,15 +126,15 @@ export function validatePublication(publication: Bindings[], blueprint: Bindings
   return result;
 }
 
-export function checkMaturity(result: any[], properties: void | Bindings[]) {
+export async function checkMaturity(result: any[], properties: void | Bindings[]) {
   let valid: boolean = true;
   (properties as Bindings[]).forEach((property) => {
     return result.forEach((subject) => {
       const found = subject.validatedProperties.find((p) => p.path === property.get('path')!.value);
       if (found && !found.valid) {
-        valid = false
+        valid = false;
       }
     });
   });
-  return valid
+  return valid;
 }
