@@ -1,9 +1,14 @@
 {
   "name": "validation-monitoring-module",
-  "version": "1.1.2",
-  "description": "",
+  "version": "1.0.0",
+  "description": "This module is used to validate publications in the context of the Flemish government.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "license": "MIT",
+  "author": "Senne Bels <sennebels@gmail.com> (https://sennebels.xyz)",
+  "contributors": [
+    "Lenny Bontenakel"
+  ],
   "files": [
     "/dist"
   ],
@@ -17,8 +22,6 @@
   "include": [
     "src/**/*"
   ],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@comunica/types": "^2.10.0",
     "@types/jest": "^29.5.11",
