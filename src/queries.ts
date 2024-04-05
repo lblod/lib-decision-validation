@@ -30,6 +30,7 @@ export async function getPublicationFromFileContent(content: string): Promise<Bi
   return bindingsStream.toArray();
 }
 
+
 export async function fetchDocument(publicationLink: string, proxy: string = default_proxy): Promise<Bindings[]> {
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
@@ -68,7 +69,7 @@ export async function getBlueprintOfDocumentType(documentType: string): Promise<
   return bindingsStream.toArray();
 }
 
-export function getBlueprintOfApplicationProfile() {
+export function getBlueprintOfApplicationProfile(): Promise<Bindings[]> {
   const AP = 'https://raw.githubusercontent.com/lblod/notulen-prepublish-service/master/test/shapes/basic-agenda.ttl';
   return new Promise((resolve, reject) => {
     try {
@@ -114,9 +115,9 @@ export function getBlueprintOfApplicationProfile() {
   });
 }
 
-export async function getMaturityProperties(maturityLevel: string) {
+export async function getMaturityProperties(maturityLevel: string): Promise<Bindings[]> {
   const source: string =
-    'https://raw.githubusercontent.com/snenenenenenene/validation-monitoring-module/master/files/notulen.ttl';
+    'https://raw.githubusercontent.com/lblod/validation-monitoring-module/master/files/notulen.ttl';
 
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `

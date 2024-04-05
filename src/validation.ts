@@ -1,5 +1,6 @@
 import { Bindings } from '@comunica/types';
 import * as fs from 'fs';
+import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty } from './types'
 
 /* function to validate a publication 
   param:
@@ -30,9 +31,16 @@ export function determineDocumentType(bindings: Bindings[]): string {
   return 'unknown document type';
 }
 
-export function parsePublication(publication: Bindings[]) {
+
+/* function to parse a publication 
+  param:
+  - publication: object to be parsed as Comunica bindings 
+  returns:
+  - the publication as a JSON object structured like a tree
+*/
+export function parsePublication(publication: Bindings[]): ParsedSubject[] {
   const subjectKeys: string[] = [...new Set(publication.map((p) => p.get('s')!.value))];
-  const result: any[] = [];
+  const result: ParsedSubject[] = [];
   const seenSubjects = []
   subjectKeys.forEach((subjectKey) => {
     const subject: Bindings[] = publication.filter((p) => p.get('s')!.value === subjectKey);
@@ -41,11 +49,17 @@ export function parsePublication(publication: Bindings[]) {
       result.push(parsedSubject)
     }
   })
-  fs.writeFileSync("parsed.json", JSON.stringify(result))
   return result
 }
 
-function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects: any[]) {
+
+/* function to parse a subject
+  param:
+  - publication: subject to be parsed
+  returns:
+  - a parsed subject
+*/
+function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects: any[]): ParsedSubject {
   const subjectURL: string = subject[0].get('s')!.value
   if(seenSubjects.find(s => s === subjectURL) == undefined) {
     seenSubjects.push(subjectURL)
@@ -58,8 +72,8 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
         const termType: string = b.get('o')!.termType;
         if(termType === "Literal") {
           properties.push({
-            predicate: b.get('p')!.value,
-            object: b.get('o')!.value
+            path: b.get('p')!.value,
+            value: b.get('o')!.value
           });
         }
         if(termType === "NamedNode") {
@@ -73,14 +87,14 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
             const parsedSubject = parseSubject(foundRelation, publication, seenSubjects);
             if(parsedSubject != undefined) {
               properties.push({
-                predicate: b.get('p')!.value,
-                object: parsedSubject
+                path: b.get('p')!.value,
+                value: parsedSubject
               })
             }
           } else {
             properties.push({
-              predicate: b.get('p')!.value,
-              object: b.get('o')!.value,
+              path: b.get('p')!.value,
+              value: b.get('o')!.value,
             });
           }
         }
@@ -95,67 +109,52 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
 }
 
 
-/* function to validate the properties of a subject
+/* function to validate a publication 
   param:
-  - subject: object to be validated
+  - publication: object to be validated
   returns:
-  - one of the following values: [besluitenlijst, notulen, agenda]
+  - contains a report of all missing requirements for a publication
 */
-function validateProperty(subject, propertyShape: Bindings[], blueprint): any {
-  const result: any = {};
-  propertyShape.forEach((p) => {
-    switch (p.get('p')!.value) {
-      case 'http://www.w3.org/ns/shacl#name': {
-        result.name = p.get('o')!.value;
-        break;
-      }
-      case 'http://www.w3.org/ns/shacl#class': {
-        result.targetClass = p.get('o')!.value;
-        break;
-      }
-      case 'http://www.w3.org/ns/shacl#description': {
-        result.description = p.get('o')!.value;
-        break;
-      }
-      case 'http://www.w3.org/ns/shacl#path': {
-        result.path = p.get('o')!.value;
-        break;
-      }
-      case 'http://www.w3.org/ns/shacl#minCount': {
-        result.minCount = p.get('o')!.value;
-        break;
-      }
-      case 'http://www.w3.org/ns/shacl#maxCount': {
-        result.maxCount = p.get('o')!.value;
-        break;
-      }
-      default: {
-        // console.log(`default ${p.get('p')!.value}`);
-      }
-    }
+export function validatePublication(publication: Bindings[], blueprint: Bindings[]): ValidatedSubject[] {
+  const parsedPublication = parsePublication(publication)
+  const result: any[] = [];
+
+  parsedPublication.forEach((subject) => {
+    const resultSubject = validateSubject(subject, blueprint)
+    result.push(resultSubject);
+    
   });
-
-  result.actualValue = subject.properties
-    .filter((p) => p.predicate === result.path)
-    .map((s) => {
-      if(s.object.type != undefined) {
-        return validateSubject(s.object, blueprint);
-      } 
-      return {
-        path: s.url,
-        actualValue: s.object
-      }
-    });
-  result.actualCount = result.actualValue.length;
-  result.valid =
-    (result.minCount === undefined || result.actualCount >= result.minCount) &&
-    (result.maxCount === undefined || result.actualCount <= result.maxCount);
-
   return result;
 }
 
-function validateSubject(subject, blueprint: Bindings[]) {
-  console.log(`subject ${JSON.stringify(subject)}`)
+
+/* function to validate a publication 
+  param:
+  - publication: object to be validated
+  returns:
+  - contains a report of all missing requirements for a publication
+*/
+export function checkMaturity(result: any[], properties: void | Bindings[]) {
+  let valid: boolean = true;
+  (properties as Bindings[]).forEach((property) => {
+    return result.forEach((subject) => {
+      const found = subject.properties.find((p) => p.path === property.get('path')!.value);
+      if (found && !found.valid) {
+        valid = false
+      }
+    });
+  });
+  return valid
+}
+
+
+/* function to validate the properties of a subject
+  param:
+  - subject: subject to be validated
+  returns:
+  - validated subject
+*/
+function validateSubject(subject, blueprint: Bindings[]): ValidatedSubject {
   const regex: RegExp = /[^#]+$/;
 
   const blueprintShapeKey: string | undefined = blueprint
@@ -194,37 +193,66 @@ function validateSubject(subject, blueprint: Bindings[]) {
     type: subject.type,
     typeName: regex.exec(subject.type!) ? regex.exec(subject.type!)![0] : 'Unknown type',
     properties: subject.properties,
+    totalCount: subject.properties.length
   };
 }
 
-/* function to validate a publication 
-  param:
-  - publication: object to be validated
-  returns:
-  - contains a report of all missing requirements for a publication
-*/
-export function validatePublication(publication: Bindings[], blueprint: Bindings[]) {
-  const parsedPublication = parsePublication(publication)
-  const result: any[] = [];
 
-  parsedPublication.forEach((subject) => {
-    const resultSubject = validateSubject(subject, blueprint)
-    result.push(resultSubject);
-    
+/* function to validate the properties of a subject
+  param:
+  - subject: array of properties to be validated
+  - propertyShape: the blueprint shape of the validated property
+  - blueprint: complete blueprint
+  returns:
+  - subject with validated properties
+*/
+function validateProperty(subject, propertyShape: Bindings[], blueprint): ValidatedProperty {
+  const result: any = {};
+  propertyShape.forEach((p) => {
+    switch (p.get('p')!.value) {
+      case 'http://www.w3.org/ns/shacl#name': {
+        result.name = p.get('o')!.value;
+        break;
+      }
+      case 'http://www.w3.org/ns/shacl#class': {
+        result.targetClass = p.get('o')!.value;
+        break;
+      }
+      case 'http://www.w3.org/ns/shacl#description': {
+        result.description = p.get('o')!.value;
+        break;
+      }
+      case 'http://www.w3.org/ns/shacl#path': {
+        result.path = p.get('o')!.value;
+        break;
+      }
+      case 'http://www.w3.org/ns/shacl#minCount': {
+        result.minCount = p.get('o')!.value;
+        break;
+      }
+      case 'http://www.w3.org/ns/shacl#maxCount': {
+        result.maxCount = p.get('o')!.value;
+        break;
+      }
+      default: {
+        // console.log(`default ${p.get('p')!.value}`);
+      }
+    }
   });
+
+  result.value = subject.properties
+    .filter((p) => p.path === result.path)
+    .map((s) => {
+      if(s.value.type != undefined) {
+        return validateSubject(s.value, blueprint);
+      } else return s.value
+    });
+
+  result.actualCount = result.value.length;
+  result.valid =
+    (result.minCount === undefined || result.actualCount >= result.minCount) &&
+    (result.maxCount === undefined || result.actualCount <= result.maxCount) &&
+    (result.value.type === undefined || result.value.type === result.targetClass);
+  
   return result;
 }
-
-export function checkMaturity(result: any[], properties: void | Bindings[]) {
-  let valid: boolean = true;
-  (properties as Bindings[]).forEach((property) => {
-    return result.forEach((subject) => {
-      const found = subject.validatedProperties.find((p) => p.path === property.get('path')!.value);
-      if (found && !found.valid) {
-        valid = false
-      }
-    });
-  });
-  return valid
-}
-

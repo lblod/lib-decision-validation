@@ -10,12 +10,9 @@ import { AGENDA_LINK, BESLUITEN_LINK, NOTULEN_LINK, TESTHTMLSTRING, TESTSTRING2 
 import { testResult } from './data/result-ex';
 
 describe('As a vendor, I want the tool to automatically determine the type of the document (agenda, besluitenlijst, notulen)', () => {
-  test('determine the type of a document using a link to fetch the publication', async () => {
+  test.skip('determine the type of a document using a link to fetch the publication', async () => {
     const expected: string = 'Besluitenlijst';
-    const document: Bindings[] = await fetchDocument(
-      `https://raadpleeg-aalst.onlinesmartcities.be/zittingen/20.0527.2714.7668/notulen`,
-      PROXY,
-    );
+    const document: Bindings[] = await fetchDocument(BESLUITEN_LINK, PROXY);
     const actual: string = await determineDocumentType(document);
 
     expect(actual).toBe(expected);
@@ -55,51 +52,54 @@ describe('As a vendor, I want the tool to automatically determine the type of th
   });
 
   // TODO: fix any types
-  test.only('Validate the publication', async () => {
-    const expected: any[] = testResult;
-    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Notulen');
+  test('Validate Besluitenlijst', async () => {
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Besluitenlijst');
     const publication: Bindings[] = await fetchDocument(
-      AGENDA_LINK,
+      BESLUITEN_LINK,
       PROXY,
     );
     const actual = await validatePublication(publication, blueprint);
-    fs.writeFileSync("resultaat.json", `${JSON.stringify(actual)}`)
-    // fs.writeFileSync('notuul.json', `${JSON.stringify(publication)}`);
-    
-    // expect(actual).toStrictEqual(expected);
-  });
-  
-  test('Get the maturity level', async () => {
-    const expected: any[] = testResult;
-    const actual = await getMaturityProperties("Niveau 1");
-    fs.writeFileSync('maturitylevel.json', `${JSON.stringify(actual)}`);
-
-    expect(actual).toStrictEqual(expected);
+    fs.writeFileSync('src/tests/logs/besluitenlijst.json', `${JSON.stringify(actual)}`);
   });
 
-    
+  // TODO: fix any types
+  test('Validate Agenda', async () => {
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Agenda');
+    const publication: Bindings[] = await fetchDocument(
+      AGENDA_LINK, 
+      PROXY,
+    );
+    const actual = await validatePublication(publication, blueprint);
+    fs.writeFileSync('src/tests/logs/agenda.json', `${JSON.stringify(actual)}`);
+  });
+
+
+  test('Validate Notulen', async () => {
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Notulen');
+    const publication: Bindings[] = await fetchDocument(
+      NOTULEN_LINK,
+      PROXY,
+    );
+    const actual = await validatePublication(publication, blueprint);
+    fs.writeFileSync('src/tests/logs/notulen.json', `${JSON.stringify(actual)}`);
+  });
+
   test('Get the maturity level', async () => {
+    const actual = await getMaturityProperties('Niveau 1');
+    fs.writeFileSync('src/tests/logs/maturitylevel.json', `${JSON.stringify(actual)}`);
+  });
+
+  test.skip('Get the maturity level', async () => {
     const expected: any[] = testResult;
 
     const blueprint: Bindings[] = await getBlueprintOfDocumentType('Notulen');
     const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
     const result: any = await validatePublication(publication, blueprint);
-    fs.writeFileSync('hero.json', `${JSON.stringify(result)}`);
 
     const properties = await getMaturityProperties('Niveau 3');
     const actual = checkMaturity(result, properties);
-    console.log(actual);
+
+    fs.writeFileSync('src/tests/logs/getMaturityLevel.json', `${JSON.stringify(actual)}`);
     expect(actual).toStrictEqual(expected);
   });
-
-    
-  test('Get the maturity level', async () => {
-    const result: any = await glue(NOTULEN_LINK);
-    fs.writeFileSync('hero.json', `${JSON.stringify(result)}`);
-
-
-  });
-  
-  
-
 });

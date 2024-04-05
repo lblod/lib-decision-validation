@@ -1,6 +1,6 @@
 {
   "name": "validation-monitoring-module",
-  "version": "1.0.22",
+  "version": "1.0.29",
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
