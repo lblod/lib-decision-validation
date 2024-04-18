@@ -1,14 +1,19 @@
 {
-  "name": "validation-monitoring-module-test",
-  "version": "1.0.2",
-  "description": "",
+  "name": "validation-monitoring-module",
+  "version": "1.0.0",
+  "description": "This module is used to validate publications in the context of the Flemish government.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "license": "MIT",
+  "author": "Senne Bels <sennebels@gmail.com> (https://sennebels.xyz)",
+  "contributors": [
+    "Lenny Bontenakel"
+  ],
   "files": [
     "/dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
     "test": "jest",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
@@ -18,8 +23,6 @@
   "include": [
     "src/**/*"
   ],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@comunica/types": "^2.10.0",
     "@types/jest": "^29.5.11",
@@ -35,7 +38,8 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@comunica/actor-http-proxy": "^2.10.2",
     "@comunica/query-sparql": "^2.10.2",
-    "@comunica/actor-http-proxy": "^2.10.2"
+    "tsup": "^8.0.2"
   }
 }

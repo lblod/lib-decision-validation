@@ -2,6 +2,8 @@ import { ProxyHandlerStatic } from '@comunica/actor-http-proxy';
 import { QueryEngine } from '@comunica/query-sparql';
 import { Bindings, BindingsStream } from '@comunica/types';
 
+export * from './queries';
+
 const engine = new QueryEngine();
 
 const NUMBER_OF_RETRY_COUNTS = 2;

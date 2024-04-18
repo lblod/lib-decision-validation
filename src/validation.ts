@@ -9,7 +9,7 @@ import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty
   returns:
   - one of the following valuesL: [besluitenlijst, notulen, agenda]
 */
-export function determineDocumentType(bindings: Bindings[]): string {
+export async function determineDocumentType(bindings: Bindings[]): Promise<string> {
   // Look for document type predicate if it is present
   for (const b of bindings) {
     if (
