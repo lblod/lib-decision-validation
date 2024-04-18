@@ -13,7 +13,7 @@
     "/dist"
   ],
   "scripts": {
-    "build": "tsup --dts",
+    "build": "tsup",
     "test": "jest",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json"
@@ -37,7 +37,8 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@comunica/actor-http-proxy": "^2.10.2",
     "@comunica/query-sparql": "^2.10.2",
-    "@comunica/actor-http-proxy": "^2.10.2"
+    "tsup": "^8.0.2"
   }
 }
