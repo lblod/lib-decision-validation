@@ -1,6 +1,6 @@
 {
-  "name": "validation-monitoring-module",
-  "version": "1.0.0",
+  "name": "validation-monitoring-module-test",
+  "version": "1.0.3",
   "description": "This module is used to validate publications in the context of the Flemish government.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -13,10 +13,11 @@
     "/dist"
   ],
   "scripts": {
-    "build": "tsup --dts",
+    "build": "tsup",
     "test": "jest",
     "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "tslint -p tsconfig.json"
+    "lint": "tslint -p tsconfig.json",
+    "prepublish": "tsc"
   },
   "keywords": [],
   "include": [
@@ -37,7 +38,8 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@comunica/actor-http-proxy": "^2.10.2",
     "@comunica/query-sparql": "^2.10.2",
-    "@comunica/actor-http-proxy": "^2.10.2"
+    "tsup": "^8.0.2"
   }
 }

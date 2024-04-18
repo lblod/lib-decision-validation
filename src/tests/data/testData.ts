@@ -1,6 +1,8 @@
 export const BESLUITEN_LINK: string =
   'https://lblod.knokke-heist.be/LBLODWeb/Home/Overzicht/131aaf1533d212103b7848956a4fa99961fcd7fa03efce4b030b665a1c73ccf8/GetPublication?filename=BesluitenLijst_Burgemeester_31-12-2023.html';
-export const AGENDA_LINK: string = 'https://raadpleeg-ham.onlinesmartcities.be/zittingen/23.1127.1873.5981/agenda';
+export const AGENDA_LINK: string =
+  'https://machelen-echo.cipalschaubroeck.be/raadpleegomgeving/zittingen/99315f2f-9aed-410a-9872-aeda8a6a9b11/agenda';
+export const AGENDA_LINK_2: string = 'https://boortmeerbeek.meetingburger.net/gr/87efd49b-d951-4f1f-b723-a732642f3dcd/agenda';
 export const NOTULEN_LINK: string = 'https://raadpleeg-aalst.onlinesmartcities.be/zittingen/20.0527.2714.7668/notulen';
 export const TESTSTRING2 = `
 <!DOCTYPE html>
