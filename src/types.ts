@@ -17,8 +17,8 @@ export type ValidatedSubject = {
   typeName: string;
   usedShape?: string;
   name?: string;
-  totalCount: number;
-  validCount?: number;
+  totalCount: string;
+  validCount?: string;
   properties: ValidatedProperty[];
 };
 
@@ -29,8 +29,8 @@ export type ValidatedProperty = {
   description: string;
   path: string;
   value: string[] | ValidatedSubject[];
-  minCount?: number
-  maxCount?: number;
-  actualCount: number;
+  minCount?: string
+  maxCount?: string;
+  actualCount: string;
   valid: boolean;
 };

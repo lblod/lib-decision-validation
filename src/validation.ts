@@ -267,11 +267,11 @@ function validateProperty(subject, propertyShape: Bindings[], blueprint): Valida
         break;
       }
       case 'http://www.w3.org/ns/shacl#minCount': {
-        result.minCount = p.get('o')!.value as unknown as number;
+        result.minCount = p.get('o')!.value as string;
         break;
       }
       case 'http://www.w3.org/ns/shacl#maxCount': {
-        result.maxCount = p.get('o')!.value as unknown as number;
+        result.maxCount = p.get('o')!.value as string;
         break;
       }
       default: {
@@ -290,10 +290,8 @@ function validateProperty(subject, propertyShape: Bindings[], blueprint): Valida
 
   result.actualCount = result.value.length;
   result.valid =
-    (result.minCount === undefined || result.actualCount >= result.minCount) &&
-    (result.maxCount === undefined || result.actualCount <= result.maxCount) &&
-    (typeof result.value !== "string" || (result.value as unknown as ValidatedSubject).type === result.targetClass);
-
+    (result.minCount === undefined || (result.actualCount as number) >= (result.minCount as number)) &&
+    (result.maxCount === undefined || (result.actualCount as number) <= (result.maxCount as number))
   return result;
 }
 
