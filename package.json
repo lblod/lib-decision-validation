@@ -1,6 +1,6 @@
 {
   "name": "validation-monitoring-module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This module is used to validate publications in the context of the Flemish government.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

@@ -9,7 +9,7 @@ import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty
   returns:
   - one of the following valuesL: [besluitenlijst, notulen, agenda]
 */
-export async function determineDocumentType(bindings: Bindings[]): Promise<string> {
+export function determineDocumentType(bindings: Bindings[]): string {
   // Look for document type predicate if it is present
   for (const b of bindings) {
     if (
@@ -149,13 +149,11 @@ function aggregateDocument(publication: Bindings[], seenSubjects): ParsedSubject
         });
     }
   });
-
-  const aggregatedDocument = {
+  return {
     url: foundUrl[0],
     type: foundType[0],
     properties: properties,
   };
-  return aggregatedDocument;
 }
 
 
