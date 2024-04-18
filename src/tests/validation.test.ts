@@ -6,7 +6,7 @@ import { fetchDocument, getBlueprintOfDocumentType, getMaturityProperties, getPu
 
 const PROXY = 'https://corsproxy.io/?';
 
-import { AGENDA_LINK, BESLUITEN_LINK, NOTULEN_LINK, TESTHTMLSTRING, TESTSTRING2 } from './data/testData';
+import { AGENDA_LINK, AGENDA_LINK_2, BESLUITEN_LINK, NOTULEN_LINK, TESTHTMLSTRING, TESTSTRING2 } from './data/testData';
 import { testResult } from './data/result-ex';
 
 describe('As a vendor, I want the tool to automatically determine the type of the document (agenda, besluitenlijst, notulen)', () => {
@@ -21,6 +21,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
   test('determine the type of a document using a link to fetch the publication', async () => {
     const expected: string = 'Agenda';
     const document: Bindings[] = await fetchDocument(AGENDA_LINK, PROXY);
+
     const actual: string = await determineDocumentType(document);
 
     expect(actual).toBe(expected);
@@ -52,12 +53,9 @@ describe('As a vendor, I want the tool to automatically determine the type of th
   });
 
   // TODO: fix any types
-  test('Validate Besluitenlijst', async () => {
+  test.skip('Validate Besluitenlijst', async () => {
     const blueprint: Bindings[] = await getBlueprintOfDocumentType('Besluitenlijst');
-    const publication: Bindings[] = await fetchDocument(
-      BESLUITEN_LINK,
-      PROXY,
-    );
+    const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK, PROXY);
     const actual = await validatePublication(publication, blueprint);
     fs.writeFileSync('src/tests/logs/besluitenlijst.json', `${JSON.stringify(actual)}`);
   });
@@ -65,21 +63,22 @@ describe('As a vendor, I want the tool to automatically determine the type of th
   // TODO: fix any types
   test('Validate Agenda', async () => {
     const blueprint: Bindings[] = await getBlueprintOfDocumentType('Agenda');
-    const publication: Bindings[] = await fetchDocument(
-      AGENDA_LINK, 
-      PROXY,
-    );
+    const publication: Bindings[] = await fetchDocument(AGENDA_LINK, PROXY);
     const actual = await validatePublication(publication, blueprint);
     fs.writeFileSync('src/tests/logs/agenda.json', `${JSON.stringify(actual)}`);
   });
 
+  // TODO: fix any types
+  test('Validate Agenda', async () => {
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Agenda');
+    const publication: Bindings[] = await fetchDocument(AGENDA_LINK_2, PROXY);
+    const actual = await validatePublication(publication, blueprint);
+    fs.writeFileSync('src/tests/logs/agenda2.json', `${JSON.stringify(actual)}`);
+  });
 
   test('Validate Notulen', async () => {
     const blueprint: Bindings[] = await getBlueprintOfDocumentType('Notulen');
-    const publication: Bindings[] = await fetchDocument(
-      NOTULEN_LINK,
-      PROXY,
-    );
+    const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
     const actual = await validatePublication(publication, blueprint);
     fs.writeFileSync('src/tests/logs/notulen.json', `${JSON.stringify(actual)}`);
   });

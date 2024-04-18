@@ -48,7 +48,7 @@ export async function fetchDocument(publicationLink: string, proxy: string = def
 }
 
 export async function getBlueprintOfDocumentType(documentType: string): Promise<Bindings[]> {
-  const blueprintLink: any = {
+  const blueprintLink = {
     Notulen: 'https://raw.githubusercontent.com/lblod/notulen-prepublish-service/master/test/shapes/meeting.ttl',
     BesluitenLijst:
       'https://raw.githubusercontent.com/lblod/notulen-prepublish-service/master/test/shapes/decision-list.ttl',
