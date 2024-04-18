@@ -226,9 +226,15 @@ function validateSubject(subject, blueprint: Bindings[]): ValidatedSubject {
   };
 }
 
+
+/* function to format the uris into names
+  param:
+  - uri to be formatted
+  returns:
+  - the last term in the uri as a more legible name
+  eg: 'http://xmlns.com/foaf/0.1/Document' would be formatted into 'Document'
+*/
 function formatURI(uri: string): string {
-  const regex1: RegExp = /[^#]+$/;
-  const regex2: RegExp = /[^\/]+$/;
   const result1: string = /[^#]+$/.exec(uri)[0]  
   const result2: string = /[^\/]+$/.exec(uri)[0];
   return result1.length < result2.length ? result1 : result2
@@ -275,7 +281,6 @@ function validateProperty(subject, propertyShape: Bindings[], blueprint): Valida
       }
     }
   });
-
   
   result.value = subject.properties
     .filter((p) => p.path === result.path)
