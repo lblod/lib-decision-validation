@@ -51,10 +51,10 @@ export async function fetchDocument(publicationLink: string, proxy: string = def
 
 export async function getBlueprintOfDocumentType(documentType: string): Promise<Bindings[]> {
   const blueprintLink = {
-    Notulen: 'https://raw.githubusercontent.com/lblod/notulen-prepublish-service/master/test/shapes/meeting.ttl',
+    Notulen: 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/notulen.ttl',
     BesluitenLijst:
-      'https://raw.githubusercontent.com/lblod/notulen-prepublish-service/master/test/shapes/decision-list.ttl',
-    Agenda: 'https://raw.githubusercontent.com/lblod/notulen-prepublish-service/master/test/shapes/basic-agenda.ttl',
+      'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/decision-list.ttl',
+    Agenda: 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/basic-agenda.ttl',
   };
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
@@ -67,7 +67,7 @@ export async function getBlueprintOfDocumentType(documentType: string): Promise<
       sources: [blueprintLink[documentType]],
     },
   );
-
+  console.log("yalla")
   return bindingsStream.toArray();
 }
 

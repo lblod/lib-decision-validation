@@ -164,6 +164,7 @@ function aggregateDocument(publication: Bindings[], seenSubjects): ParsedSubject
   - contains a report of all missing requirements for a publication
 */
 export function validatePublication(publication: Bindings[], blueprint: Bindings[]): ValidatedSubject[] {
+
   const parsedPublication = parsePublication(publication);
   const result: any[] = [];
 
@@ -182,7 +183,6 @@ export function validatePublication(publication: Bindings[], blueprint: Bindings
   - validated subject
 */
 function validateSubject(subject, blueprint: Bindings[]): ValidatedSubject {
-  const regex: RegExp = /[^#]+$/;
 
   const blueprintShapeKey: string | undefined = blueprint
     .find((b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' && b.get('o')!.value === subject.type)
@@ -238,6 +238,7 @@ function formatURI(uri: string): string {
   return result1.length < result2.length ? result1 : result2
 }
 
+
 /* function to validate the properties of a subject
   param:
   - subject: array of properties to be validated
@@ -275,7 +276,7 @@ function validateProperty(subject, propertyShape: Bindings[], blueprint): Valida
         break;
       }
       default: {
-        // console.log(`default ${p.get('p')!.value}`);
+
       }
     }
   });
