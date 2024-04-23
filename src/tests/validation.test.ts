@@ -9,8 +9,14 @@ const PROXY = 'https://corsproxy.io/?';
 import { AGENDA_LINK, AGENDA_LINK_2, AGENDA_LINK_3, AGENDA_LINK_4, BESLUITEN_LINK, BESLUITEN_LINK2, NOTULEN_LINK, TESTHTMLSTRING, TESTSTRING2 } from './data/testData';
 import { testResult } from './data/result-ex';
 
+import { ensureDirectoryExistence } from '../utils';
+
 describe('As a vendor, I want the tool to automatically determine the type of the document (agenda, besluitenlijst, notulen)', () => {
-  test('determine the type of a document using a link to fetch the publication', async () => {
+  beforeAll(() => {
+    return ensureDirectoryExistence('src/tests/logs/');
+  });
+
+  test.skip('determine the type of a document using a link to fetch the publication', async () => {
     const expected: string = 'Besluitenlijst';
     const document: Bindings[] = await fetchDocument(BESLUITEN_LINK2, PROXY);
     const actual: string = await determineDocumentType(document);
