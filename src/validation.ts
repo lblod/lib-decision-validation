@@ -1,6 +1,6 @@
 import { Bindings } from '@comunica/types';
 import * as fs from 'fs';
-import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty, typeCollection } from './types';
+import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty, ClassCollection } from './types';
 
 
 /* function to validate a publication 
@@ -63,10 +63,10 @@ export function parsePublication(publication: Bindings[]): ParsedSubject[] {
   - a parsed subject
 */
 function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects: string[]): ParsedSubject {
-  const subjectURL: string = subject[0].get('s')!.value;
-  if (seenSubjects.find((s) => s === subjectURL) == undefined) {
-    seenSubjects.push(subjectURL);
-    const subjectType: string = subject
+  const subjectURI: string = subject[0].get('s')!.value;
+  if (seenSubjects.find((s) => s === subjectURI) == undefined) {
+    seenSubjects.push(subjectURI);
+    const subjectClass: string = subject
       .find((s) => s.get('p')!.value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
       ?.get('o')!.value;
     const properties: ParsedProperty[] = [];
@@ -103,8 +103,8 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
       }
     });
     return {
-      url: subjectURL,
-      type: subjectType,
+      uri: subjectURI,
+      class: subjectClass,
       properties: properties,
     };
   }
@@ -117,7 +117,7 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
   returns:
   - contains a report of all missing requirements for a publication
 */
-export function validatePublication(publication: Bindings[], blueprint: Bindings[]): typeCollection[] {
+export function validatePublication(publication: Bindings[], blueprint: Bindings[]): ClassCollection[] {
   const parsedPublication = parsePublication(publication);
   const result: any[] = [];
 
@@ -139,7 +139,7 @@ export function validatePublication(publication: Bindings[], blueprint: Bindings
 function validateSubject(subject, blueprint: Bindings[]): ValidatedSubject {
 
   const blueprintShapeKey: string | undefined = blueprint
-    .find((b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' && b.get('o')!.value === subject.type)
+    .find((b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' && b.get('o')!.value === subject.class)
     ?.get('s')!.value;
 
   if (blueprintShapeKey != undefined) {
@@ -158,11 +158,11 @@ function validateSubject(subject, blueprint: Bindings[]): ValidatedSubject {
     });
 
     return {
-      url: subject.url,
-      type: subject.type,
-      typeName: subject.type ? formatURI(subject.type!) : 'Unknown type',
+      uri: subject.uri,
+      class: subject.class,
+      className: subject.class ? formatURI(subject.class!) : 'Unknown class',
       usedShape: blueprintShapeKey,
-      name: blueprintShapeKey ? formatURI(blueprintShapeKey!) : 'Unknown shape',
+      shapeName: blueprintShapeKey ? formatURI(blueprintShapeKey!) : 'Unknown shape',
       totalCount: propertyKeys.length,
       validCount: validCount,
       properties: validatedProperties,
@@ -170,9 +170,9 @@ function validateSubject(subject, blueprint: Bindings[]): ValidatedSubject {
   }
 
   return {
-    url: subject.url,
-    type: subject.type,
-    typeName: subject.type ? formatURI(subject.type!) : 'Unknown type',
+    uri: subject.uri,
+    class: subject.class,
+    className: subject.class ? formatURI(subject.class!) : 'Unknown class',
     properties: subject.properties,
     totalCount: subject.properties.length,
   };
@@ -188,52 +188,56 @@ function validateSubject(subject, blueprint: Bindings[]): ValidatedSubject {
   - subject with validated properties
 */
 function validateProperty(subject, propertyShape: Bindings[], blueprint): ValidatedProperty {
-  let result: any = {};
+  let validatedProperty: any = {};
   propertyShape.forEach((p) => {
     switch (p.get('p')!.value) {
       case 'http://www.w3.org/ns/shacl#name': {
-        result.name = p.get('o')!.value;
+        validatedProperty.name = p.get('o')!.value;
         break;
       }
       case 'http://www.w3.org/ns/shacl#class': {
-        result.targetClass = p.get('o')!.value;
+        validatedProperty.targetClass = p.get('o')!.value;
         break;
       }
       case 'http://www.w3.org/ns/shacl#description': {
-        result.description = p.get('o')!.value;
+        validatedProperty.description = p.get('o')!.value;
         break;
       }
       case 'http://www.w3.org/ns/shacl#path': {
-        result.path = p.get('o')!.value;
+        validatedProperty.path = p.get('o')!.value;
         break;
       }
       case 'http://www.w3.org/ns/shacl#minCount': {
-        result.minCount = parseInt(p.get('o')!.value);
+        validatedProperty.minCount = parseInt(p.get('o')!.value);
         break;
       }
       case 'http://www.w3.org/ns/shacl#maxCount': {
-        result.maxCount = parseInt(p.get('o')!.value);
+        validatedProperty.maxCount = parseInt(p.get('o')!.value);
         break;
       }
       default: {
-
       }
     }
   });
-  
-  result.value = subject.properties
-    .filter((p) => p.path === result.path)
-    .map((s) => {
-      if (s.value.type != undefined) {
-        return validateSubject(s.value, blueprint);
-      } else return s.value;
-    });
 
-  result.actualCount = result.value.length;
-  result.valid =
-    (result.minCount === undefined || result.actualCount >= result.minCount) &&
-    (result.maxCount === undefined || result.actualCount <= result.maxCount)
-  return result;
+  if(validatedProperty.path === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
+    validatedProperty.value = [ subject.class ]
+  } else {
+    validatedProperty.value = subject.properties
+      .filter((p) => p.path === validatedProperty.path)
+      .map((s) => {
+        if (s.value.class != undefined) {
+          return validateSubject(s.value, blueprint);
+        } else return s.value;
+      });
+  }
+
+  validatedProperty.actualCount = validatedProperty.value.length;
+  validatedProperty.valid =
+    (validatedProperty.minCount === undefined || validatedProperty.actualCount >= validatedProperty.minCount) &&
+    (validatedProperty.maxCount === undefined || validatedProperty.actualCount <= validatedProperty.maxCount) &&
+    (validatedProperty.targetClass === undefined || validatedProperty.value.class === undefined || validatedProperty.targetClass === validatedProperty.value.class)
+  return validatedProperty;
 }
 
 
@@ -300,14 +304,17 @@ function preProcess(publication: Bindings[], subjectKeys: string[], seenSubjects
   returns:
   - an aggregated document
 */
-function postProcess(validatedSubjects: ValidatedSubject[]): typeCollection[] {
-  const result: typeCollection[] = []
+function postProcess(validatedSubjects: ValidatedSubject[]): ClassCollection[] {
+  const result: ClassCollection[] = []
   // Combine all Root objects with the same type into one
-  const distinctTypes: string[] = [...new Set(validatedSubjects.map((p) => p.type))]
-  distinctTypes.forEach(t => {
+  const distinctClasses: string[] = [...new Set(validatedSubjects.map((p) => p.class))]
+  distinctClasses.forEach(c => {
+    const objects: ValidatedSubject[] = validatedSubjects.filter(s => s.class === c)
     result.push({
-      typeName: t,
-      objects: validatedSubjects.filter(s => s.type === t)})
+      className: c,
+      count: objects.length, 
+      objects: objects
+    })
   })
   return result
 }

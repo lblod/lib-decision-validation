@@ -1,11 +1,12 @@
-export type typeCollection = {
-  typeName: string, 
+export type ClassCollection = {
+  className: string, 
+  count: number,
   objects: ValidatedSubject[]
 }
 
 export type ParsedSubject = {
-  url: string;
-  type: string;
+  uri: string;
+  class: string;
   properties: ParsedProperty[];
 };
 
@@ -17,11 +18,11 @@ export type ParsedProperty = {
 
 
 export type ValidatedSubject = {
-  url: string;
-  type: string;
-  typeName: string;
+  uri: string;
+  class: string;
+  className: string;
   usedShape?: string;
-  name?: string;
+  shapeName?: string;
   totalCount: number;
   validCount?: number;
   properties: ValidatedProperty[];
