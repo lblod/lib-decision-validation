@@ -19,7 +19,7 @@ export async function getPublicationFromFileContent(content: string): Promise<Bi
     {
       sources: [
         {
-          type: 'stringSource',
+          type: 'serialized',
           value: content,
           mediaType: 'text/html',
           baseIRI: 'http://example.org/',
