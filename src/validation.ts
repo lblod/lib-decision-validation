@@ -1,6 +1,6 @@
 import { Bindings } from '@comunica/types';
 import * as fs from 'fs';
-import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty } from './types';
+import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty, typeCollection } from './types';
 
 
 /* function to validate a publication 
@@ -32,6 +32,7 @@ export function determineDocumentType(bindings: Bindings[]): string {
   return 'unknown document type';
 }
 
+
 /* function to parse a publication 
   param:
   - publication: object to be parsed as Comunica bindings 
@@ -41,8 +42,8 @@ export function determineDocumentType(bindings: Bindings[]): string {
 export function parsePublication(publication: Bindings[]): ParsedSubject[] {
   const subjectKeys: string[] = [...new Set(publication.map((p) => p.get('s')!.value))];
   const result: ParsedSubject[] = [];
-  const seenSubjects = [];
-  result.push(aggregateDocument(publication, seenSubjects));
+  const seenSubjects: string[] = [];
+  preProcess(publication, subjectKeys, seenSubjects);
 
   subjectKeys.forEach((subjectKey) => {
     const subject: Bindings[] = publication.filter((p) => p.get('s')!.value === subjectKey);
@@ -65,7 +66,7 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
   const subjectURL: string = subject[0].get('s')!.value;
   if (seenSubjects.find((s) => s === subjectURL) == undefined) {
     seenSubjects.push(subjectURL);
-    const subjectType: string | undefined = subject
+    const subjectType: string = subject
       .find((s) => s.get('p')!.value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
       ?.get('o')!.value;
     const properties: ParsedProperty[] = [];
@@ -109,53 +110,6 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
   }
 }
 
-  
-/* function to aggregate a document
-  param:
-  - uris: uris of the aggregated document 
-  returns:
-  - an aggregated document
-*/
-function aggregateDocument(publication: Bindings[], seenSubjects): ParsedSubject {
-  const properties: ParsedProperty[] = [];
-  const foundUrl: string[] = [];
-  const foundType: string[] = [];
-
-  publication.forEach((b) => {
-    let foundDocument = false;
-    if (
-      (b.get(`p`)!.value === 'http://www.w3.org/ns/rdfa#usesVocabulary' &&
-        b.get(`o`)!.value === 'http://data.vlaanderen.be/ns/besluit#') ||
-      (b.get(`p`)!.value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
-        b.get(`o`)!.value === 'http://xmlns.com/foaf/0.1/Document')
-    ) {
-      foundDocument = true;
-    }
-
-    if (foundDocument) {
-      seenSubjects.push(b.get(`s`)!.value);
-      foundUrl.push(b.get('s')!.value);
-      publication
-        .filter((s) => s.get('s')!.value === b.get('s')!.value)
-        .forEach((i) => {
-          if (i.get('p')!.value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
-            foundType.push(i.get(`o`)!.value);
-          } else {
-            properties.push({
-              path: i.get('p')!.value,
-              value: i.get('o')!.value,
-            });          
-          }
-        });
-    }
-  });
-  return {
-    url: foundUrl[0],
-    type: foundType[0],
-    properties: properties,
-  };
-}
-
 
 /* function to validate a publication 
   param:
@@ -163,8 +117,7 @@ function aggregateDocument(publication: Bindings[], seenSubjects): ParsedSubject
   returns:
   - contains a report of all missing requirements for a publication
 */
-export function validatePublication(publication: Bindings[], blueprint: Bindings[]): ValidatedSubject[] {
-
+export function validatePublication(publication: Bindings[], blueprint: Bindings[]): typeCollection[] {
   const parsedPublication = parsePublication(publication);
   const result: any[] = [];
 
@@ -172,7 +125,8 @@ export function validatePublication(publication: Bindings[], blueprint: Bindings
     const resultSubject = validateSubject(subject, blueprint);
     result.push(resultSubject);
   });
-  return result;
+
+  return postProcess(result)
 }
 
 
@@ -222,20 +176,6 @@ function validateSubject(subject, blueprint: Bindings[]): ValidatedSubject {
     properties: subject.properties,
     totalCount: subject.properties.length,
   };
-}
-
-
-/* function to format the uris into names
-  param:
-  - uri to be formatted
-  returns:
-  - the last term in the uri as a more legible name
-  eg: 'http://xmlns.com/foaf/0.1/Document' would be formatted into 'Document'
-*/
-function formatURI(uri: string): string {
-  const result1: string = /[^#]+$/.exec(uri)[0]  
-  const result2: string = /[^\/]+$/.exec(uri)[0];
-  return result1.length < result2.length ? result1 : result2
 }
 
 
@@ -314,4 +254,60 @@ export function checkMaturity(result: any[], properties: void | Bindings[]) {
     });
   });
   return valid;
+}
+
+
+/* function to format the uris into names
+  param:
+  - uri to be formatted
+  returns:
+  - the last term in the uri as a more legible name
+  eg: 'http://xmlns.com/foaf/0.1/Document' would be formatted into 'Document'
+*/
+function formatURI(uri: string): string {
+  const result1: string = /[^#]+$/.exec(uri)[0]  
+  const result2: string = /[^\/]+$/.exec(uri)[0];
+  return result1.length < result2.length ? result1 : result2
+}
+
+  
+/* function to aggregate a document
+  param:
+  - uris: uris of the aggregated document 
+  returns:
+  - an aggregated document
+*/
+function preProcess(publication: Bindings[], subjectKeys: string[], seenSubjects: string[]): void {
+  // remove all subjects with an undefined type
+  //// get all subjects with types
+  const typedSubjectKeys: string[] = [
+    ...new Set(
+      publication
+        .filter((b) => b.get('p')!.value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
+        .map((p) => p.get('s')!.value),
+    ),
+  ]
+  //// xor them
+  subjectKeys.forEach(b => {
+    if(!typedSubjectKeys.includes(b)) seenSubjects.push(b)
+  })
+}
+
+  
+/* function to aggregate a document
+  param:
+  - uris: uris of the aggregated document 
+  returns:
+  - an aggregated document
+*/
+function postProcess(validatedSubjects: ValidatedSubject[]): typeCollection[] {
+  const result: typeCollection[] = []
+  // Combine all Root objects with the same type into one
+  const distinctTypes: string[] = [...new Set(validatedSubjects.map((p) => p.type))]
+  distinctTypes.forEach(t => {
+    result.push({
+      typeName: t,
+      objects: validatedSubjects.filter(s => s.type === t)})
+  })
+  return result
 }

@@ -1,3 +1,8 @@
+export type typeCollection = {
+  typeName: string, 
+  objects: ValidatedSubject[]
+}
+
 export type ParsedSubject = {
   url: string;
   type: string;
