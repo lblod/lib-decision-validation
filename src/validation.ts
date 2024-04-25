@@ -311,7 +311,8 @@ function postProcess(validatedSubjects: ValidatedSubject[]): ClassCollection[] {
   distinctClasses.forEach(c => {
     const objects: ValidatedSubject[] = validatedSubjects.filter(s => s.class === c)
     result.push({
-      className: c,
+      classURI: c,
+      className: formatURI(c),
       count: objects.length, 
       objects: objects
     })

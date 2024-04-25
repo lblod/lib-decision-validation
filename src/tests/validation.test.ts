@@ -61,7 +61,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
 
   test.only('Validate Agenda', async () => {
     const blueprint: Bindings[] = await getBlueprintOfDocumentType('Agenda');
-    const publication: Bindings[] = await fetchDocument(AGENDA_LINK, PROXY);
+    const publication: Bindings[] = await fetchDocument("https://raadpleeg-ham.onlinesmartcities.be/zittingen/23.1127.1873.5981/agenda", PROXY);
     const actual = await validatePublication(publication, blueprint);
     fs.writeFileSync('src/tests/logs/agenda.json', `${JSON.stringify(actual)}`);
   });

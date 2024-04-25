@@ -1,4 +1,5 @@
 export type ClassCollection = {
+  classURI: string,
   className: string, 
   count: number,
   objects: ValidatedSubject[]
