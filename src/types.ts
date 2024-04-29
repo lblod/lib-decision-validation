@@ -32,7 +32,7 @@ export type ValidatedSubject = {
 
 export type ValidatedProperty = {
   name: string;
-  targetClass: string;
+  targetClass?: string;
   description: string;
   path: string;
   value: string[] | ValidatedSubject[];

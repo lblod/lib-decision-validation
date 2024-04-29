@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 
 import { Bindings } from '@comunica/types';
-import { checkMaturity, determineDocumentType, validatePublication } from '../validation';
-import { fetchDocument, getBlueprintOfDocumentType, getMaturityProperties, getPublicationFromFileContent, glue } from '../queries';
+import { determineDocumentType, validatePublication } from '../validation';
+import { fetchDocument, getBlueprintOfDocumentType, getMaturityProperties, getPublicationFromFileContent } from '../queries';
 
 const PROXY = 'https://corsproxy.io/?';
 
@@ -85,17 +85,5 @@ describe('As a vendor, I want the tool to automatically determine the type of th
     fs.writeFileSync('src/tests/logs/maturitylevel.json', `${JSON.stringify(actual)}`);
   });
 
-  test.skip('Get the maturity level', async () => {
-    const expected: any[] = testResult;
 
-    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Notulen');
-    const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
-    const result: any = await validatePublication(publication, blueprint);
-
-    const properties = await getMaturityProperties('Niveau 3');
-    const actual = checkMaturity(result, properties);
-
-    fs.writeFileSync('src/tests/logs/getMaturityLevel.json', `${JSON.stringify(actual)}`);
-    expect(actual).toStrictEqual(expected);
-  });
 });
