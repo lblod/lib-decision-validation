@@ -6,7 +6,7 @@ import { fetchDocument, getBlueprintOfDocumentType, getMaturityProperties, getPu
 
 const PROXY = 'https://corsproxy.io/?';
 
-import { AGENDA_LINK, AGENDA_LINK_2, BESLUITEN_LINK, NOTULEN_LINK, TESTHTMLSTRING, TESTSTRING2 } from './data/testData';
+import { AGENDA_LINK, AGENDA_LINK_2, BESLUITEN_LINK, BESLUITEN_LINK2, NOTULEN_LINK, TESTHTMLSTRING, TESTSTRING2 } from './data/testData';
 import { testResult } from './data/result-ex';
 
 describe('As a vendor, I want the tool to automatically determine the type of the document (agenda, besluitenlijst, notulen)', () => {
@@ -20,9 +20,10 @@ describe('As a vendor, I want the tool to automatically determine the type of th
 
   test('determine the type of a document using a link to fetch the publication', async () => {
     const expected: string = 'Agenda';
-    const document: Bindings[] = await fetchDocument(AGENDA_LINK, PROXY);
+    const document: Bindings[] = await fetchDocument("https://validation-monitoring-tool-git-fix-c-397055-senne-bels-projects.vercel.app/validation-results?documentType=Agenda&url=https%3A%2F%2Fpublicatie.gelinkt-notuleren.vlaanderen.be%2FEssen%2FGemeente%2Fzittingen%2Fa3c147f0-905f-11ee-ae1d-77c537c8924c%2Fagenda", PROXY);
 
     const actual: string = await determineDocumentType(document);
+    fs.writeFileSync('src/tests/logs/agenda.json', `${JSON.stringify(actual)}`);
 
     expect(actual).toBe(expected);
   });
@@ -54,21 +55,37 @@ describe('As a vendor, I want the tool to automatically determine the type of th
 
   test('Validate `Besluitenlijst', async () => {
     const blueprint: Bindings[] = await getBlueprintOfDocumentType('BesluitenLijst');    
-    const publication: Bindings[] = await fetchDocument("https://boutersem.meetingburger.net/gr/e58b6bf6-6e52-4ed5-b478-4866f39c96c3/agenda", PROXY);
+    const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK, PROXY);
     const actual = await validatePublication(publication, blueprint);
     fs.writeFileSync('src/tests/logs/besluitenlijst.json', `${JSON.stringify(actual)}`);
   });
 
-  test.only('Validate Agenda', async () => {
+  test.only('Validate `Besluitenlijst', async () => {
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType('BesluitenLijst');
+    const publication: Bindings[] = await fetchDocument(
+      BESLUITEN_LINK2,
+      PROXY,
+    );
+    const actual = await validatePublication(publication, blueprint);
+    fs.writeFileSync('src/tests/logs/besluitenlijst2.json', `${JSON.stringify(actual)}`);
+  });
+
+  test('Validate Agenda', async () => {
     const blueprint: Bindings[] = await getBlueprintOfDocumentType('Agenda');
-    const publication: Bindings[] = await fetchDocument("https://raadpleeg-ham.onlinesmartcities.be/zittingen/23.1127.1873.5981/agenda", PROXY);
+    const publication: Bindings[] = await fetchDocument(
+      'https://publicatie.gelinkt-notuleren.vlaanderen.be/Essen/Gemeente/zittingen/a3c147f0-905f-11ee-ae1d-77c537c8924c/agenda',
+      PROXY,
+    );
     const actual = await validatePublication(publication, blueprint);
     fs.writeFileSync('src/tests/logs/agenda.json', `${JSON.stringify(actual)}`);
   });
 
   test('Validate Agenda', async () => {
     const blueprint: Bindings[] = await getBlueprintOfDocumentType('Agenda');
-    const publication: Bindings[] = await fetchDocument(AGENDA_LINK_2, PROXY);
+    const publication: Bindings[] = await fetchDocument(
+      'https://anzegem-echo.cipalschaubroeck.be/raadpleegomgeving/zittingen/ddc7b84d-1314-48e0-a3a7-110c116d3e7e/agenda',
+      PROXY,
+    );
     const actual = await validatePublication(publication, blueprint);
     fs.writeFileSync('src/tests/logs/agenda2.json', `${JSON.stringify(actual)}`);
   });
