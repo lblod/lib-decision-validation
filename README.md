@@ -71,6 +71,7 @@ In order to properly validate an agenda item exists in a publication, we need to
     │   ├── index.ts
     │   ├── queries.ts
     │   ├── tests
+    │   ├── examples.ts
     │   └── validation.ts
     ├── tsconfig.json
     ├── tslint.json
@@ -110,7 +111,7 @@ In order to properly validate an agenda item exists in a publication, we need to
 
 > To use the module, import it into your project:
 > ```javascript
-> import { validatePublication, getBlueprintOfDocumentType, fetchDocument } from 'validation-monitoring-module/index';
+> import { validatePublication, getBlueprintOfDocumentType, fetchDocument, getExampleOfDocumentType, enrichValidationResultWithExamples } from 'validation-monitoring-module/index';
 > ```
 >
 > Then, call the `validatePublication` function with the publication data to validate:
@@ -119,6 +120,9 @@ In order to properly validate an agenda item exists in a publication, we need to
 > const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
 >
 > const validationResult = await validatePublication(publication, blueprint);
+>
+> const example: Document = await getExampleOfDocumentType('Notulen');
+> const validationResultWithExamples = await enrichValidationResultWithExamples(validationResult, blueprint, example);
 > ```
 >
 > The `validatePublication` function returns an array of subjects. Each subject is structured as follows:

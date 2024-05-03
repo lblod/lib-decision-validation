@@ -1,6 +1,7 @@
 import { ProxyHandlerStatic } from '@comunica/actor-http-proxy';
 import { QueryEngine } from '@comunica/query-sparql';
 import { Bindings, BindingsStream } from '@comunica/types';
+import { getDOMfromUrl } from './utils';
 
 export * from './queries';
 
@@ -50,9 +51,8 @@ export async function fetchDocument(publicationLink: string, proxy: string = def
 
 export async function getBlueprintOfDocumentType(documentType: string): Promise<Bindings[]> {
   const blueprintLink = {
-    Notulen: 'https://raw.githubusercontent.com/lblod/validation-monitoring-module/fix/tests/files/notulen.ttl',
-    Besluitenlijst:
-      'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/decision-list.ttl',
+    Notulen: 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/notulen.ttl',
+    BesluitenLijst: 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/decision-list.ttl',
     Agenda: 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/basic-agenda.ttl',
   };
   const bindingsStream: BindingsStream = await engine.queryBindings(
@@ -72,7 +72,7 @@ export async function getBlueprintOfDocumentType(documentType: string): Promise<
 // TODO: review and update
 export async function getMaturityProperties(maturityLevel: string): Promise<Bindings[]> {
   const source: string =
-    'https://raw.githubusercontent.com/lblod/validation-monitoring-module/master/files/notulen.ttl';
+  'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/notulen.ttl';
 
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
@@ -90,4 +90,21 @@ export async function getMaturityProperties(maturityLevel: string): Promise<Bind
   );
 
   return bindingsStream.toArray();
+}
+
+export function getExampleURLOfDocumentType(documentType: string): string {
+  const HOST = 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/examples/';
+
+  const exampleLink = {
+    Notulen: HOST + 'notulen.html',
+    Besluitenlijst: HOST + 'decision-list.html',
+    Agenda: HOST + 'basic-agenda.html'
+  };
+  
+  return exampleLink[documentType];
+}
+
+export async function getExampleOfDocumentType(documentType: string): Promise<Document> {
+  const exampleLink: string = getExampleURLOfDocumentType(documentType);
+  return await getDOMfromUrl(exampleLink);
 }

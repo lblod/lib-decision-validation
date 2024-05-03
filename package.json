@@ -41,6 +41,8 @@
   "dependencies": {
     "@comunica/actor-http-proxy": "^3.0.3",
     "@comunica/query-sparql": "^3.0.3",
+    "jsdom": "^24.0.0",
+    "n3": "^1.17.3",
     "tsup": "^8.0.2"
   }
 }
