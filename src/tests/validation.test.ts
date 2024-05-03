@@ -231,4 +231,21 @@ describe('As a vendor, I want to see a good example when something is not valid'
     }
     expect(containsExample).toBeTruthy();
   }, 50000);
+
+  test('demonstrate enriched validation result', async () => {
+    // Laatste college zitting Sint-Lievens-Houtem
+    const publicationLink = 'https://lblod.sint-lievens-houtem.be/LBLODWeb/Home/Overzicht/9522f42bdd7b46b3d5341b3cf196c9b6c981703022796b7af6e29746193bbf52/GetPublication?filename=BesluitenLijst_College_11-04-2024.html';
+    const proxy = '';
+
+    const publication: Bindings[] = await fetchDocument(publicationLink, proxy);
+    const documentType = determineDocumentType(publication);
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+    const validationResult = await validatePublication(publication, blueprint);
+
+    // NEW: get example and enrich results with specific examples
+    const example: Document = await getExampleOfDocumentType(documentType);
+    const enrichedResults = await enrichValidationResultWithExample(validationResult, blueprint, example);
+
+    fs.writeFileSync('src/tests/logs/enrichedResults-demonstrator.json', `${JSON.stringify(enrichedResults)}`);
+  }, 50000);
 });
