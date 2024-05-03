@@ -49,18 +49,21 @@ function getUsageNoteFromBindings(bindings: Bindings[], targetClass: string, pro
     return '';
 }
 
-export async function enrichValidationResultWithExample(results: ValidatedSubject[], blueprint: Bindings[], example: Document): Promise<ValidatedSubject[]> {
+export async function enrichValidationResultWithExample(results: ValidatedSubject[], blueprint: Bindings[], example: Document, usageNotes?: Bindings[]): Promise<ValidatedSubject[]> {
     let enrichedResults: ValidatedSubject[] = results;
-    const usageNotes = await getTargetClassPropertyPathAndUsageNotesFromBlueprint(blueprint);
+    if (!usageNotes) usageNotes = await getTargetClassPropertyPathAndUsageNotesFromBlueprint(blueprint);
+    
     for (let result of enrichedResults) {
         const targetClass = result.type;
         for (let p of result.properties) {
             const propertyPath = p.path;
             const usageNote = getUsageNoteFromBindings(usageNotes, targetClass, propertyPath);
-            console.log(usageNote);
             if (usageNote != '') {
                 const exampleElement: HTMLElement | null = example.getElementById(usageNote);
                 if (exampleElement != null) p.example = exampleElement.outerHTML;
+            }
+            if (p.value.length > 0 && typeof p.value[0] === "object") {
+                result = (await enrichValidationResultWithExample(<ValidatedSubject[]>p.value, blueprint, example, usageNotes))[0];
             }
         };
     };

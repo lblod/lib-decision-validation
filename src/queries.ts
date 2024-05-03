@@ -50,11 +50,13 @@ export async function fetchDocument(publicationLink: string, proxy: string = def
 }
 
 export async function getBlueprintOfDocumentType(documentType: string): Promise<Bindings[]> {
+  const HOST = 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/';
   const blueprintLink = {
-    Notulen: 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/notulen.ttl',
-    BesluitenLijst: 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/decision-list.ttl',
-    Agenda: 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/basic-agenda.ttl',
+    Notulen: HOST + 'notulen.ttl',
+    Besluitenlijst: HOST + 'decision-list.ttl',
+    Agenda: HOST + 'basic-agenda.ttl'
   };
+  
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
         SELECT ?s ?p ?o 
