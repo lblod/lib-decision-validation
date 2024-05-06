@@ -1,6 +1,6 @@
 {
   "name": "app-validation-tool",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "This module is used to validate publications in the context of the Flemish government.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -41,6 +41,7 @@
   "dependencies": {
     "@comunica/actor-http-proxy": "^3.0.3",
     "@comunica/query-sparql": "^3.0.3",
+    "domutils": "^3.1.0",
     "html-dom-parser": "^5.0.8",
     "jsdom": "^24.0.0",
     "n3": "^1.17.3",
