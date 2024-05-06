@@ -41,7 +41,11 @@ export function determineDocumentType(bindings: Bindings[]): string {
   - the publication as a JSON object structured like a tree
 */
 export function parsePublication(publication: Bindings[]): ParsedSubject[] {
-  const subjectKeys: string[] = [...new Set(publication.map((p) => p.get('s')!.value))];
+  // TODO: Approach with Set returns typescript compilation error
+  // const subjectKeys: string[] = [...new Set(publication.map((p) => p.get('s')!.value))];
+  const tmp = publication.map((p) => p.get('s')!.value);
+  const subjectKeys: string[] = tmp.filter((value, index, array) => array.indexOf(value) === index);
+
   const result: ParsedSubject[] = [];
   const seenSubjects: string[] = [];
   preProcess(publication, subjectKeys, seenSubjects);
