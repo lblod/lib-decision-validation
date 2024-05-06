@@ -6,23 +6,30 @@
   "typings": "dist/index.d.ts",
   "license": "MIT",
   "author": "Senne Bels <sennebels@gmail.com> (https://sennebels.xyz)",
-  "contributors": [
-    "Lenny Bontenakel"
-  ],
-  "files": [
-    "/dist"
-  ],
+  "contributors": ["Lenny Bontenakel"],
+  "files": ["/dist"],
   "scripts": {
     "build": "tsup",
     "test": "jest",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
-    "prepublish": "tsc"
+    "prepublish": "tsc",
+    "prepare": "rm -rf dist && babel src --out-dir dist",
+    "postversion": "git push && git push --tags"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": "> 0.25%, not dead"
+        }
+      ]
+    ],
+    "plugins": ["add-module-exports"]
   },
   "keywords": [],
-  "include": [
-    "src/**/*"
-  ],
+  "include": ["src/**/*"],
   "devDependencies": {
     "@comunica/types": "^2.10.0",
     "@types/jest": "^29.5.11",
@@ -38,6 +45,11 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/register": "^7.5.5",
+    "babel-plugin-add-module-exports": "^1.0.2",
     "@comunica/actor-http-proxy": "^2.10.2",
     "@comunica/query-sparql": "^2.10.2",
     "tsup": "^8.0.2"
