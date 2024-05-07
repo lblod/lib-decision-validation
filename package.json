@@ -1,6 +1,6 @@
 {
   "name": "app-validation-tool",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "This module is used to validate publications in the context of the Flemish government.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
