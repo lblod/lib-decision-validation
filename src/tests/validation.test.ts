@@ -8,15 +8,26 @@ import { enrichValidationResultWithExample } from '../examples';
 
 import { Store, Quad, Term } from "n3";
 
+import { getElementById, getElementsByTagName, getName } from 'domutils';
+
+import { DOMNode, Element } from 'html-dom-parser';
+
 //const PROXY = 'https://corsproxy.io/?';
 const PROXY = '';
 
 import { AGENDA_LINK, AGENDA_LINK_2, AGENDA_LINK_3, AGENDA_LINK_4, BESLUITEN_LINK, BESLUITEN_LINK2, NOTULEN_LINK, TESTHTMLSTRING, TESTSTRING2 } from './data/testData';
 import { testResult } from './data/result-ex';
 
-import { ensureDirectoryExistence, getDOMfromUrl, getStoreFromSPOBindings, runQueryOverStore } from '../utils';
+import { getDOMfromUrl, getStoreFromSPOBindings, runQueryOverStore } from '../utils';
 
-const SECONDS = 1000;
+const MILLISECONDS = 7000;
+
+function ensureDirectoryExistence(directoryPath: string) {
+  if (fs.existsSync(directoryPath)) {
+    return true;
+  }
+  fs.mkdirSync(directoryPath);
+}
 
 describe('As a vendor, I want the tool to automatically determine the type of the document (agenda, besluitenlijst, notulen)', () => {
   beforeAll(() => {
@@ -115,7 +126,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
     const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
     const actual = await validatePublication(publication, blueprint);
     fs.writeFileSync('src/tests/logs/notulen.json', `${JSON.stringify(actual)}`);
-  });
+  }, MILLISECONDS);
 
   test('Get the maturity level', async () => {
     const actual = await getMaturityProperties('Niveau 1');
@@ -141,15 +152,16 @@ describe('As a vendor, I want to see a good example when something is not valid'
     const exampleHtml = await getDOMfromUrl(exampleLink);
 
     const expected: string = 'html';
-    const actual: string = exampleHtml.doctype.name;
-    expect(actual).toBe(expected);
+    const actual: Element[] = getElementsByTagName(expected, exampleHtml, true, 1);
+    expect(actual.length).toBeGreaterThan(0);
   });
 
   test('retrieving first element by id of example is not null', async () => {
     const exampleLink: string = getExampleURLOfDocumentType('Notulen');
     const exampleHtml = await getDOMfromUrl(exampleLink);
 
-    const actual: HTMLElement | null = exampleHtml.getElementById('1');
+    const actual: Element | null = getElementById('1', exampleHtml);
+    //const actual: HTMLElement | null = exampleHtml.getElementById('1');
     expect(actual).not.toBeNull();
   });
 
@@ -218,7 +230,7 @@ describe('As a vendor, I want to see a good example when something is not valid'
     const publication: Bindings[] = await fetchDocument(AGENDA_LINK, PROXY);
     const documentType = determineDocumentType(publication);
     const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
-    const example: Document = await getExampleOfDocumentType('Notulen');
+    const example: DOMNode[] = await getExampleOfDocumentType('Notulen');
 
     const validationResult = await validatePublication(publication, blueprint);
     const enrichedResults = await enrichValidationResultWithExample(validationResult, blueprint, example);
@@ -230,7 +242,7 @@ describe('As a vendor, I want to see a good example when something is not valid'
       }
     }
     expect(containsExample).toBeTruthy();
-  }, 50000);
+  }, MILLISECONDS);
 
   test('demonstrate enriched validation result', async () => {
     // Laatste college zitting Sint-Lievens-Houtem
@@ -243,9 +255,10 @@ describe('As a vendor, I want to see a good example when something is not valid'
     const validationResult = await validatePublication(publication, blueprint);
 
     // NEW: get example and enrich results with specific examples
-    const example: Document = await getExampleOfDocumentType(documentType);
+    const example: DOMNode[] = await getExampleOfDocumentType(documentType);
     const enrichedResults = await enrichValidationResultWithExample(validationResult, blueprint, example);
 
+    expect(enrichedResults.length).toBeGreaterThan(0);
     fs.writeFileSync('src/tests/logs/enrichedResults-demonstrator.json', `${JSON.stringify(enrichedResults)}`);
-  }, 50000);
+  }, MILLISECONDS*2);
 });

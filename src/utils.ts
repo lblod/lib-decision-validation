@@ -1,9 +1,6 @@
 import { Bindings } from "@comunica/types";
-var path = require('path'),
-    fs = require('fs');
 import { Store, Quad, Term } from "n3";
-//import { JSDOM } from "jsdom";
-import { getHtmlParser } from "./getHtmlParser";
+import parse, { DOMNode } from 'html-dom-parser';
 
 import { QueryEngine } from '@comunica/query-sparql';
 const myEngine = new QueryEngine();
@@ -71,12 +68,10 @@ export function ensureDirectoryExistence(directoryPath: string) {
     fs.mkdirSync(directoryPath);
 }
 
-export async function getDOMfromUrl(url: string): Promise<Document> {
+export async function getDOMfromUrl(url: string): Promise<DOMNode[]> {
   const res: Response = await fetch(url);
   const resText: string = await res.text();
-  const parser = await getHtmlParser();
-  const document = parser.parseFromString(resText, 'text/html');
-  //const { document } = (new JSDOM(resText)).window;
+  const document = parse(resText);
   return document;
 }
 

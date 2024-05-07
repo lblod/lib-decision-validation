@@ -2,6 +2,7 @@ import { ProxyHandlerStatic } from '@comunica/actor-http-proxy';
 import { QueryEngine } from '@comunica/query-sparql';
 import { Bindings, BindingsStream } from '@comunica/types';
 import { getDOMfromUrl } from './utils';
+import { DOMNode } from 'html-dom-parser';
 
 export * from './queries';
 
@@ -106,7 +107,7 @@ export function getExampleURLOfDocumentType(documentType: string): string {
   return exampleLink[documentType];
 }
 
-export async function getExampleOfDocumentType(documentType: string): Promise<Document> {
+export async function getExampleOfDocumentType(documentType: string): Promise<DOMNode[]> {
   const exampleLink: string = getExampleURLOfDocumentType(documentType);
   return await getDOMfromUrl(exampleLink);
 }
