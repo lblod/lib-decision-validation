@@ -50,7 +50,7 @@ export async function fetchDocument(publicationLink: string, proxy: string = def
 
 export async function getBlueprintOfDocumentType(documentType: string): Promise<Bindings[]> {
   const blueprintLink = {
-    Notulen: 'https://raw.githubusercontent.com/lblod/validation-monitoring-module/fix/tests/files/notulen.ttl',
+    Notulen: 'https://raw.githubusercontent.com/lblod/app-validation-tool/enhance/process-unvalidated-properties/files/notulen.ttl',
     Besluitenlijst:
       'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/decision-list.ttl',
     Agenda: 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/basic-agenda.ttl',
