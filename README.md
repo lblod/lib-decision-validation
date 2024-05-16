@@ -113,7 +113,7 @@ In order to properly validate an agenda item exists in a publication, we need to
 
 > To use the module, import it into your project:
 > ```javascript
-> import { validatePublication, getBlueprintOfDocumentType, fetchDocument, getExampleOfDocumentType, enrichValidationResultWithExamples } from 'app-validation-tool/dist';
+> import { validatePublication, getBlueprintOfDocumentType, fetchDocument, getExampleOfDocumentType, enrichClassCollectionsWithExample } from 'app-validation-tool/dist';
 > ```
 >
 > Then, call the `validatePublication` function with the publication data to validate:
@@ -124,7 +124,7 @@ In order to properly validate an agenda item exists in a publication, we need to
 > const validationResult = await validatePublication(publication, blueprint);
 >
 > const example: Document = await getExampleOfDocumentType('Notulen');
-> const validationResultWithExamples = await enrichValidationResultWithExamples(validationResult, blueprint, example);
+> const validationResultWithExamples = await enrichClassCollectionsWithExample(validationResult, blueprint, example);
 > ```
 >
 > The `validatePublication` function returns an array of subjects. Each subject is structured as follows:
