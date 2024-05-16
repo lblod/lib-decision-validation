@@ -3,8 +3,8 @@ import * as fs from 'fs';
 import { Bindings } from '@comunica/types';
 
 import { determineDocumentType, validatePublication } from '../validation';
-import { fetchDocument, getBlueprintOfDocumentType, getExampleOfDocumentType, getMaturityProperties, getPublicationFromFileContent } from '../queries';
-import { enrichValidationResultWithExample } from '../examples';
+import { fetchDocument, getBlueprintOfDocumentType, getExampleOfDocumentType, getExampleURLOfDocumentType, getMaturityProperties, getPublicationFromFileContent } from '../queries';
+import { enrichClassCollectionsWithExample } from '../examples';
 
 import { Store, Quad, Term } from "n3";
 
@@ -73,6 +73,8 @@ describe('As a vendor, I want the tool to automatically determine the type of th
     const expected = `${fs.readFileSync('src/tests/data/blueprint-besluitenlijst.json')}`;
     const documentType: string = 'Besluitenlijst';
     const actual = `${await getBlueprintOfDocumentType(documentType)}`;
+    // Add following line to update the expected blueprint
+    // fs.writeFileSync('src/tests/data/blueprint-besluitenlijst.json', `${actual}`);
 
     expect(actual).toBe(expected);
   });
@@ -233,12 +235,14 @@ describe('As a vendor, I want to see a good example when something is not valid'
     const example: DOMNode[] = await getExampleOfDocumentType('Notulen');
 
     const validationResult = await validatePublication(publication, blueprint);
-    const enrichedResults = await enrichValidationResultWithExample(validationResult, blueprint, example);
+    const enrichedResults = await enrichClassCollectionsWithExample(validationResult, blueprint, example);
 
     let containsExample = false;
     for(let r of enrichedResults) {
-      for (let p of r.properties) {
-        if (p.example) containsExample = true;
+      for (let o of r.objects) {
+        for (let p of o.properties) {
+          if (p.example) containsExample = true;
+        }
       }
     }
     expect(containsExample).toBeTruthy();
@@ -256,7 +260,7 @@ describe('As a vendor, I want to see a good example when something is not valid'
 
     // NEW: get example and enrich results with specific examples
     const example: DOMNode[] = await getExampleOfDocumentType(documentType);
-    const enrichedResults = await enrichValidationResultWithExample(validationResult, blueprint, example);
+    const enrichedResults = await enrichClassCollectionsWithExample(validationResult, blueprint, example);
 
     expect(enrichedResults.length).toBeGreaterThan(0);
     fs.writeFileSync('src/tests/logs/enrichedResults-demonstrator.json', `${JSON.stringify(enrichedResults)}`);

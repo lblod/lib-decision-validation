@@ -1,4 +1,4 @@
-import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty } from './types';
+import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty, ClassCollection } from './types';
 import { getDOMfromUrl, getStoreFromSPOBindings, runQueryOverStore } from './utils';
 import { Store } from "n3";
 import { Bindings } from "@comunica/types";
@@ -52,12 +52,22 @@ function getUsageNoteFromBindings(bindings: Bindings[], targetClass: string, pro
     return '';
 }
 
-export async function enrichValidationResultWithExample(results: ValidatedSubject[], blueprint: Bindings[], example: DOMNode[], usageNotes?: Bindings[]): Promise<ValidatedSubject[]> {
+export async function enrichClassCollectionsWithExample(classCollections: ClassCollection[], blueprint: Bindings[], example: DOMNode[]): Promise<ClassCollection[]> {
+    let enrichedClassCollections: ClassCollection[] = classCollections;
+
+    for (let c of enrichedClassCollections) {
+        c.objects = await enrichValidationResultWithExample(c.objects, blueprint, example);
+    }
+
+    return enrichedClassCollections;
+}
+
+async function enrichValidationResultWithExample(results: ValidatedSubject[], blueprint: Bindings[], example: DOMNode[], usageNotes?: Bindings[]): Promise<ValidatedSubject[]> {
     let enrichedResults: ValidatedSubject[] = results;
     if (!usageNotes) usageNotes = await getTargetClassPropertyPathAndUsageNotesFromBlueprint(blueprint);
     
     for (let result of enrichedResults) {
-        const targetClass = result.type;
+        const targetClass = result.class;
         for (let p of result.properties) {
             const propertyPath = p.path;
             const usageNote = getUsageNoteFromBindings(usageNotes, targetClass, propertyPath);
@@ -73,5 +83,5 @@ export async function enrichValidationResultWithExample(results: ValidatedSubjec
         };
     };
 
-    return results;
+    return enrichedResults;
 }

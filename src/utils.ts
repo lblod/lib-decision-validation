@@ -1,6 +1,7 @@
 import { Bindings } from "@comunica/types";
 import { Store, Quad, Term } from "n3";
 import parse, { DOMNode } from 'html-dom-parser';
+import * as fs from 'fs';
 
 import { QueryEngine } from '@comunica/query-sparql';
 const myEngine = new QueryEngine();

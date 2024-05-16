@@ -453,7 +453,7 @@
 },{
   "s": "_:bc_0_n3-12",
   "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
-  "o": "\"12\""
+  "o": "\"13\""
 },{
   "s": "_:bc_0_n3-13",
   "p": "http://www.w3.org/ns/shacl#name",
@@ -477,7 +477,7 @@
 },{
   "s": "_:bc_0_n3-13",
   "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
-  "o": "\"13\""
+  "o": "\"44\""
 },{
   "s": "_:bc_0_n3-14",
   "p": "http://www.w3.org/ns/shacl#name",
