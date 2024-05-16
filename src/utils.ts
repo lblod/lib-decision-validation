@@ -1,7 +1,6 @@
 import { Bindings } from "@comunica/types";
 import { Store, Quad, Term } from "n3";
 import parse, { DOMNode } from 'html-dom-parser';
-import * as fs from 'fs';
 
 import { QueryEngine } from '@comunica/query-sparql';
 const myEngine = new QueryEngine();
@@ -60,13 +59,6 @@ export function formatURI(uri: string): string {
   const result1: string = /[^#]+$/.exec(uri)[0]  
   const result2: string = /[^\/]+$/.exec(uri)[0];
   return result1.length < result2.length ? result1 : result2
-}
-
-export function ensureDirectoryExistence(directoryPath: string) {
-    if (fs.existsSync(directoryPath)) {
-      return true;
-    }
-    fs.mkdirSync(directoryPath);
 }
 
 export async function getDOMfromUrl(url: string): Promise<DOMNode[]> {

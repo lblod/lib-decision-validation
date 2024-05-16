@@ -19,15 +19,9 @@ import { AGENDA_LINK, AGENDA_LINK_2, AGENDA_LINK_3, AGENDA_LINK_4, BESLUITEN_LIN
 import { testResult } from './data/result-ex';
 
 import { getDOMfromUrl, getStoreFromSPOBindings, runQueryOverStore } from '../utils';
+import { ensureDirectoryExistence } from '../node-utils';
 
 const MILLISECONDS = 7000;
-
-function ensureDirectoryExistence(directoryPath: string) {
-  if (fs.existsSync(directoryPath)) {
-    return true;
-  }
-  fs.mkdirSync(directoryPath);
-}
 
 describe('As a vendor, I want the tool to automatically determine the type of the document (agenda, besluitenlijst, notulen)', () => {
   beforeAll(() => {
