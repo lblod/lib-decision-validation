@@ -73,7 +73,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
     expect(actual).toBe(expected);
   });
 
-  test.skip('Validate `Besluitenlijst', async () => {
+  test('Validate `Besluitenlijst', async () => {
     const blueprint: Bindings[] = await getBlueprintOfDocumentType('Besluitenlijst');    
     const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK, PROXY);
     const actual = await validatePublication(publication, blueprint);
