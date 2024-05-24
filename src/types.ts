@@ -41,3 +41,8 @@ export type ValidatedProperty = {
   actualCount: number;
   valid: boolean;
 };
+
+export type DocumentType = {
+  id?: string;
+  label: string
+}

@@ -1,7 +1,7 @@
 import { ProxyHandlerStatic } from '@comunica/actor-http-proxy';
 import { QueryEngine } from '@comunica/query-sparql';
 import { Bindings, BindingsStream } from '@comunica/types';
-
+import { DocumentType } from './types';
 export * from './queries';
 
 const engine = new QueryEngine();
@@ -91,3 +91,21 @@ export async function getMaturityProperties(maturityLevel: string): Promise<Bind
 
   return bindingsStream.toArray();
 }
+
+export function getDocumentTypes(): DocumentType[] {
+  return [
+    {
+      id: 'https://data.vlaanderen.be/id/concept/BesluitDocumentType/8e791b27-7600-4577-b24e-c7c29e0eb773',
+      label: 'Notulen'
+    },
+    {
+      id: 'https://data.vlaanderen.be/id/concept/BesluitDocumentType/3fa67785-ffdc-4b30-8880-2b99d97b4dee',
+      label: 'Besluitenlijst'
+    },
+    {
+      id: 'https://data.vlaanderen.be/id/concept/BesluitDocumentType/13fefad6-a9d6-4025-83b5-e4cbee3a8965',
+      label: 'Agenda'
+    }
+  ];
+}
+
