@@ -40,6 +40,7 @@ export type ValidatedProperty = {
   maxCount?: number;
   actualCount: number;
   valid: boolean;
+  example?: string
 };
 
 export type ProcessedProperty = {
