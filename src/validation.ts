@@ -1,6 +1,6 @@
 import { Bindings } from '@comunica/types';
 import * as fs from 'fs';
-import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty, ClassCollection } from './types';
+import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty, ProcessedProperty, ClassCollection } from './types';
 import {filterTermsByValue, findTermByValue, getUniqueValues, formatURI} from './utils'
 
 
@@ -41,7 +41,11 @@ export function determineDocumentType(bindings: Bindings[]): string {
   - the publication as a JSON object structured like a tree
 */
 export function parsePublication(publication: Bindings[]): ParsedSubject[] {
-  const subjectKeys: string[] = [...new Set(publication.map((p) => p.get('s')!.value))];
+  // TODO: Approach with Set returns typescript compilation error
+  // const subjectKeys: string[] = [...new Set(publication.map((p) => p.get('s')!.value))];
+  const tmp = publication.map((p) => p.get('s')!.value);
+  const subjectKeys: string[] = tmp.filter((value, index, array) => array.indexOf(value) === index);
+
   const result: ParsedSubject[] = [];
   const seenSubjects: string[] = [];
   preProcess(publication, subjectKeys, seenSubjects);
@@ -164,11 +168,16 @@ function validateSubject(subject, blueprint: Bindings[]): ValidatedSubject {
     };
   }
 
+  const propertyKeys: string[] = getUniqueValues(subject.properties.map(p => p.path)) as string[]
+  const processedProperties: ProcessedProperty[] = [];
+  propertyKeys.forEach(p => {
+    processedProperties.push(processProperty(subject, p, blueprint))
+  })
   return {
     uri: subject.uri,
     class: subject.class,
     className: subject.class ? formatURI(subject.class!) : 'Unknown class',
-    properties: subject.properties,
+    properties: processedProperties,
     totalCount: subject.properties.length,
   };
 }
@@ -187,7 +196,7 @@ function validateProperty(subject, propertyShape: Bindings[], blueprint): Valida
   let validatedProperty: ValidatedProperty = {
     name: "Naam niet gevonden",
     description: "Beschrijving niet gevonden",
-    path: "Pad niet gevonden",
+    path: "URI niet gevonden",
     value: ["Waarde niet gevonden"],
     minCount: 0,
     actualCount: 0,
@@ -248,6 +257,37 @@ function validateProperty(subject, propertyShape: Bindings[], blueprint): Valida
   return validatedProperty;
 }
 
+
+/* function to process a property which has no shape for validation
+  param:
+  - subject: array of properties to be validated
+  - propertyShape: the blueprint shape of the validated property
+  - blueprint: complete blueprint
+  returns:
+  - subject with validated properties
+*/
+function processProperty(subject, propertyKey, blueprint) : ProcessedProperty {
+  let processProperty: ProcessedProperty = {
+    name: formatURI(propertyKey),
+    path: propertyKey,
+    value: ['Waarde niet gevonden'],
+    actualCount: 0,
+  };
+
+  if (processProperty.path === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
+    processProperty.value = [subject.class];
+  } else {
+    processProperty.value = subject.properties
+      .filter((p) => p.path === processProperty.path)
+      .map((s) => {
+        if (s.value.class != undefined) {
+          return validateSubject(s.value, blueprint);
+        } else return s.value;
+      });
+  }
+  processProperty.actualCount = processProperty.value.length;
+  return processProperty
+}
   
 /* preprocessing function, currently it finds subjects that have no RDF type linked to it and adds them to seenSubjects. 
   Causing them to be skipped during parsing and validation.

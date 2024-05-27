@@ -1,0 +1,1565 @@
+{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#DocumentShape",
+  "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+  "o": "http://www.w3.org/ns/shacl#NodeShape"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#DocumentShape",
+  "p": "http://www.w3.org/ns/shacl#targetClass",
+  "o": "http://xmlns.com/foaf/0.1/Document"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#DocumentShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-0"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#DocumentShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-1"
+},{
+  "s": "_:bc_0_n3-0",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"documenttype\""
+},{
+  "s": "_:bc_0_n3-0",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Type van het besluit. Concept uit een van volgende concept schemes: https://data.vlaanderen.be/id/conceptscheme/BesluitType https://data.vlaanderen.be/id/conceptscheme/BesluitDocumentType\""
+},{
+  "s": "_:bc_0_n3-0",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+},{
+  "s": "_:bc_0_n3-0",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-0",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"1\""
+},{
+  "s": "_:bc_0_n3-1",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"publicatiedatum\""
+},{
+  "s": "_:bc_0_n3-1",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De officiële publicatiedatum van het besluit.\""
+},{
+  "s": "_:bc_0_n3-1",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.europa.eu/eli/ontology#date_publication"
+},{
+  "s": "_:bc_0_n3-1",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#date"
+},{
+  "s": "_:bc_0_n3-1",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-1",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"2\""
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+  "o": "http://www.w3.org/ns/shacl#NodeShape"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#targetClass",
+  "o": "http://data.vlaanderen.be/ns/besluit#Zitting"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-2"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-3"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-4"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-5"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-6"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-7"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-8"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-9"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-10"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-11"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-12"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-13"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-14"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-15"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#ZittingShape",
+  "p": "http://www.w3.org/ns/shacl#closed",
+  "o": "\"false\"^^http://www.w3.org/2001/XMLSchema#boolean"
+},{
+  "s": "_:bc_0_n3-2",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"behandelt\""
+},{
+  "s": "_:bc_0_n3-2",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-2",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Een formeel vastgelegd agendapunt van de zitting.\""
+},{
+  "s": "_:bc_0_n3-2",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#behandelt"
+},{
+  "s": "_:bc_0_n3-2",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://data.vlaanderen.be/ns/besluit#Agendapunt"
+},{
+  "s": "_:bc_0_n3-2",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-2",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"3\""
+},{
+  "s": "_:bc_0_n3-3",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"start\""
+},{
+  "s": "_:bc_0_n3-3",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-3",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Tijdstip waarop de zitting begint.\""
+},{
+  "s": "_:bc_0_n3-3",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://www.w3.org/ns/prov#startedAtTime"
+},{
+  "s": "_:bc_0_n3-3",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#dateTime"
+},{
+  "s": "_:bc_0_n3-3",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-3",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-3",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"4\""
+},{
+  "s": "_:bc_0_n3-4",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"eind\""
+},{
+  "s": "_:bc_0_n3-4",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-4",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Tijdstip waarop de zitting eindigt.\""
+},{
+  "s": "_:bc_0_n3-4",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://www.w3.org/ns/prov#endedAtTime"
+},{
+  "s": "_:bc_0_n3-4",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#dateTime"
+},{
+  "s": "_:bc_0_n3-4",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-4",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-4",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"5\""
+},{
+  "s": "_:bc_0_n3-5",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"geplandeStart\""
+},{
+  "s": "_:bc_0_n3-5",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-5",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Het tijdstip waarop de zitting gepland is om te beginnen.\""
+},{
+  "s": "_:bc_0_n3-5",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#geplandeStart"
+},{
+  "s": "_:bc_0_n3-5",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#dateTime"
+},{
+  "s": "_:bc_0_n3-5",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-5",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-5",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"6\""
+},{
+  "s": "_:bc_0_n3-6",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"heeftNotulen\""
+},{
+  "s": "_:bc_0_n3-6",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-6",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De formele notulen van de zitting.\""
+},{
+  "s": "_:bc_0_n3-6",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#heeftNotulen"
+},{
+  "s": "_:bc_0_n3-6",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://xmlns.com/foaf/0.1/Document"
+},{
+  "s": "_:bc_0_n3-6",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-6",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-6",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"7\""
+},{
+  "s": "_:bc_0_n3-7",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"heeftAgenda\""
+},{
+  "s": "_:bc_0_n3-7",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De formele notulen van de zitting.\""
+},{
+  "s": "_:bc_0_n3-7",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#heeftAgenda"
+},{
+  "s": "_:bc_0_n3-7",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://xmlns.com/foaf/0.1/Document"
+},{
+  "s": "_:bc_0_n3-7",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-7",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-7",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"8\""
+},{
+  "s": "_:bc_0_n3-8",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"heeftUittreksel\""
+},{
+  "s": "_:bc_0_n3-8",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De formele notulen van de zitting.\""
+},{
+  "s": "_:bc_0_n3-8",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#heeftUittreksel"
+},{
+  "s": "_:bc_0_n3-8",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://xmlns.com/foaf/0.1/Document"
+},{
+  "s": "_:bc_0_n3-8",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-8",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"9\""
+},{
+  "s": "_:bc_0_n3-9",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"heeftBesluitenlijst\""
+},{
+  "s": "_:bc_0_n3-9",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De formele notulen van de zitting.\""
+},{
+  "s": "_:bc_0_n3-9",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#heeftBesluitenlijst"
+},{
+  "s": "_:bc_0_n3-9",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://xmlns.com/foaf/0.1/Document"
+},{
+  "s": "_:bc_0_n3-9",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-9",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-9",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"1\""
+},{
+  "s": "_:bc_0_n3-10",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"isGehoudenDoor\""
+},{
+  "s": "_:bc_0_n3-10",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-10",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Duidt aan door welk orgaan de zitting is gehouden.\""
+},{
+  "s": "_:bc_0_n3-10",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#isGehoudenDoor"
+},{
+  "s": "_:bc_0_n3-10",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://data.vlaanderen.be/ns/besluit#Bestuursorgaan"
+},{
+  "s": "_:bc_0_n3-10",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-10",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-10",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"11\""
+},{
+  "s": "_:bc_0_n3-11",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"locatie\""
+},{
+  "s": "_:bc_0_n3-11",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-11",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Locatie waar de zitting plaatsvindt. Doorgaans is dit een zaal in een gebouw.\""
+},{
+  "s": "_:bc_0_n3-11",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://www.w3.org/ns/prov#atLocation"
+},{
+  "s": "_:bc_0_n3-11",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://www.w3.org/ns/prov#Location"
+},{
+  "s": "_:bc_0_n3-11",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-11",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-11",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"12\""
+},{
+  "s": "_:bc_0_n3-12",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"heeftAanwezigeBijStart\""
+},{
+  "s": "_:bc_0_n3-12",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 3\""
+},{
+  "s": "_:bc_0_n3-12",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Een mandataris (van het bestuursorsgaan die de zitting hield) die aanwezig was bij de start van de zitting.\""
+},{
+  "s": "_:bc_0_n3-12",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#heeftAanwezigeBijStart"
+},{
+  "s": "_:bc_0_n3-12",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://data.vlaanderen.be/ns/mandaat#Mandataris"
+},{
+  "s": "_:bc_0_n3-12",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-12",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"13\""
+},{
+  "s": "_:bc_0_n3-13",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"heeftAfwezigeBijStart\""
+},{
+  "s": "_:bc_0_n3-13",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Een mandataris (van het bestuursorsgaan die de zitting hield) die afwezig was bij de start van de zitting.\""
+},{
+  "s": "_:bc_0_n3-13",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://mu.semte.ch/vocabularies/ext/heeftAfwezigeBijStart"
+},{
+  "s": "_:bc_0_n3-13",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://data.vlaanderen.be/ns/mandaat#Mandataris"
+},{
+  "s": "_:bc_0_n3-13",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-13",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"44\""
+},{
+  "s": "_:bc_0_n3-14",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"heeftVoorzitter\""
+},{
+  "s": "_:bc_0_n3-14",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 3\""
+},{
+  "s": "_:bc_0_n3-14",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De mandataris die de rol als voorzitter heeft gedurende de zitting.\""
+},{
+  "s": "_:bc_0_n3-14",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#heeftVoorzitter"
+},{
+  "s": "_:bc_0_n3-14",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://data.vlaanderen.be/ns/mandaat#Mandataris"
+},{
+  "s": "_:bc_0_n3-14",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-14",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-14",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"14\""
+},{
+  "s": "_:bc_0_n3-15",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"heeftSecretaris\""
+},{
+  "s": "_:bc_0_n3-15",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 3\""
+},{
+  "s": "_:bc_0_n3-15",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De mandataris die de rol van secretaris heeft gedurende de zitting.\""
+},{
+  "s": "_:bc_0_n3-15",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#heeftSecretaris"
+},{
+  "s": "_:bc_0_n3-15",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://data.lblod.info/vocabularies/leidinggevenden/Functionaris"
+},{
+  "s": "_:bc_0_n3-15",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-15",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-15",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"15\""
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#AgendapuntShape",
+  "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+  "o": "http://www.w3.org/ns/shacl#NodeShape"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#AgendapuntShape",
+  "p": "http://www.w3.org/ns/shacl#targetClass",
+  "o": "http://data.vlaanderen.be/ns/besluit#Agendapunt"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#AgendapuntShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-16"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#AgendapuntShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-17"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#AgendapuntShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-18"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#AgendapuntShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-19"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#AgendapuntShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-20"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#AgendapuntShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-21"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#AgendapuntShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-22"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#AgendapuntShape",
+  "p": "http://www.w3.org/ns/shacl#closed",
+  "o": "\"false\"^^http://www.w3.org/2001/XMLSchema#boolean"
+},{
+  "s": "_:bc_0_n3-16",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"aangebrachtNa\""
+},{
+  "s": "_:bc_0_n3-16",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-16",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Het agendapunt dat op de agenda direct dit agendapunt voorafging.\""
+},{
+  "s": "_:bc_0_n3-16",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#aangebrachtNa"
+},{
+  "s": "_:bc_0_n3-16",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://data.vlaanderen.be/ns/besluit#Agendapunt"
+},{
+  "s": "_:bc_0_n3-16",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-16",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-16",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"16\""
+},{
+  "s": "_:bc_0_n3-17",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"heeftOntwerpbesluit\""
+},{
+  "s": "_:bc_0_n3-17",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Een (mogelijks nog aan te vullen of aan te passen) ontwerp voor het besluit dat uit dit agendapunt zou voortkomen.\""
+},{
+  "s": "_:bc_0_n3-17",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#heeftOntwerpbesluit"
+},{
+  "s": "_:bc_0_n3-17",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://xmlns.com/foaf/0.1/Document"
+},{
+  "s": "_:bc_0_n3-17",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"42\""
+},{
+  "s": "_:bc_0_n3-18",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"refereertAan\""
+},{
+  "s": "_:bc_0_n3-18",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Een ander agendapunt waarnaar verwezen wordt vanuit dit agendapunt.\""
+},{
+  "s": "_:bc_0_n3-18",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://purl.org/dc/terms/references"
+},{
+  "s": "_:bc_0_n3-18",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://data.vlaanderen.be/ns/besluit#Agendapunt"
+},{
+  "s": "_:bc_0_n3-18",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"43\""
+},{
+  "s": "_:bc_0_n3-19",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"beschrijving\""
+},{
+  "s": "_:bc_0_n3-19",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-19",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Korte beschrijving van het agendapunt.\""
+},{
+  "s": "_:bc_0_n3-19",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://purl.org/dc/terms/description"
+},{
+  "s": "_:bc_0_n3-19",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#string"
+},{
+  "s": "_:bc_0_n3-19",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-19",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-19",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"17\""
+},{
+  "s": "_:bc_0_n3-20",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"geplandOpenbaar\""
+},{
+  "s": "_:bc_0_n3-20",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-20",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Geeft aan of het agendapunt al dan niet bedoeld is om openbaar te bespreken.\""
+},{
+  "s": "_:bc_0_n3-20",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#geplandOpenbaar"
+},{
+  "s": "_:bc_0_n3-20",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#boolean"
+},{
+  "s": "_:bc_0_n3-20",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-20",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-20",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"18\""
+},{
+  "s": "_:bc_0_n3-21",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"titel\""
+},{
+  "s": "_:bc_0_n3-21",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-21",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De naam van het agendapunt.\""
+},{
+  "s": "_:bc_0_n3-21",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://purl.org/dc/terms/title"
+},{
+  "s": "_:bc_0_n3-21",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#string"
+},{
+  "s": "_:bc_0_n3-21",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-21",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-21",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"20\""
+},{
+  "s": "_:bc_0_n3-22",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"type\""
+},{
+  "s": "_:bc_0_n3-22",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Type van het agendapunt.\""
+},{
+  "s": "_:bc_0_n3-22",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#Agendapunt.type"
+},{
+  "s": "_:bc_0_n3-22",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://www.w3.org/2004/02/skos/core#Concept"
+},{
+  "s": "_:bc_0_n3-22",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-22",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"21\""
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BehandelingVanAgendapuntShape",
+  "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+  "o": "http://www.w3.org/ns/shacl#NodeShape"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BehandelingVanAgendapuntShape",
+  "p": "http://www.w3.org/ns/shacl#targetClass",
+  "o": "http://data.vlaanderen.be/ns/besluit#BehandelingVanAgendapunt"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BehandelingVanAgendapuntShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-23"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BehandelingVanAgendapuntShape",
+  "p": "http://www.w3.org/ns/shacl#closed",
+  "o": "\"false\"^^http://www.w3.org/2001/XMLSchema#boolean"
+},{
+  "s": "_:bc_0_n3-23",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"heeftStemming\""
+},{
+  "s": "_:bc_0_n3-23",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-23",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Een stemming die plaatsvond tijdens de behandeling van het agendapunt.\""
+},{
+  "s": "_:bc_0_n3-23",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#heeftStemming"
+},{
+  "s": "_:bc_0_n3-23",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://data.vlaanderen.be/ns/besluit#Stemming"
+},{
+  "s": "_:bc_0_n3-23",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-23",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"22\""
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+  "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+  "o": "http://www.w3.org/ns/shacl#NodeShape"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+  "p": "http://www.w3.org/ns/shacl#targetClass",
+  "o": "http://data.vlaanderen.be/ns/besluit#Besluit"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-24"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-25"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-26"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-27"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-28"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-29"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-30"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-31"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BesluitShape",
+  "p": "http://www.w3.org/ns/shacl#closed",
+  "o": "\"false\"^^http://www.w3.org/2001/XMLSchema#boolean"
+},{
+  "s": "_:bc_0_n3-24",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"beschrijving\""
+},{
+  "s": "_:bc_0_n3-24",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-24",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Een beknopte beschrijving van het besluit.\""
+},{
+  "s": "_:bc_0_n3-24",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.europa.eu/eli/ontology#description"
+},{
+  "s": "_:bc_0_n3-24",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#string"
+},{
+  "s": "_:bc_0_n3-24",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-24",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-24",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"23\""
+},{
+  "s": "_:bc_0_n3-25",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"volgtUit\""
+},{
+  "s": "_:bc_0_n3-25",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Bonusniveau\""
+},{
+  "s": "_:bc_0_n3-25",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De behandeling van het agendapunt die tot dit besluit heeft geleid.\""
+},{
+  "s": "_:bc_0_n3-25",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://www.w3.org/ns/prov#wasGeneratedBy"
+},{
+  "s": "_:bc_0_n3-25",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://data.vlaanderen.be/ns/besluit#BehandelingVanAgendapunt"
+},{
+  "s": "_:bc_0_n3-25",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-25",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-25",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"24\""
+},{
+  "s": "_:bc_0_n3-26",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"citeeropschrift\""
+},{
+  "s": "_:bc_0_n3-26",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 3\""
+},{
+  "s": "_:bc_0_n3-26",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De beknopte titel of officiële korte naam van een decreet, wet, besluit... Deze wordt officieel vastgelegd. Deze benaming wordt in de praktijk gebruikt om naar de rechtsgrond te verwijzen.\""
+},{
+  "s": "_:bc_0_n3-26",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.europa.eu/eli/ontology#title_short"
+},{
+  "s": "_:bc_0_n3-26",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#string"
+},{
+  "s": "_:bc_0_n3-26",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-26",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-26",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"25\""
+},{
+  "s": "_:bc_0_n3-27",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"titel\""
+},{
+  "s": "_:bc_0_n3-27",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-27",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Titel van de legale verschijningsvorm.\""
+},{
+  "s": "_:bc_0_n3-27",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.europa.eu/eli/ontology#title"
+},{
+  "s": "_:bc_0_n3-27",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#string"
+},{
+  "s": "_:bc_0_n3-27",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-27",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"26\""
+},{
+  "s": "_:bc_0_n3-28",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"taal\""
+},{
+  "s": "_:bc_0_n3-28",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-28",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De taal van de verschijningsvorm.\""
+},{
+  "s": "_:bc_0_n3-28",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.europa.eu/eli/ontology#language"
+},{
+  "s": "_:bc_0_n3-28",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://www.w3.org/2004/02/skos/core#Concept"
+},{
+  "s": "_:bc_0_n3-28",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-28",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-28",
+  "p": "http://purl.org/linked-data/cube#codeList",
+  "o": "http://publications.europa.eu/mdr/authority/language/index.html"
+},{
+  "s": "_:bc_0_n3-28",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"27\""
+},{
+  "s": "_:bc_0_n3-29",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"publicatiedatum\""
+},{
+  "s": "_:bc_0_n3-29",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Bonusniveau\""
+},{
+  "s": "_:bc_0_n3-29",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De officiële publicatiedatum van het besluit.\""
+},{
+  "s": "_:bc_0_n3-29",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.europa.eu/eli/ontology#date_publication"
+},{
+  "s": "_:bc_0_n3-29",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#date"
+},{
+  "s": "_:bc_0_n3-29",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-29",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-29",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"28\""
+},{
+  "s": "_:bc_0_n3-30",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"buitenwerkingtreding\""
+},{
+  "s": "_:bc_0_n3-30",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De laatste dag waarop de regelgeving nog van kracht is.\""
+},{
+  "s": "_:bc_0_n3-30",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.europa.eu/eli/ontology#date_no_longer_in_force"
+},{
+  "s": "_:bc_0_n3-30",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#date"
+},{
+  "s": "_:bc_0_n3-30",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-30",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-30",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"29\""
+},{
+  "s": "_:bc_0_n3-31",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"inwerkingtreding\""
+},{
+  "s": "_:bc_0_n3-31",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De datum waarop de regelgeving van kracht wordt.\""
+},{
+  "s": "_:bc_0_n3-31",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.europa.eu/eli/ontology#first_date_entry_in_force"
+},{
+  "s": "_:bc_0_n3-31",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#date"
+},{
+  "s": "_:bc_0_n3-31",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-31",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-31",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"30\""
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#StemmingShape",
+  "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+  "o": "http://www.w3.org/ns/shacl#NodeShape"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#StemmingShape",
+  "p": "http://www.w3.org/ns/shacl#targetClass",
+  "o": "http://data.vlaanderen.be/ns/besluit#Stemming"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#StemmingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-32"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#StemmingShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-33"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#StemmingShape",
+  "p": "http://www.w3.org/ns/shacl#closed",
+  "o": "\"false\"^^http://www.w3.org/2001/XMLSchema#boolean"
+},{
+  "s": "_:bc_0_n3-32",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"gevolg\""
+},{
+  "s": "_:bc_0_n3-32",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 3\""
+},{
+  "s": "_:bc_0_n3-32",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Het gevolg van de stemming.\""
+},{
+  "s": "_:bc_0_n3-32",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#gevolg"
+},{
+  "s": "_:bc_0_n3-32",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-32",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-32",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"31\""
+},{
+  "s": "_:bc_0_n3-33",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"onderwerp\""
+},{
+  "s": "_:bc_0_n3-33",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Niveau 1\""
+},{
+  "s": "_:bc_0_n3-33",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De beschrijving van het onderwerp waarover de stemming gaat.\""
+},{
+  "s": "_:bc_0_n3-33",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#onderwerp"
+},{
+  "s": "_:bc_0_n3-33",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-33",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-33",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"32\""
+},{
+  "s": "https://data.vlaanderen.be/shacl/mandatendatabank#Bestuursorgaan(inbestuursperiode)Shape",
+  "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+  "o": "http://www.w3.org/ns/shacl#NodeShape"
+},{
+  "s": "https://data.vlaanderen.be/shacl/mandatendatabank#Bestuursorgaan(inbestuursperiode)Shape",
+  "p": "http://www.w3.org/ns/shacl#targetClass",
+  "o": "http://data.vlaanderen.be/ns/besluit#Bestuursorgaan"
+},{
+  "s": "https://data.vlaanderen.be/shacl/mandatendatabank#Bestuursorgaan(inbestuursperiode)Shape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-34"
+},{
+  "s": "https://data.vlaanderen.be/shacl/mandatendatabank#Bestuursorgaan(inbestuursperiode)Shape",
+  "p": "http://www.w3.org/ns/shacl#closed",
+  "o": "\"false\"^^http://www.w3.org/2001/XMLSchema#boolean"
+},{
+  "s": "_:bc_0_n3-34",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"isTijdspecialisatieVan\""
+},{
+  "s": "_:bc_0_n3-34",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Duidt de bronentiteit aan waarvan deze entiteit een tijdsgebonden specialisatie is. De specialisatie stelt de bron voor gedurende een bepaalde periode.\""
+},{
+  "s": "_:bc_0_n3-34",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "_:bc_0_n3-35"
+},{
+  "s": "_:bc_0_n3-34",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://data.vlaanderen.be/ns/besluit#Bestuursorgaan"
+},{
+  "s": "_:bc_0_n3-34",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-34",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-34",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"33\""
+},{
+  "s": "_:bc_0_n3-36",
+  "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
+  "o": "https://data.vlaanderen.be/ns/generiek#isTijdspecialisatieVan"
+},{
+  "s": "_:bc_0_n3-36",
+  "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
+  "o": "_:bc_0_n3-37"
+},{
+  "s": "_:bc_0_n3-37",
+  "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
+  "o": "https://data.vlaanderen.be/ns/mandaat#isTijdspecialisatieVan"
+},{
+  "s": "_:bc_0_n3-37",
+  "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
+  "o": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"
+},{
+  "s": "_:bc_0_n3-35",
+  "p": "http://www.w3.org/ns/shacl#alternativePath",
+  "o": "_:bc_0_n3-36"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BestuursorgaanShape",
+  "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+  "o": "http://www.w3.org/ns/shacl#NodeShape"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BestuursorgaanShape",
+  "p": "http://www.w3.org/ns/shacl#targetClass",
+  "o": "http://data.vlaanderen.be/ns/besluit#Bestuursorgaan"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BestuursorgaanShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-38"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BestuursorgaanShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-39"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BestuursorgaanShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-40"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BestuursorgaanShape",
+  "p": "http://www.w3.org/ns/shacl#closed",
+  "o": "\"false\"^^http://www.w3.org/2001/XMLSchema#boolean"
+},{
+  "s": "_:bc_0_n3-38",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"classificatie\""
+},{
+  "s": "_:bc_0_n3-38",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Bonusniveau\""
+},{
+  "s": "_:bc_0_n3-38",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Het type bestuursorgaan.\""
+},{
+  "s": "_:bc_0_n3-38",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://www.w3.org/ns/org#classification"
+},{
+  "s": "_:bc_0_n3-38",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://www.w3.org/2004/02/skos/core#Concept"
+},{
+  "s": "_:bc_0_n3-38",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-38",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-38",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"34\""
+},{
+  "s": "_:bc_0_n3-39",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"naam\""
+},{
+  "s": "_:bc_0_n3-39",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Bonusniveau\""
+},{
+  "s": "_:bc_0_n3-39",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Naam van de bestuursorgaan.\""
+},{
+  "s": "_:bc_0_n3-39",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://www.w3.org/2004/02/skos/core#prefLabel"
+},{
+  "s": "_:bc_0_n3-39",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#string"
+},{
+  "s": "_:bc_0_n3-39",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-39",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-39",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"35\""
+},{
+  "s": "_:bc_0_n3-40",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"bestuurt\""
+},{
+  "s": "_:bc_0_n3-40",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Bonusniveau\""
+},{
+  "s": "_:bc_0_n3-40",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"De bestuurseenheid die door het orgaan bestuurd wordt.\""
+},{
+  "s": "_:bc_0_n3-40",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#bestuurt"
+},{
+  "s": "_:bc_0_n3-40",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://data.vlaanderen.be/ns/besluit#Bestuurseenheid"
+},{
+  "s": "_:bc_0_n3-40",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-40",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-40",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"36\""
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BestuurseenheidShape",
+  "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+  "o": "http://www.w3.org/ns/shacl#NodeShape"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BestuurseenheidShape",
+  "p": "http://www.w3.org/ns/shacl#targetClass",
+  "o": "http://data.vlaanderen.be/ns/besluit#Bestuurseenheid"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BestuurseenheidShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-41"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BestuurseenheidShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-42"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BestuurseenheidShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-43"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#BestuurseenheidShape",
+  "p": "http://www.w3.org/ns/shacl#closed",
+  "o": "\"false\"^^http://www.w3.org/2001/XMLSchema#boolean"
+},{
+  "s": "_:bc_0_n3-41",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"classificatie\""
+},{
+  "s": "_:bc_0_n3-41",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Classificatie van de bestuurseenheid.\""
+},{
+  "s": "_:bc_0_n3-41",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://www.w3.org/ns/org#classification"
+},{
+  "s": "_:bc_0_n3-41",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://www.w3.org/2004/02/skos/core#Concept"
+},{
+  "s": "_:bc_0_n3-41",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-41",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-41",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"37\""
+},{
+  "s": "_:bc_0_n3-42",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"naam\""
+},{
+  "s": "_:bc_0_n3-42",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Bonusniveau\""
+},{
+  "s": "_:bc_0_n3-42",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Naam van de bestuurseenheid.\""
+},{
+  "s": "_:bc_0_n3-42",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://www.w3.org/2004/02/skos/core#prefLabel"
+},{
+  "s": "_:bc_0_n3-42",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#string"
+},{
+  "s": "_:bc_0_n3-42",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-42",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-42",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"38\""
+},{
+  "s": "_:bc_0_n3-43",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"werkingsgebied\""
+},{
+  "s": "_:bc_0_n3-43",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Geografische gebied waarbinnen de bestuurseenheid bepaalde verantwoordelijkheden heeft waarbinnen het bestuurshandelingen kan stellen.\""
+},{
+  "s": "_:bc_0_n3-43",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://data.vlaanderen.be/ns/besluit#werkingsgebied"
+},{
+  "s": "_:bc_0_n3-43",
+  "p": "http://www.w3.org/ns/shacl#class",
+  "o": "http://www.w3.org/ns/prov#Location"
+},{
+  "s": "_:bc_0_n3-43",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-43",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-43",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"39\""
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#WerkingsgebiedShape",
+  "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+  "o": "http://www.w3.org/ns/shacl#NodeShape"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#WerkingsgebiedShape",
+  "p": "http://www.w3.org/ns/shacl#targetClass",
+  "o": "http://www.w3.org/ns/prov#Location"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#WerkingsgebiedShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-44"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#WerkingsgebiedShape",
+  "p": "http://www.w3.org/ns/shacl#property",
+  "o": "_:bc_0_n3-45"
+},{
+  "s": "https://data.vlaanderen.be/shacl/besluit-publicatie#WerkingsgebiedShape",
+  "p": "http://www.w3.org/ns/shacl#closed",
+  "o": "\"false\"^^http://www.w3.org/2001/XMLSchema#boolean"
+},{
+  "s": "_:bc_0_n3-44",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"naam\""
+},{
+  "s": "_:bc_0_n3-44",
+  "p": "http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau",
+  "o": "\"Bonusniveau\""
+},{
+  "s": "_:bc_0_n3-44",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Naam van het werkingsgebied.\""
+},{
+  "s": "_:bc_0_n3-44",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://www.w3.org/2000/01/rdf-schema#label"
+},{
+  "s": "_:bc_0_n3-44",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#string"
+},{
+  "s": "_:bc_0_n3-44",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-44",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-44",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"40\""
+},{
+  "s": "_:bc_0_n3-45",
+  "p": "http://www.w3.org/ns/shacl#name",
+  "o": "\"werkingsgebiedNiveau\""
+},{
+  "s": "_:bc_0_n3-45",
+  "p": "http://www.w3.org/ns/shacl#description",
+  "o": "\"Niveau (gemeente, provincie, gewest...) van het gebied waarbinnen de bestuurseenheid bepaalde verantwoordelijkheden heeft waarbinnen het bestuurshandelingen kan stellen.\""
+},{
+  "s": "_:bc_0_n3-45",
+  "p": "http://www.w3.org/ns/shacl#path",
+  "o": "http://mu.semte.ch/vocabularies/ext/werkingsgebiedNiveau"
+},{
+  "s": "_:bc_0_n3-45",
+  "p": "http://www.w3.org/ns/shacl#datatype",
+  "o": "http://www.w3.org/2001/XMLSchema#string"
+},{
+  "s": "_:bc_0_n3-45",
+  "p": "http://www.w3.org/ns/shacl#minCount",
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-45",
+  "p": "http://www.w3.org/ns/shacl#maxCount",
+  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+},{
+  "s": "_:bc_0_n3-45",
+  "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",
+  "o": "\"41\""
+}
