@@ -124,6 +124,13 @@ describe('As a vendor, I want the tool to automatically determine the type of th
     fs.writeFileSync('src/tests/logs/notulen.json', `${JSON.stringify(actual)}`);
   }, MILLISECONDS);
 
+  test.only('Validate Notulen 2', async () => {
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Notulen');
+    const publication: Bindings[] = await fetchDocument("https://raadpleeg-aalst.onlinesmartcities.be/zittingen/20.0527.2714.7668/notulen", PROXY);
+    const actual = await validatePublication(publication, blueprint);
+    fs.writeFileSync('src/tests/logs/notulen2.json', `${JSON.stringify(actual)}`);
+  }, 10000000);
+
   test('Get the maturity level', async () => {
     const actual = await getMaturityProperties('Niveau 1');
     fs.writeFileSync('src/tests/logs/maturitylevel.json', `${JSON.stringify(actual)}`);
