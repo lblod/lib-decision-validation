@@ -1,7 +1,9 @@
+import { Bindings } from "@comunica/types";
+import { Store, Quad, Term } from "n3";
+import parse, { DOMNode } from 'html-dom-parser';
 
-import { Bindings } from '@comunica/types';
-import * as fs from 'fs';
-
+import { QueryEngine } from '@comunica/query-sparql';
+const myEngine = new QueryEngine();
 
 /* function to filter triples by a certain condition and then get the value of a certain term
   param:
@@ -57,4 +59,26 @@ export function formatURI(uri: string): string {
   const result1: string = /[^#]+$/.exec(uri)[0]  
   const result2: string = /[^\/]+$/.exec(uri)[0];
   return result1.length < result2.length ? result1 : result2
+}
+
+export async function getDOMfromUrl(url: string): Promise<DOMNode[]> {
+  const res: Response = await fetch(url);
+  const resText: string = await res.text();
+  const document = parse(resText);
+  return document;
+}
+
+export function getStoreFromSPOBindings(bindings: Bindings[]): Store {
+  const s: Store = new Store();
+  bindings.map((b) => {
+    s.add(new Quad(<Term>b.get('s'),<Term>b.get('p'), <Term>b.get('o')));
+  });
+  return s;
+}
+
+export async function runQueryOverStore(query: string, store: Store): Promise<Bindings[]> {
+  const bindingsStream = await myEngine.queryBindings(query, {
+    sources: [store],
+  });
+  return await bindingsStream.toArray();
 }

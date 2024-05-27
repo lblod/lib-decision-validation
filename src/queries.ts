@@ -1,6 +1,8 @@
 import { ProxyHandlerStatic } from '@comunica/actor-http-proxy';
 import { QueryEngine } from '@comunica/query-sparql';
 import { Bindings, BindingsStream } from '@comunica/types';
+import { getDOMfromUrl } from './utils';
+import { DOMNode } from 'html-dom-parser';
 
 export * from './queries';
 
@@ -19,7 +21,7 @@ export async function getPublicationFromFileContent(content: string): Promise<Bi
     {
       sources: [
         {
-          type: 'stringSource',
+          type: 'serialized',
           value: content,
           mediaType: 'text/html',
           baseIRI: 'http://example.org/',
@@ -49,12 +51,13 @@ export async function fetchDocument(publicationLink: string, proxy: string = def
 }
 
 export async function getBlueprintOfDocumentType(documentType: string): Promise<Bindings[]> {
+  const HOST = 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/';
   const blueprintLink = {
-    Notulen: 'https://raw.githubusercontent.com/lblod/validation-monitoring-module/fix/tests/files/notulen.ttl',
-    Besluitenlijst:
-      'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/decision-list.ttl',
-    Agenda: 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/basic-agenda.ttl',
+    Notulen: HOST + 'notulen.ttl',
+    Besluitenlijst: HOST + 'decision-list.ttl',
+    Agenda: HOST + 'basic-agenda.ttl'
   };
+  
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
         SELECT ?s ?p ?o 
@@ -72,7 +75,7 @@ export async function getBlueprintOfDocumentType(documentType: string): Promise<
 // TODO: review and update
 export async function getMaturityProperties(maturityLevel: string): Promise<Bindings[]> {
   const source: string =
-    'https://raw.githubusercontent.com/lblod/validation-monitoring-module/master/files/notulen.ttl';
+  'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/notulen.ttl';
 
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
@@ -90,4 +93,21 @@ export async function getMaturityProperties(maturityLevel: string): Promise<Bind
   );
 
   return bindingsStream.toArray();
+}
+
+export function getExampleURLOfDocumentType(documentType: string): string {
+  const HOST = 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/examples/';
+
+  const exampleLink = {
+    Notulen: HOST + 'notulen.html',
+    Besluitenlijst: HOST + 'decision-list.html',
+    Agenda: HOST + 'basic-agenda.html'
+  };
+  
+  return exampleLink[documentType];
+}
+
+export async function getExampleOfDocumentType(documentType: string): Promise<DOMNode[]> {
+  const exampleLink: string = getExampleURLOfDocumentType(documentType);
+  return await getDOMfromUrl(exampleLink);
 }
