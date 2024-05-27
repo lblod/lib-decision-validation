@@ -198,6 +198,7 @@ function validateProperty(subject, propertyShape: Bindings[], blueprint): Valida
     description: "Beschrijving niet gevonden",
     path: "URI niet gevonden",
     value: ["Waarde niet gevonden"],
+    minCount: 0,
     actualCount: 0,
     valid: false
   };
