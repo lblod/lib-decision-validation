@@ -1,5 +1,5 @@
 import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty, ClassCollection } from './types';
-import { getDOMfromUrl, getStoreFromSPOBindings, runQueryOverStore } from './utils';
+import { getStoreFromSPOBindings, runQueryOverStore } from './utils';
 import { Store } from "n3";
 import { Bindings } from "@comunica/types";
 import { DOMNode, Element } from 'html-dom-parser';
@@ -39,10 +39,6 @@ async function getTargetClassPropertyPathAndUsageNotesFromBlueprint(blueprint: B
     `;
 
     return await runQueryOverStore(query, store);
-}
-
-function enrichValidatedProperty(validatedProperty: ValidatedProperty, example: HTMLElement): ValidatedProperty {
-    return validatedProperty;
 }
 
 function getUsageNoteFromBindings(bindings: Bindings[], targetClass: string, propertyPath: string) {

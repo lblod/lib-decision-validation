@@ -2,7 +2,7 @@ import { ProxyHandlerStatic } from '@comunica/actor-http-proxy';
 import { QueryEngine } from '@comunica/query-sparql';
 import { Bindings, BindingsStream } from '@comunica/types';
 import { getHTMLExampleOfDocumentType, getShapeOfDocumentType } from 'lib-decision-shapes';
-import { getDOMfromUrl } from './utils';
+import { getDOMfromString } from './utils';
 import { DOMNode } from 'html-dom-parser';
 
 export * from './queries';
@@ -103,7 +103,7 @@ export async function getMaturityProperties(maturityLevel: string): Promise<Bind
 }
 
 export function getExampleURLOfDocumentType(documentType: string): string {
-  const HOST = 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/examples/';
+  const HOST = 'https://raw.githubusercontent.com/lblod/lib-decision-shapes/master/examples/';
 
   const exampleLink = {
     Notulen: HOST + 'notulen.html',
@@ -114,7 +114,7 @@ export function getExampleURLOfDocumentType(documentType: string): string {
   return exampleLink[documentType];
 }
 
-export async function getExampleOfDocumentType(documentType: string): Promise<DOMNode[]> {
-  const exampleLink: string = getExampleURLOfDocumentType(documentType);
-  return await getDOMfromUrl(exampleLink);
+export function getExampleOfDocumentType(documentType: string): DOMNode[] {
+  const example: string = getHTMLExampleOfDocumentType(documentType);
+  return getDOMfromString(example);
 }

@@ -20,8 +20,9 @@ const PROXY = '';
 import { AGENDA_LINK, AGENDA_LINK_2, AGENDA_LINK_3, AGENDA_LINK_4, BESLUITEN_LINK, BESLUITEN_LINK2, NOTULEN_LINK, TESTHTMLSTRING, TESTSTRING2 } from './data/testData';
 import { testResult } from './data/result-ex';
 
-import { getDOMfromUrl, getStoreFromSPOBindings, runQueryOverStore } from '../utils';
+import { getDOMfromString, getStoreFromSPOBindings, runQueryOverStore } from '../utils';
 import { ensureDirectoryExistence } from '../node-utils';
+import { getHTMLExampleOfDocumentType } from 'lib-decision-shapes';
 
 const MILLISECONDS = 7000;
 
@@ -205,14 +206,14 @@ describe('As a vendor, I want to see a good example when something is not valid'
   });
 
   test('retrieve example URL for document type', async () => {
-    const expected: string = 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/examples/notulen.html';
+    const expected: string = 'https://raw.githubusercontent.com/lblod/lib-decision-shapes/master/examples/notulen.html';
     const actual: string = getExampleURLOfDocumentType('Notulen');
     expect(actual).toBe(expected);
   });
 
   test('retrieve example as html', async () => {
-    const exampleLink: string = getExampleURLOfDocumentType('Notulen');
-    const exampleHtml = await getDOMfromUrl(exampleLink);
+    const exampleLink: string = getHTMLExampleOfDocumentType('Notulen');
+    const exampleHtml = getDOMfromString(exampleLink);
 
     const expected: string = 'html';
     const actual: Element[] = getElementsByTagName(expected, exampleHtml, true, 1);
@@ -220,8 +221,7 @@ describe('As a vendor, I want to see a good example when something is not valid'
   });
 
   test('retrieving first element by id of example is not null', async () => {
-    const exampleLink: string = getExampleURLOfDocumentType('Notulen');
-    const exampleHtml = await getDOMfromUrl(exampleLink);
+    const exampleHtml: DOMNode[] = getExampleOfDocumentType('Notulen');
 
     const actual: Element | null = getElementById('1', exampleHtml);
     //const actual: HTMLElement | null = exampleHtml.getElementById('1');
@@ -293,7 +293,7 @@ describe('As a vendor, I want to see a good example when something is not valid'
     const publication: Bindings[] = await fetchDocument(AGENDA_LINK, PROXY);
     const documentType = determineDocumentType(publication);
     const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
-    const example: DOMNode[] = await getExampleOfDocumentType('Notulen');
+    const example: DOMNode[] = getExampleOfDocumentType('Notulen');
 
     const validationResult = await validatePublication(publication, blueprint);
     const enrichedResults = await enrichClassCollectionsWithExample(validationResult, blueprint, example);
