@@ -4,12 +4,85 @@ import { Bindings } from '@comunica/types';
 import { determineDocumentType, validatePublication } from '../validation';
 import { fetchDocument, getBlueprintOfDocumentType, getMaturityProperties, getPublicationFromFileContent } from '../queries';
 
-const PROXY = 'https://corsproxy.io/?';
+import HttpRequestMock from 'http-request-mock';
+
+// const PROXY = 'https://corsproxy.io/?';
+const PROXY = '';
 
 import { AGENDA_LINK, AGENDA_LINK_2, AGENDA_LINK_3, AGENDA_LINK_4, BESLUITEN_LINK, BESLUITEN_LINK2, NOTULEN_LINK, TESTHTMLSTRING, TESTSTRING2 } from './data/testData';
 import { testResult } from './data/result-ex';
 
 describe('As a vendor, I want the tool to automatically determine the type of the document (agenda, besluitenlijst, notulen)', () => {
+  beforeAll(() => {
+    const mocker = HttpRequestMock.setup();
+
+    mocker.mock({
+      url: `${PROXY}${AGENDA_LINK}`, // or RegExp: /.*\/some-api$/
+      method: 'get', // get, post, put, patch or delete
+      delay: 0,
+      status: 200,
+      headers: { // respone headers
+        'content-type': 'text/html;charset=UTF-8'
+      },
+      body: fs.readFileSync(`./src/tests/data/${encodeURIComponent(AGENDA_LINK)}`)
+    });
+
+    mocker.mock({
+      url: `${PROXY}${AGENDA_LINK_2}`, // or RegExp: /.*\/some-api$/
+      method: 'get', // get, post, put, patch or delete
+      delay: 0,
+      status: 200,
+      headers: { // respone headers
+        'content-type': 'text/html;charset=UTF-8'
+      },
+      body: fs.readFileSync(`./src/tests/data/${encodeURIComponent(AGENDA_LINK_2)}`)
+    });
+
+    mocker.mock({
+      url: `${PROXY}${AGENDA_LINK_4}`, // or RegExp: /.*\/some-api$/
+      method: 'get', // get, post, put, patch or delete
+      delay: 0,
+      status: 200,
+      headers: { // respone headers
+        'content-type': 'text/html;charset=UTF-8'
+      },
+      body: fs.readFileSync(`./src/tests/data/${encodeURIComponent(AGENDA_LINK_4)}`)
+    });
+
+    mocker.mock({
+      url: `${PROXY}${BESLUITEN_LINK}`, // or RegExp: /.*\/some-api$/
+      method: 'get', // get, post, put, patch or delete
+      delay: 0,
+      status: 200,
+      headers: { // respone headers
+        'content-type': 'text/html;charset=UTF-8'
+      },
+      body: fs.readFileSync(`./src/tests/data/${encodeURIComponent(BESLUITEN_LINK)}`)
+    });
+
+    mocker.mock({
+      url: `${PROXY}${BESLUITEN_LINK2}`, // or RegExp: /.*\/some-api$/
+      method: 'get', // get, post, put, patch or delete
+      delay: 0,
+      status: 200,
+      headers: { // respone headers
+        'content-type': 'text/html;charset=UTF-8'
+      },
+      body: fs.readFileSync(`./src/tests/data/${encodeURIComponent(BESLUITEN_LINK2)}`)
+    });
+
+    mocker.mock({
+      url: `${PROXY}${NOTULEN_LINK}`, // or RegExp: /.*\/some-api$/
+      method: 'get', // get, post, put, patch or delete
+      delay: 0,
+      status: 200,
+      headers: { // respone headers
+        'content-type': 'text/html;charset=UTF-8'
+      },
+      body: fs.readFileSync(`./src/tests/data/${encodeURIComponent(NOTULEN_LINK)}`)
+    });
+  });
+
   test('determine the type of a document using a link to fetch the publication', async () => {
     const expected: string = 'Besluitenlijst';
     const document: Bindings[] = await fetchDocument(BESLUITEN_LINK2, PROXY);

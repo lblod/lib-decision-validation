@@ -1,6 +1,7 @@
 import { ProxyHandlerStatic } from '@comunica/actor-http-proxy';
 import { QueryEngine } from '@comunica/query-sparql';
 import { Bindings, BindingsStream } from '@comunica/types';
+import { getHTMLExampleOfDocumentType, getShapeOfDocumentType } from 'lib-decision-shapes';
 
 export * from './queries';
 
@@ -49,30 +50,30 @@ export async function fetchDocument(publicationLink: string, proxy: string = def
 }
 
 export async function getBlueprintOfDocumentType(documentType: string): Promise<Bindings[]> {
-  const blueprintLink = {
-    Notulen: 'https://raw.githubusercontent.com/lblod/validation-monitoring-module/fix/tests/files/notulen.ttl',
-    Besluitenlijst:
-      'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/decision-list.ttl',
-    Agenda: 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/basic-agenda.ttl',
-  };
+  const shape = getShapeOfDocumentType(documentType);
+  
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
         SELECT ?s ?p ?o 
         WHERE {
             ?s ?p ?o .
         }    
-        `,
-    {
-      sources: [blueprintLink[documentType]],
-    },
+        `, {
+    sources: [
+      {
+        type: 'stringSource',
+        value: shape,
+        mediaType: 'text/turtle',
+        baseIRI: 'http://example.org/',
+      }]
+    }
   );
   return bindingsStream.toArray();
 }
 
 // TODO: review and update
 export async function getMaturityProperties(maturityLevel: string): Promise<Bindings[]> {
-  const source: string =
-    'https://raw.githubusercontent.com/lblod/validation-monitoring-module/master/files/notulen.ttl';
+  const shape = getShapeOfDocumentType('Notulen');
 
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
@@ -85,7 +86,14 @@ export async function getMaturityProperties(maturityLevel: string): Promise<Bind
       }    
       `,
     {
-      sources: [source],
+      sources:  [
+        {
+          type: 'stringSource',
+          value: shape,
+          mediaType: 'text/turtle',
+          baseIRI: 'http://example.org/',
+        }
+      ]
     },
   );
 

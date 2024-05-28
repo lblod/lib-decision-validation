@@ -1,0 +1,335 @@
+
+<!DOCTYPE html><html lang="nl"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+<meta name="frontend-gelinkt-notuleren-publicatie/config/environment" content="%7B%22modulePrefix%22%3A%22frontend-gelinkt-notuleren-publicatie%22%2C%22environment%22%3A%22production%22%2C%22rootURL%22%3A%22%2F%22%2C%22locationType%22%3A%22auto%22%2C%22EmberENV%22%3A%7B%22FEATURES%22%3A%7B%7D%2C%22EXTEND_PROTOTYPES%22%3A%7B%22Date%22%3Afalse%7D%2C%22_APPLICATION_TEMPLATE_WRAPPER%22%3Afalse%2C%22_JQUERY_INTEGRATION%22%3Afalse%2C%22_TEMPLATE_ONLY_GLIMMER_COMPONENTS%22%3Atrue%7D%2C%22environmentName%22%3A%22%22%2C%22fastboot%22%3A%7B%22hostWhitelist%22%3A%5B%22%2F%5E(%3F%3A%5C%5Cw%2B%5C%5C.)%3Flocalhost(%3F%3A%3A%5C%5Cd%2B)%3F%24%2F%22%2C%22publicatie.gelinkt-notuleren.vlaanderen.be%22%2C%22publicatie.dev.gelinkt-notuleren.lblod.info%22%2C%22publicatie.gebruikerssessie.gelinkt-notuleren.lblod.info%22%2C%22publicatie.gelinkt-notuleren.lblod.info%22%2C%22backend%22%2C%22identifier%22%5D%7D%2C%22APP%22%3A%7B%22analytics%22%3A%7B%22appDomain%22%3A%22publicatie.gelinkt-notuleren.vlaanderen.be%22%2C%22plausibleScript%22%3A%22https://plausible.lblod.info/js/plausible.js%22%7D%2C%22packages%22%3A%7B%7D%2C%22name%22%3A%22frontend-gelinkt-notuleren-publicatie%22%2C%22version%22%3A%221.3.3%2B44a3b701%22%7D%7D">
+<!-- EMBER_CLI_FASTBOOT_TITLE --><title>Besluitenlijst van Gemeenteraad Essen, zitting van 28 november 2023, 19:00 | Publicatie Gelinkt Notuleren</title>
+    
+    
+
+<link href="/assets/vendor.09067e9bed7e364d6034fb36de5a9694.css" rel="stylesheet">
+    
+
+<link href="/assets/frontend-gelinkt-notuleren-publicatie.5580aad8563afa68d7078e1f6733d430.css" rel="stylesheet">
+
+    
+  </head>
+  <body>
+    <script type="x/boundary" id="fastboot-body-start"></script><div class="au-c-app" vocab="http://data.vlaanderen.be/ns/besluit#" prefix="lblod: http://data.lblod.info/vocabularies/lblod/ eli: http://data.europa.eu/eli/ontology# prov: http://www.w3.org/ns/prov# mandaat: http://data.vlaanderen.be/ns/mandaat# besluit: http://data.vlaanderen.be/ns/besluit# generiek: http://data.vlaanderen.be/ns/generiek# person: http://www.w3.org/ns/person# persoon: http://data.vlaanderen.be/ns/persoon# dct: http://purl.org/dc/terms/ skos: http://www.w3.org/2004/02/skos/core# org: http://www.w3.org/ns/org# foaf: http://xmlns.com/foaf/0.1/ ext: http://mu.semte.ch/vocabularies/ext/ besluittype: https://data.vlaanderen.be/id/concept/BesluitType/ lblodBesluit: http://lblod.data.gift/vocabularies/besluit/ ">
+  
+<!---->    <header class="au-c-main-header">
+  <div class="au-c-main-header__title-group">
+    <div aria-live="assertive" aria-controls="main" aria-atomic="true" aria-relevant="all">
+  <span class="au-u-hidden-visually">
+    Nieuwe pagina: bestuurseenheid.zittingen.zitting.besluitenlijst.index
+  </span>
+</div>
+      <a href="https://publicatie.gelinkt-notuleren.vlaanderen.be/" class="au-c-brand au-c-brand--link ">
+    <div class="au-c-brand__logo">
+      <svg role="img" id="ember3439-leeuw" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 19.61 31.05" aria-labelledby="ember3439-logoVlaanderen" aria-hidden="true">
+        <title id="ember3439-logoVlaanderen">Logo Vlaanderen</title>
+        <path id="ember3439-Logo_Vlaanderen" data-name="Logo Vlaanderen" d="M19.61,16c-1.08-.82-1.59,0-2.27,0s-1.12-1-1.56-.75c-0.85.43,0.34,2,.86,2.27a12.51,12.51,0,0,0,1.18.59,1.72,1.72,0,0,1,1,1.55,3,3,0,0,1,0,.75c-0.31,1.32-2.64,2.52-4,1.61a3,3,0,0,1-1.4-2c-0.36-1.73-1.62-3-2-4.7-0.25-1-.43-2.12-0.7-3.15S10.17,10,9.94,9A27.44,27.44,0,0,0,9,5.92C7.71,2.61,7.14,2.85,7.14,2.85s0.46,0.92,2.15,9A47.8,47.8,0,0,0,10.42,17c0.16,0.42.44,1.32,0.62,1.72,0.54,1.16,2,2.92,2.05,4.51,0.05,0.92.16,1.68,0.18,2.37a7.37,7.37,0,0,0,.24,1.4c0.35,1,3.14,4.09,6.1,4.09V28.68a10.88,10.88,0,0,1-5.79-1.82,6.37,6.37,0,0,1,.35-1.7,2.78,2.78,0,0,1,2.39-1.94,17.91,17.91,0,0,1,3,.31V16ZM6.82,7.36c-0.11,1.77-2.87,4.2-3.73,5.75A11.43,11.43,0,0,0,2,15.95a7.53,7.53,0,0,0,.62,4.67c0.91,2.18-.12,3,0.59,2.54,0.88-.72.75-2.39,0.68-3.43a14.77,14.77,0,0,1,0-2.82A13.29,13.29,0,0,1,6.3,11.58a4.84,4.84,0,0,0,.52-4.22m0.56,5s0.29,1.4-1,5c-3.26,9.45,3,10.34,4.74,12.56,0,0,.69-1-2.14-4-1-1.12-2-3.6-1.15-7.15,1.17-5.13-.5-6.39-0.5-6.39M1.21,6.2A4.53,4.53,0,0,1,1,4.7C1.2,2.48,3.23,1.58,3.73,1.25A2.7,2.7,0,0,0,4.76,0,3,3,0,0,1,3.55,3.67,6.06,6.06,0,0,0,1.21,6.2M6.32,4.05c0.11,0.23,1,1.45-2.48,4.27s-2.36,4.84-2.36,4.84-3.66-2,.56-5.53S5.39,3.43,5.39,3.43a1.05,1.05,0,0,1,.93.63m4.46,1.08c0.59,0.08,1,1.92,2.35,2.32,1,0.29,2.08.13,2.32,0.74a0.52,0.52,0,0,0,.37.92C16.21,8,16.4,3.88,10.79,5.14ZM12.64,6c0-.13.12,0,0.27-0.12a1.66,1.66,0,0,1,.59-0.48,1,1,0,0,1,.62,0c0.12,0,0,.33,0,0.4s-0.74-.09-0.74.32c0,0.67.91,0,1.38,0,0.23,1.64-2.48,1.19-2.08-.16h0Z"></path>
+      </svg>
+    </div>
+    <p class="au-c-brand__logotype">
+      <span class="au-c-brand__main">Vlaanderen</span>
+<!---->    </p>
+  </a>
+
+      <a id="ember3440" class="ember-view au-c-main-header__title au-c-main-header__title--link" href="/">
+        publicatie.gelinkt-notuleren.vlaanderen.be
+      </a>
+    <a href="#content" class="au-c-main-header__skiplink">Naar de hoofdinhoud</a>
+  </div>
+  <nav class="au-c-main-header__actions">
+    <ul class="au-c-list-horizontal">
+        <li class="au-c-list-horizontal__item">
+          <a id="ember3441" class="ember-view au-c-link au-c-link--secondary
+    
+    
+    " href="/contact">
+    <svg role="img" class="au-c-icon au-c-icon--question-circle  " aria-hidden="true">
+  <use xlink:href="/@appuniversum/ember-appuniversum/appuniversum-symbolset.svg#question-circle"></use>
+</svg>
+    
+            Contacteer ons
+          
+<!----></a>
+        </li>
+      <li class="au-c-list-horizontal__item">
+        
+    
+      </li>
+    </ul>
+  </nav>
+</header>
+    
+
+  
+
+
+<div class="au-c-toolbar
+    
+    au-c-toolbar--bottom
+    au-c-toolbar--tint
+    au-c-toolbar--medium
+     au-c-toolbar__breadcrumbs">
+  
+  <div class="au-c-toolbar__group">
+  
+    <nav aria-label="Breadcrumb">
+      <ol class="au-c-list-horizontal">
+          <li class="au-c-list-horizontal__item">
+                <a id="ember3456" class="ember-view au-c-link
+    
+    
+    " href="/">
+<!---->    
+                  Zoekpagina
+                
+<!----></a>
+          </li>
+          <li class="au-c-list-horizontal__item">
+                <a id="ember3457" class="ember-view active au-c-link
+    
+    
+    " href="/Essen/Gemeente">
+<!---->    
+                  Gemeente Essen
+                
+<!----></a>
+          </li>
+          <li class="au-c-list-horizontal__item">
+                <a id="ember3458" class="ember-view active au-c-link
+    
+    
+    " href="/Essen/Gemeente/zittingen">
+<!---->    
+                  Zittingen
+                
+<!----></a>
+          </li>
+          <li class="au-c-list-horizontal__item">
+                <a id="ember3459" class="ember-view active au-c-link
+    
+    
+    " href="/Essen/Gemeente/zittingen/a3c147f0-905f-11ee-ae1d-77c537c8924c">
+<!---->    
+                  Zitting van Gemeenteraad Essen, op 28 november 2023, 19:00
+                
+<!----></a>
+          </li>
+          <li class="au-c-list-horizontal__item">
+                Besluitenlijst
+          </li>
+      </ol>
+    </nav>
+  
+</div>
+
+</div>
+
+<main id="main" class="au-c-main-container" tabindex="-1">
+  
+    <div class="au-c-main-container__sidebar  au-u-hide-on-print">
+    
+    <div class="au-c-sidebar">
+  <div class="au-c-sidebar__content">
+    <nav>
+      <ul class="au-c-list-navigation">
+        <li class="au-c-list-navigation__item">
+          <a id="ember3445" class="ember-view active au-c-list-navigation__link" href="/Essen/Gemeente/zittingen">
+  
+            <svg role="img" class="au-c-icon au-c-icon--folder au-c-icon--left " aria-hidden="true">
+  <use xlink:href="/@appuniversum/ember-appuniversum/appuniversum-symbolset.svg#folder"></use>
+</svg>
+            Zittingen
+          
+</a>
+        </li>
+        <li class="au-c-list-navigation__item">
+          <a id="ember3446" class="ember-view au-c-list-navigation__link" href="/Essen/Gemeente/reglementen">
+  
+            <svg role="img" class="au-c-icon au-c-icon--folder au-c-icon--left " aria-hidden="true">
+  <use xlink:href="/@appuniversum/ember-appuniversum/appuniversum-symbolset.svg#folder"></use>
+</svg>
+            Reglementen
+          
+</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+  
+  </div>
+
+  <!---->
+
+  
+  <!---->
+    <div id="content" class="au-c-main-container__content au-c-main-container__content--scroll au-u-wide-on-print" tabindex="-1">
+    
+    
+
+
+
+
+  
+<div class="au-o-layout">
+  <div class="au-o-region-large">
+    <div typeof="besluit:Zitting" resource="http://data.lblod.info/id/zittingen/65688B62C1158B904059B3DB" id="ember3451" class="ember-view">
+      
+              <div property="besluit:heeftBesluitenlijst" resource="http://data.lblod.info/id/lblod/besluitenlijsten/ebdee3d0-905f-11ee-ae1d-77c537c8924c" typeof="foaf:Document https://data.vlaanderen.be/id/concept/BesluitDocumentType/3fa67785-ffdc-4b30-8880-2b99d97b4dee">
+  
+              
+          <div class="au-c-template au-c-template--decision besluiten" prefix="eli: http://data.europa.eu/eli/ontology# prov: http://www.w3.org/ns/prov# mandaat: http://data.vlaanderen.be/ns/mandaat# besluit: http://data.vlaanderen.be/ns/besluit# ext: http://mu.semte.ch/vocabularies/ext/ person: http://www.w3.org/ns/person# persoon: http://data.vlaanderen.be/ns/persoon# dateplugin: http://say.data.gift/manipulators/insertion/ besluittype: https://data.vlaanderen.be/id/concept/BesluitType/ dct: http://purl.org/dc/terms/ mobiliteit: https://data.vlaanderen.be/ns/mobiliteit# lblodmow: http://data.lblod.info/vocabularies/mobiliteit/">  <div about="http://data.lblod.info/id/zittingen/65688B62C1158B904059B3DB" typeof="besluit:Zitting">    <h1>Besluitenlijst van <span property="http://data.vlaanderen.be/ns/besluit#isGehoudenDoor" resource="http://data.lblod.info/id/bestuursorganen/c3ed1a050cbff279bd9a451fc080d61f4030a97247cc70b6b3ca8bc23f136077" typeof="besluit:Bestuursorgaan">Gemeenteraad Essen</span>, zitting      op <span property="prov:startedAtTime" content="2023-11-28T19:00:37.838Z" datatype="http://www.w3.org/2001/XMLSchema#dateTime">28/11/2023 20:00</span></h1>    <span property="http://data.vlaanderen.be/ns/besluit#geplandeStart" content="2023-11-28T19:00:37.838Z" datatype="http://www.w3.org/2001/XMLSchema#dateTime"></span>    <span property="prov:endedAtTime" content="2023-11-28T19:53:33.694Z" datatype="http://www.w3.org/2001/XMLSchema#dateTime"></span>      <div resource="http://data.lblod.info/id/behandelingen-van-agendapunten/65689369C1158B904059B432" typeof="besluit:BehandelingVanAgendapunt">        <span property="http://purl.org/dc/terms/subject" resource="http://data.lblod.info/id/agendapunten/6568936AC1158B904059B433" typeof="besluit:Agendapunt">        </span>        <span about="http://data.lblod.info/id/zittingen/65688B62C1158B904059B3DB" property="besluit:behandelt" resource="http://data.lblod.info/id/agendapunten/6568936AC1158B904059B433"></span>          <span property="besluit:gebeurtNa" resource="http://data.lblod.info/id/behandelingen-van-agendapunten/656892FDC1158B904059B430"></span>        <span          property="besluit:openbaar"          datatype="xsd:boolean"          content="true"          class="au-template-public"        >        </span>          <div property="prov:generated" resource="http://data.lblod.info/id/besluiten/2a039cdd-f5f0-45c7-81eb-64b078368c11" typeof="http://data.vlaanderen.be/ns/besluit#Besluit http://mu.semte.ch/vocabularies/ext/BesluitKlassiekeStijl https://data.vlaanderen.be/id/concept/BesluitType/e96ec8af-6480-4b32-876a-fefe5f0a3793">              <h3 property="eli:title">A.2a INTERGEMEENTELIJKE SAMENWERKING. Buitengewone Algemene Vergadering Pidpa</h3>              <p property="eli:description">Buitengewone Algemene Vergadering Pidpa</p>            <span property="eli:language" resource="http://publications.europa.eu/resource/authority/language/NLD" typeof="skos:Concept"></span>          </div>          <h3>Stemmingen</h3>            <div class="c-template-content c-template-content--voting" typeof="http://data.vlaanderen.be/ns/besluit#Stemming" resource="http://data.lblod.info/id/stemmingen/6568BC9DC1158B904059B4E5" property="besluit:heeftStemming">              <p>                <strong>Onderwerp:</strong>                <span property="besluit:onderwerp">Buitengewone Algemene Vergadering Pidpa</span>,              </p>              <p>                <strong>Gevolg:</strong>                <span property="besluit:gevolg">goedgekeurd</span>              </p>            </div>        </div>      <div resource="http://data.lblod.info/id/behandelingen-van-agendapunten/65689377C1158B904059B434" typeof="besluit:BehandelingVanAgendapunt">        <span property="http://purl.org/dc/terms/subject" resource="http://data.lblod.info/id/agendapunten/65689378C1158B904059B435" typeof="besluit:Agendapunt">        </span>        <span about="http://data.lblod.info/id/zittingen/65688B62C1158B904059B3DB" property="besluit:behandelt" resource="http://data.lblod.info/id/agendapunten/65689378C1158B904059B435"></span>          <span property="besluit:gebeurtNa" resource="http://data.lblod.info/id/behandelingen-van-agendapunten/65689369C1158B904059B432"></span>        <span          property="besluit:openbaar"          datatype="xsd:boolean"          content="true"          class="au-template-public"        >        </span>          <div property="prov:generated" resource="http://data.lblod.info/id/besluiten/3312283e-e9c8-42c9-9037-aedc750e1c9c" typeof="http://data.vlaanderen.be/ns/besluit#Besluit http://mu.semte.ch/vocabularies/ext/BesluitKlassiekeStijl https://data.vlaanderen.be/id/concept/BesluitType/e96ec8af-6480-4b32-876a-fefe5f0a3793">              <h3 property="eli:title">A.2b INTERGEMEENTELIJKE SAMENWERKING. Buitengewone Algemene Vergadering IGEAN Milieu &amp; Veiligheid</h3>              <p property="eli:description">Buitengewone Algemene Vergadering IGEAN Milieu &amp; Veiligheid</p>            <span property="eli:language" resource="http://publications.europa.eu/resource/authority/language/NLD" typeof="skos:Concept"></span>          </div>          <h3>Stemmingen</h3>            <div class="c-template-content c-template-content--voting" typeof="http://data.vlaanderen.be/ns/besluit#Stemming" resource="http://data.lblod.info/id/stemmingen/6568BCD0C1158B904059B4E6" property="besluit:heeftStemming">              <p>                <strong>Onderwerp:</strong>                <span property="besluit:onderwerp">Buitengewone Algemene Vergadering IGEAN Milieu &amp; Veiligheid</span>,              </p>              <p>                <strong>Gevolg:</strong>                <span property="besluit:gevolg">goedgekeurd</span>              </p>            </div>        </div>      <div resource="http://data.lblod.info/id/behandelingen-van-agendapunten/6568939FC1158B904059B436" typeof="besluit:BehandelingVanAgendapunt">        <span property="http://purl.org/dc/terms/subject" resource="http://data.lblod.info/id/agendapunten/656893A0C1158B904059B437" typeof="besluit:Agendapunt">        </span>        <span about="http://data.lblod.info/id/zittingen/65688B62C1158B904059B3DB" property="besluit:behandelt" resource="http://data.lblod.info/id/agendapunten/656893A0C1158B904059B437"></span>          <span property="besluit:gebeurtNa" resource="http://data.lblod.info/id/behandelingen-van-agendapunten/65689377C1158B904059B434"></span>        <span          property="besluit:openbaar"          datatype="xsd:boolean"          content="true"          class="au-template-public"        >        </span>          <div property="prov:generated" resource="http://data.lblod.info/id/besluiten/58986e34-b9dd-460b-a4c6-fad00c6d6aee" typeof="http://data.vlaanderen.be/ns/besluit#Besluit http://mu.semte.ch/vocabularies/ext/BesluitKlassiekeStijl https://data.vlaanderen.be/id/concept/BesluitType/e96ec8af-6480-4b32-876a-fefe5f0a3793">              <h3 property="eli:title">A.2c INTERGEMEENTELIJKE SAMENWERKING. Buitengewone Algemene Vergadering Igean Dienstverlening</h3>              <p property="eli:description">Buitengewone Algemene Vergadering Igean Dienstverlening</p>            <span property="eli:language" resource="http://publications.europa.eu/resource/authority/language/NLD" typeof="skos:Concept"></span>          </div>          <h3>Stemmingen</h3>            <div class="c-template-content c-template-content--voting" typeof="http://data.vlaanderen.be/ns/besluit#Stemming" resource="http://data.lblod.info/id/stemmingen/6568BD19C1158B904059B4E7" property="besluit:heeftStemming">              <p>                <strong>Onderwerp:</strong>                <span property="besluit:onderwerp">Buitengewone Algemene Vergadering IGEAN Dienstverlening</span>,              </p>              <p>                <strong>Gevolg:</strong>                <span property="besluit:gevolg">goedgekeurd</span>              </p>            </div>        </div>      <div resource="http://data.lblod.info/id/behandelingen-van-agendapunten/656893B3C1158B904059B438" typeof="besluit:BehandelingVanAgendapunt">        <span property="http://purl.org/dc/terms/subject" resource="http://data.lblod.info/id/agendapunten/656893B3C1158B904059B439" typeof="besluit:Agendapunt">        </span>        <span about="http://data.lblod.info/id/zittingen/65688B62C1158B904059B3DB" property="besluit:behandelt" resource="http://data.lblod.info/id/agendapunten/656893B3C1158B904059B439"></span>          <span property="besluit:gebeurtNa" resource="http://data.lblod.info/id/behandelingen-van-agendapunten/6568939FC1158B904059B436"></span>        <span          property="besluit:openbaar"          datatype="xsd:boolean"          content="true"          class="au-template-public"        >        </span>          <div property="prov:generated" resource="http://data.lblod.info/id/besluiten/012b5df8-8859-44c0-814b-afcc32ebc3cd" typeof="http://data.vlaanderen.be/ns/besluit#Besluit http://mu.semte.ch/vocabularies/ext/BesluitKlassiekeStijl https://data.vlaanderen.be/id/concept/BesluitType/e96ec8af-6480-4b32-876a-fefe5f0a3793">              <h3 property="eli:title">A.2d INTERGEMEENTELIJKE SAMENWERKING. Buitengewone Algemene Vergadering CREAT</h3>              <p property="eli:description">Buitengewone Algemene Vergadering CREAT</p>            <span property="eli:language" resource="http://publications.europa.eu/resource/authority/language/NLD" typeof="skos:Concept"></span>          </div>          <h3>Stemmingen</h3>            <div class="c-template-content c-template-content--voting" typeof="http://data.vlaanderen.be/ns/besluit#Stemming" resource="http://data.lblod.info/id/stemmingen/6568BD43C1158B904059B4E9" property="besluit:heeftStemming">              <p>                <strong>Onderwerp:</strong>                <span property="besluit:onderwerp">Buitengewone Algemene Vergadering CREAT</span>,              </p>              <p>                <strong>Gevolg:</strong>                <span property="besluit:gevolg">goedgekeurd</span>              </p>            </div>        </div>      <div resource="http://data.lblod.info/id/behandelingen-van-agendapunten/656893C2C1158B904059B43B" typeof="besluit:BehandelingVanAgendapunt">        <span property="http://purl.org/dc/terms/subject" resource="http://data.lblod.info/id/agendapunten/656893C2C1158B904059B43C" typeof="besluit:Agendapunt">        </span>        <span about="http://data.lblod.info/id/zittingen/65688B62C1158B904059B3DB" property="besluit:behandelt" resource="http://data.lblod.info/id/agendapunten/656893C2C1158B904059B43C"></span>          <span property="besluit:gebeurtNa" resource="http://data.lblod.info/id/behandelingen-van-agendapunten/656893B3C1158B904059B438"></span>        <span          property="besluit:openbaar"          datatype="xsd:boolean"          content="true"          class="au-template-public"        >        </span>          <div property="prov:generated" resource="http://data.lblod.info/id/besluiten/9c72b6ad-bced-478f-aef4-1b5f14e3e5b3" typeof="http://data.vlaanderen.be/ns/besluit#Besluit http://mu.semte.ch/vocabularies/ext/BesluitKlassiekeStijl https://data.vlaanderen.be/id/concept/BesluitType/e96ec8af-6480-4b32-876a-fefe5f0a3793">              <h3 property="eli:title">A.2e INTERGEMEENTELIJKE SAMENWERKING. Buitengewone Algemene Vergadering Water-link</h3>              <p property="eli:description">Buitengewone Algemene Vergadering Water-link</p>            <span property="eli:language" resource="http://publications.europa.eu/resource/authority/language/NLD" typeof="skos:Concept"></span>          </div>          <h3>Stemmingen</h3>            <div class="c-template-content c-template-content--voting" typeof="http://data.vlaanderen.be/ns/besluit#Stemming" resource="http://data.lblod.info/id/stemmingen/6568BD64C1158B904059B4EA" property="besluit:heeftStemming">              <p>                <strong>Onderwerp:</strong>                <span property="besluit:onderwerp">Buitengewone Algemene Vergadering Water-link</span>,              </p>              <p>                <strong>Gevolg:</strong>                <span property="besluit:gevolg">goedgekeurd</span>              </p>            </div>        </div>      <div resource="http://data.lblod.info/id/behandelingen-van-agendapunten/656893E6C1158B904059B43D" typeof="besluit:BehandelingVanAgendapunt">        <span property="http://purl.org/dc/terms/subject" resource="http://data.lblod.info/id/agendapunten/656893E6C1158B904059B43E" typeof="besluit:Agendapunt">        </span>        <span about="http://data.lblod.info/id/zittingen/65688B62C1158B904059B3DB" property="besluit:behandelt" resource="http://data.lblod.info/id/agendapunten/656893E6C1158B904059B43E"></span>          <span property="besluit:gebeurtNa" resource="http://data.lblod.info/id/behandelingen-van-agendapunten/656893C2C1158B904059B43B"></span>        <span          property="besluit:openbaar"          datatype="xsd:boolean"          content="true"          class="au-template-public"        >        </span>          <div property="prov:generated" resource="http://data.lblod.info/id/besluiten/f0b08208-c173-4183-9c36-13f6fe8f9369" typeof="http://data.vlaanderen.be/ns/besluit#Besluit http://mu.semte.ch/vocabularies/ext/BesluitKlassiekeStijl https://data.vlaanderen.be/id/concept/BesluitType/e96ec8af-6480-4b32-876a-fefe5f0a3793">              <h3 property="eli:title">A.3 PATRIMONIUM. Kosteloze grondafstand Fazantendreef</h3>              <p property="eli:description">Kosteloze grondafstand Fazantendreef</p>            <span property="eli:language" resource="http://publications.europa.eu/resource/authority/language/NLD" typeof="skos:Concept"></span>          </div>          <h3>Stemmingen</h3>            <div class="c-template-content c-template-content--voting" typeof="http://data.vlaanderen.be/ns/besluit#Stemming" resource="http://data.lblod.info/id/stemmingen/6568BD8AC1158B904059B4EC" property="besluit:heeftStemming">              <p>                <strong>Onderwerp:</strong>                <span property="besluit:onderwerp">Kosteloze grondafstand Fazantendreef</span>,              </p>              <p>                <strong>Gevolg:</strong>                <span property="besluit:gevolg">goedgekeurd</span>              </p>            </div>        </div>      <div resource="http://data.lblod.info/id/behandelingen-van-agendapunten/65689412C1158B904059B43F" typeof="besluit:BehandelingVanAgendapunt">        <span property="http://purl.org/dc/terms/subject" resource="http://data.lblod.info/id/agendapunten/65689413C1158B904059B440" typeof="besluit:Agendapunt">        </span>        <span about="http://data.lblod.info/id/zittingen/65688B62C1158B904059B3DB" property="besluit:behandelt" resource="http://data.lblod.info/id/agendapunten/65689413C1158B904059B440"></span>          <span property="besluit:gebeurtNa" resource="http://data.lblod.info/id/behandelingen-van-agendapunten/656893E6C1158B904059B43D"></span>        <span          property="besluit:openbaar"          datatype="xsd:boolean"          content="true"          class="au-template-public"        >        </span>          <div property="prov:generated" resource="http://data.lblod.info/id/besluiten/fde04185-2b0c-4c06-be3f-72a11ed4e3f5" typeof="http://data.vlaanderen.be/ns/besluit#Besluit http://mu.semte.ch/vocabularies/ext/BesluitKlassiekeStijl https://data.vlaanderen.be/id/concept/BesluitType/e96ec8af-6480-4b32-876a-fefe5f0a3793">              <h3 property="eli:title">A.4a COORDINATIE EN BELEIDSVOERING. Vervanging lid raadscommissie Bestuur, Beleid en Beheer</h3>              <p property="eli:description">Vervanging lid raadscommissie Bestuur, Beleid en Beheer</p>            <span property="eli:language" resource="http://publications.europa.eu/resource/authority/language/NLD" typeof="skos:Concept"></span>          </div>        </div>      <div resource="http://data.lblod.info/id/behandelingen-van-agendapunten/65689434C1158B904059B441" typeof="besluit:BehandelingVanAgendapunt">        <span property="http://purl.org/dc/terms/subject" resource="http://data.lblod.info/id/agendapunten/65689435C1158B904059B442" typeof="besluit:Agendapunt">        </span>        <span about="http://data.lblod.info/id/zittingen/65688B62C1158B904059B3DB" property="besluit:behandelt" resource="http://data.lblod.info/id/agendapunten/65689435C1158B904059B442"></span>          <span property="besluit:gebeurtNa" resource="http://data.lblod.info/id/behandelingen-van-agendapunten/65689412C1158B904059B43F"></span>        <span          property="besluit:openbaar"          datatype="xsd:boolean"          content="true"          class="au-template-public"        >        </span>          <div property="prov:generated" resource="http://data.lblod.info/id/besluiten/e049e7e8-4b09-457f-875d-def4f7cfe650" typeof="http://data.vlaanderen.be/ns/besluit#Besluit http://mu.semte.ch/vocabularies/ext/BesluitKlassiekeStijl https://data.vlaanderen.be/id/concept/BesluitType/e96ec8af-6480-4b32-876a-fefe5f0a3793">              <h3 property="eli:title">A.4b COORDINATIE EN BELEIDSVOERING. Afvaardiging Raad van Bestuur en Algemene Vergadering voor VVV Toerisme Essen</h3>              <p property="eli:description">Afvaardiging Raad van Bestuur en Algemene Vergadering voor VVV Toerisme Essen</p>            <span property="eli:language" resource="http://publications.europa.eu/resource/authority/language/NLD" typeof="skos:Concept"></span>          </div>        </div>      <div resource="http://data.lblod.info/id/behandelingen-van-agendapunten/65689447C1158B904059B443" typeof="besluit:BehandelingVanAgendapunt">        <span property="http://purl.org/dc/terms/subject" resource="http://data.lblod.info/id/agendapunten/65689448C1158B904059B444" typeof="besluit:Agendapunt">        </span>        <span about="http://data.lblod.info/id/zittingen/65688B62C1158B904059B3DB" property="besluit:behandelt" resource="http://data.lblod.info/id/agendapunten/65689448C1158B904059B444"></span>          <span property="besluit:gebeurtNa" resource="http://data.lblod.info/id/behandelingen-van-agendapunten/65689434C1158B904059B441"></span>        <span          property="besluit:openbaar"          datatype="xsd:boolean"          content="true"          class="au-template-public"        >        </span>          <div property="prov:generated" resource="http://data.lblod.info/id/besluiten/b47197ff-4814-428d-87e4-20997ce2e921" typeof="http://data.vlaanderen.be/ns/besluit#Besluit http://mu.semte.ch/vocabularies/ext/BesluitKlassiekeStijl https://data.vlaanderen.be/id/concept/BesluitType/ba5922c9-cfad-4b2e-b203-36479219ba56">              <h3 property="eli:title">A.5 FINANCIEN. Retributiereglement gebruik spiegeltent op het Heuvelplein tijdens eindejaarperiode 2023/2024</h3>              <p property="eli:description">Retributiereglement gebruik spiegeltent op het Heuvelplein tijdens eindejaarperiode 2023/2024</p>            <span property="eli:language" resource="http://publications.europa.eu/resource/authority/language/NLD" typeof="skos:Concept"></span>          </div>          <h3>Stemmingen</h3>            <div class="c-template-content c-template-content--voting" typeof="http://data.vlaanderen.be/ns/besluit#Stemming" resource="http://data.lblod.info/id/stemmingen/6568BDD7C1158B904059B4ED" property="besluit:heeftStemming">              <p>                <strong>Onderwerp:</strong>                <span property="besluit:onderwerp">Retributie op het gebruik van de spiegeltent op het Heuvelplein tijdens de eindejaarsperiode 2023/2024</span>,              </p>              <p>                <strong>Gevolg:</strong>                <span property="besluit:gevolg">goedgekeurd</span>              </p>            </div>        </div>      <div resource="http://data.lblod.info/id/behandelingen-van-agendapunten/65689456C1158B904059B445" typeof="besluit:BehandelingVanAgendapunt">        <span property="http://purl.org/dc/terms/subject" resource="http://data.lblod.info/id/agendapunten/65689457C1158B904059B446" typeof="besluit:Agendapunt">        </span>        <span about="http://data.lblod.info/id/zittingen/65688B62C1158B904059B3DB" property="besluit:behandelt" resource="http://data.lblod.info/id/agendapunten/65689457C1158B904059B446"></span>          <span property="besluit:gebeurtNa" resource="http://data.lblod.info/id/behandelingen-van-agendapunten/65689447C1158B904059B443"></span>        <span          property="besluit:openbaar"          datatype="xsd:boolean"          content="true"          class="au-template-public"        >        </span>          <div property="prov:generated" resource="http://data.lblod.info/id/besluiten/be34cbb0-ff44-4d7b-a751-0d471c430b76" typeof="http://data.vlaanderen.be/ns/besluit#Besluit http://mu.semte.ch/vocabularies/ext/BesluitKlassiekeStijl https://data.vlaanderen.be/id/concept/BesluitType/4673d472-8dbc-4cea-b3ab-f92df3807eb3">              <h3 property="eli:title">B.1 PERSONEEL EN ORGANISATIE.  Aanpassing arbeidsreglement.</h3>              <p property="eli:description">Aanpassing arbeidsreglement.</p>            <span property="eli:language" resource="http://publications.europa.eu/resource/authority/language/NLD" typeof="skos:Concept"></span>          </div>          <h3>Stemmingen</h3>            <div class="c-template-content c-template-content--voting" typeof="http://data.vlaanderen.be/ns/besluit#Stemming" resource="http://data.lblod.info/id/stemmingen/6568BE04C1158B904059B4EE" property="besluit:heeftStemming">              <p>                <strong>Onderwerp:</strong>                <span property="besluit:onderwerp">Aanpassing arbeidsreglement</span>,              </p>              <p>                <strong>Gevolg:</strong>                <span property="besluit:gevolg">goedgekeurd</span>              </p>            </div>        </div>      <div resource="http://data.lblod.info/id/behandelingen-van-agendapunten/65689470C1158B904059B447" typeof="besluit:BehandelingVanAgendapunt">        <span property="http://purl.org/dc/terms/subject" resource="http://data.lblod.info/id/agendapunten/65689471C1158B904059B448" typeof="besluit:Agendapunt">        </span>        <span about="http://data.lblod.info/id/zittingen/65688B62C1158B904059B3DB" property="besluit:behandelt" resource="http://data.lblod.info/id/agendapunten/65689471C1158B904059B448"></span>          <span property="besluit:gebeurtNa" resource="http://data.lblod.info/id/behandelingen-van-agendapunten/65689456C1158B904059B445"></span>        <span          property="besluit:openbaar"          datatype="xsd:boolean"          content="true"          class="au-template-public"        >        </span>          <div property="prov:generated" resource="http://data.lblod.info/id/besluiten/5c2101f4-0566-4e9d-8492-60f9d91c55f4" typeof="http://data.vlaanderen.be/ns/besluit#Besluit http://mu.semte.ch/vocabularies/ext/BesluitKlassiekeStijl https://data.vlaanderen.be/id/concept/BesluitType/e96ec8af-6480-4b32-876a-fefe5f0a3793">              <h3 property="eli:title">B.2 FINANCIEN. Ontwerpbegroting 2024 vzw Kobie</h3>              <p property="eli:description">Ontwerpbegroting 2024 vzw Kobie</p>            <span property="eli:language" resource="http://publications.europa.eu/resource/authority/language/NLD" typeof="skos:Concept"></span>          </div>          <h3>Stemmingen</h3>            <div class="c-template-content c-template-content--voting" typeof="http://data.vlaanderen.be/ns/besluit#Stemming" resource="http://data.lblod.info/id/stemmingen/6568BE54C1158B904059B4EF" property="besluit:heeftStemming">              <p>                <strong>Onderwerp:</strong>                <span property="besluit:onderwerp">Ontwerpbegroting Kobie 2024</span>,              </p>              <p>                <strong>Gevolg:</strong>                <span property="besluit:gevolg">goedgekeurd</span>              </p>            </div>        </div>  </div></div>
+
+        <div class="au-u-margin-top">
+          <p class="au-c-heading au-c-heading--5 au-u-margin-bottom-tiny">
+            Besluitenlijst goedgekeurd door
+            
+              <span property="eli:passed_by" resource="http://data.lblod.info/id/bestuursorganen/c3ed1a050cbff279bd9a451fc080d61f4030a97247cc70b6b3ca8bc23f136077" typeof="besluit:Bestuursorgaan">
+  
+              
+              
+              <span property="mandaat:isTijdspecialisatieVan" resource="http://data.lblod.info/id/bestuursorganen/34d65625de516650c3c15bc82abe55cef6c3f427db164947db50d84bdcb7f8dd" typeof="besluit:Bestuursorgaan">
+  
+              
+                
+              <span property="skos:prefLabel">Gemeenteraad Essen</span>
+
+
+
+              
+            
+</span>
+
+
+
+
+            
+            
+</span>
+
+
+
+
+          </p>
+          <p class="au-c-heading au-c-heading--5">
+            Datum publicatie:
+              
+              <span property="eli:date_publication" datatype="xsd:date" content="2023-12-01">
+  
+              1 december 2023
+            
+</span>
+
+
+
+
+          </p>
+        </div>
+      
+            
+</div>
+
+
+
+
+    
+</div>
+  </div>
+</div>
+
+
+
+
+    <footer class="au-c-main-footer">
+  <div class="au-c-main-footer__brand">
+      <div class="au-c-brand au-c-brand--tagline">
+    <div class="au-c-brand__logo">
+      <svg role="img" id="ember3452-leeuw" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 19.61 31.05" aria-labelledby="ember3452-logoVlaanderen" aria-hidden="true">
+        <title id="ember3452-logoVlaanderen">Logo Vlaanderen</title>
+        <path id="ember3452-Logo_Vlaanderen" data-name="Logo Vlaanderen" d="M19.61,16c-1.08-.82-1.59,0-2.27,0s-1.12-1-1.56-.75c-0.85.43,0.34,2,.86,2.27a12.51,12.51,0,0,0,1.18.59,1.72,1.72,0,0,1,1,1.55,3,3,0,0,1,0,.75c-0.31,1.32-2.64,2.52-4,1.61a3,3,0,0,1-1.4-2c-0.36-1.73-1.62-3-2-4.7-0.25-1-.43-2.12-0.7-3.15S10.17,10,9.94,9A27.44,27.44,0,0,0,9,5.92C7.71,2.61,7.14,2.85,7.14,2.85s0.46,0.92,2.15,9A47.8,47.8,0,0,0,10.42,17c0.16,0.42.44,1.32,0.62,1.72,0.54,1.16,2,2.92,2.05,4.51,0.05,0.92.16,1.68,0.18,2.37a7.37,7.37,0,0,0,.24,1.4c0.35,1,3.14,4.09,6.1,4.09V28.68a10.88,10.88,0,0,1-5.79-1.82,6.37,6.37,0,0,1,.35-1.7,2.78,2.78,0,0,1,2.39-1.94,17.91,17.91,0,0,1,3,.31V16ZM6.82,7.36c-0.11,1.77-2.87,4.2-3.73,5.75A11.43,11.43,0,0,0,2,15.95a7.53,7.53,0,0,0,.62,4.67c0.91,2.18-.12,3,0.59,2.54,0.88-.72.75-2.39,0.68-3.43a14.77,14.77,0,0,1,0-2.82A13.29,13.29,0,0,1,6.3,11.58a4.84,4.84,0,0,0,.52-4.22m0.56,5s0.29,1.4-1,5c-3.26,9.45,3,10.34,4.74,12.56,0,0,.69-1-2.14-4-1-1.12-2-3.6-1.15-7.15,1.17-5.13-.5-6.39-0.5-6.39M1.21,6.2A4.53,4.53,0,0,1,1,4.7C1.2,2.48,3.23,1.58,3.73,1.25A2.7,2.7,0,0,0,4.76,0,3,3,0,0,1,3.55,3.67,6.06,6.06,0,0,0,1.21,6.2M6.32,4.05c0.11,0.23,1,1.45-2.48,4.27s-2.36,4.84-2.36,4.84-3.66-2,.56-5.53S5.39,3.43,5.39,3.43a1.05,1.05,0,0,1,.93.63m4.46,1.08c0.59,0.08,1,1.92,2.35,2.32,1,0.29,2.08.13,2.32,0.74a0.52,0.52,0,0,0,.37.92C16.21,8,16.4,3.88,10.79,5.14ZM12.64,6c0-.13.12,0,0.27-0.12a1.66,1.66,0,0,1,.59-0.48,1,1,0,0,1,.62,0c0.12,0,0,.33,0,0.4s-0.74-.09-0.74.32c0,0.67.91,0,1.38,0,0.23,1.64-2.48,1.19-2.08-.16h0Z"></path>
+      </svg>
+    </div>
+    <p class="au-c-brand__logotype">
+      <span class="au-c-brand__main">Vlaanderen</span>
+        <span class="au-c-brand__tagline">verbeelding werkt</span>
+    </p>
+  </div>
+
+  </div>
+  <div class="au-c-main-footer__content">
+    
+    <h2 class="au-c-heading au-c-heading--4">
+    
+    Publicatie.gelinkt-notuleren.vlaanderen.be is een officiële website van de Vlaamse overheid
+  
+  </h2>
+
+  <div class="au-c-content au-c-content--small">
+  
+    <p>Uitgegeven door <a class="au-c-link" href="https://www.vlaanderen.be/organisaties/administratieve-diensten-van-de-vlaamse-overheid/beleidsdomein-kanselarij-en-bestuur/agentschap-binnenlands-bestuur">Agentschap Binnenlands Bestuur</a></p>
+    <ul class="au-c-list-horizontal">
+      <li class="au-c-list-horizontal__item">
+        <a id="ember3453" class="ember-view au-c-link au-c-link--secondary
+    
+    
+    " href="/legaal/disclaimer">
+<!---->    Disclaimer
+<!----></a>
+      </li>
+      <li class="au-c-list-horizontal__item">
+        <a id="ember3454" class="ember-view au-c-link au-c-link--secondary
+    
+    
+    " href="/legaal/cookieverklaring">
+<!---->    Cookieverklaring
+<!----></a>
+      </li>
+      <li class="au-c-list-horizontal__item">
+        <a id="ember3455" class="ember-view au-c-link au-c-link--secondary
+    
+    
+    " href="/legaal/toegankelijkheidsverklaring">
+<!---->    Toegankelijkheid
+<!----></a>
+      </li>
+      <li class="au-c-list-horizontal__item">
+        <a class="au-c-link au-c-link--secondary  " target="_blank" rel="noopener noreferrer" href="https://abb-vlaanderen.gitbook.io/gelinkt-notuleren-handleiding/ondertekenen-en-publiceren/register-van-bekendmakingen">
+<!---->    Register van Bekendmakingen (beschrijving)
+<!----></a>
+      </li>
+    </ul>
+  
+</div>
+
+  </div>
+</footer>
+  
+  </div>
+
+
+</main>
+
+
+</div>
+<script type="x/boundary" id="fastboot-body-end"></script>
+
+    
+<script src="/assets/vendor.0934e9873390062f322fb02410b0f899.js"></script>
+
+
+
+<script src="/assets/chunk.73dc7ffeba942fc0b32a.js"></script>
+<script src="/assets/chunk.25bd48f90548ff7fe275.js"></script>
+    <div id="ember-basic-dropdown-wormhole"></div>
+  
+
+</body></html>
