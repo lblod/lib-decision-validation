@@ -1,6 +1,6 @@
 {
   "name": "app-validation-tool",
-  "version": "1.0.20",
+  "version": "1.0.25",
   "description": "This module is used to validate publications in the context of the Flemish government.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -40,12 +40,12 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "lib-decision-shapes": "^0.0.5",
     "@comunica/actor-http-proxy": "^3.0.3",
     "@comunica/query-sparql": "^3.0.3",
     "dom-serializer": "^2.0.0",
     "domutils": "^3.1.0",
     "html-dom-parser": "^5.0.8",
+    "lib-decision-shapes": "^0.0.9",
     "n3": "^1.17.3",
     "tsup": "^8.0.2"
   }
