@@ -26,7 +26,7 @@ export type ValidatedSubject = {
   shapeName?: string;
   totalCount: number;
   validCount?: number;
-  properties: ValidatedProperty[];
+  properties: ValidatedProperty[] | ProcessedProperty[];
 };
 
 
@@ -40,9 +40,18 @@ export type ValidatedProperty = {
   maxCount?: number;
   actualCount: number;
   valid: boolean;
+  example?: string
 };
 
 export type DocumentType = {
   id?: string;
   label: string
 }
+
+export type ProcessedProperty = {
+  name: string;
+  path: string;
+  value: string[] | ValidatedSubject[];
+  actualCount: number;
+  example?: string
+};
