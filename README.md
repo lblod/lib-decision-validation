@@ -123,7 +123,7 @@ In order to properly validate an agenda item exists in a publication, we need to
 >
 > const validationResult = await validatePublication(publication, blueprint);
 >
-> const example: Document = await getExampleOfDocumentType('Notulen');
+> const example: Document = getExampleOfDocumentType('Notulen');
 > const validationResultWithExamples = await enrichClassCollectionsWithExample(validationResult, blueprint, example);
 > ```
 >

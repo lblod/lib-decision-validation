@@ -2,7 +2,8 @@ import { ProxyHandlerStatic } from '@comunica/actor-http-proxy';
 import { QueryEngine } from '@comunica/query-sparql';
 import { Bindings, BindingsStream } from '@comunica/types';
 import { DocumentType } from './types';
-import { getDOMfromUrl } from './utils';
+const { getHTMLExampleOfDocumentType, getShapeOfDocumentType } = require('lib-decision-shapes');
+import { getDOMfromUrl, getDOMfromString } from './utils';
 import { DOMNode } from 'html-dom-parser';
 
 export * from './queries';
@@ -52,12 +53,7 @@ export async function fetchDocument(publicationLink: string, proxy: string = def
 }
 
 export async function getBlueprintOfDocumentType(documentType: string): Promise<Bindings[]> {
-  const HOST = 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/';
-  const blueprintLink = {
-    Notulen: HOST + 'notulen.ttl',
-    Besluitenlijst: HOST + 'decision-list.ttl',
-    Agenda: HOST + 'basic-agenda.ttl'
-  };
+  const shape = getShapeOfDocumentType(documentType);
   
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
@@ -65,18 +61,22 @@ export async function getBlueprintOfDocumentType(documentType: string): Promise<
         WHERE {
             ?s ?p ?o .
         }    
-        `,
-    {
-      sources: [blueprintLink[documentType]],
-    },
+        `, {
+    sources: [
+      {
+        type: 'serialized',
+        value: shape,
+        mediaType: 'text/turtle',
+        baseIRI: 'http://example.org/',
+      }]
+    }
   );
   return bindingsStream.toArray();
 }
 
 // TODO: review and update
 export async function getMaturityProperties(maturityLevel: string): Promise<Bindings[]> {
-  const source: string =
-  'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/shapes/notulen.ttl';
+  const shape = getShapeOfDocumentType('Notulen');
 
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
@@ -89,7 +89,14 @@ export async function getMaturityProperties(maturityLevel: string): Promise<Bind
       }    
       `,
     {
-      sources: [source],
+      sources:  [
+        {
+          type: 'serialized',
+          value: shape,
+          mediaType: 'text/turtle',
+          baseIRI: 'http://example.org/',
+        }
+      ]
     },
   );
 
@@ -114,7 +121,7 @@ export function getDocumentTypes(): DocumentType[] {
 }
 
 export function getExampleURLOfDocumentType(documentType: string): string {
-  const HOST = 'https://raw.githubusercontent.com/lblod/poc-decision-source-harvester/master/examples/';
+  const HOST = 'https://raw.githubusercontent.com/lblod/lib-decision-shapes/master/examples/';
 
   const exampleLink = {
     Notulen: HOST + 'notulen.html',
@@ -125,7 +132,7 @@ export function getExampleURLOfDocumentType(documentType: string): string {
   return exampleLink[documentType];
 }
 
-export async function getExampleOfDocumentType(documentType: string): Promise<DOMNode[]> {
-  const exampleLink: string = getExampleURLOfDocumentType(documentType);
-  return await getDOMfromUrl(exampleLink);
+export function getExampleOfDocumentType(documentType: string): DOMNode[] {
+  const example: string = getHTMLExampleOfDocumentType(documentType);
+  return getDOMfromString(example);
 }

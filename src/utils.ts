@@ -68,6 +68,10 @@ export async function getDOMfromUrl(url: string): Promise<DOMNode[]> {
   return document;
 }
 
+export function getDOMfromString(res: string): DOMNode[] {
+  return parse(res);
+}
+
 export function getStoreFromSPOBindings(bindings: Bindings[]): Store {
   const s: Store = new Store();
   bindings.map((b) => {
