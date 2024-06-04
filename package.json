@@ -45,7 +45,7 @@
     "dom-serializer": "^2.0.0",
     "domutils": "^3.1.0",
     "html-dom-parser": "^5.0.8",
-    "lib-decision-shapes": "^0.0.11",
+    "lib-decision-shapes": "^0.0.12",
     "n3": "^1.17.3",
     "tsup": "^8.0.2"
   }
