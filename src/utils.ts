@@ -1,5 +1,5 @@
-import { Bindings } from "@comunica/types";
-import { Store, Quad, Term } from "n3";
+import { Bindings } from '@comunica/types';
+import { Store, Quad, Term } from 'n3';
 import parse, { DOMNode } from 'html-dom-parser';
 
 import { QueryEngine } from '@comunica/query-sparql';
@@ -15,11 +15,8 @@ const myEngine = new QueryEngine();
   - value of the desired term
 */
 export function findTermByValue(source: Bindings[], desiredTerm: string, givenTerm: string, termValue: string): string {
-  return source
-    .find((s) => s.get(givenTerm)!.value === termValue)
-    ?.get(desiredTerm)!.value;
+  return source.find((s) => s.get(givenTerm)!.value === termValue)?.get(desiredTerm)!.value;
 }
-
 
 /* function to filter triples by a certain condition and then get the value of a certain term
   param:
@@ -30,12 +27,14 @@ export function findTermByValue(source: Bindings[], desiredTerm: string, givenTe
   returns:
   - an array containing the values of the desired terms
 */
-export function filterTermsByValue(source: Bindings[], desiredTerm: string, givenTerm: string, termValue: string): string[] {
-    return source
-      .filter((b) => b.get(givenTerm)!.value === termValue)
-      .map((b) => b.get(desiredTerm)!.value);
+export function filterTermsByValue(
+  source: Bindings[],
+  desiredTerm: string,
+  givenTerm: string,
+  termValue: string,
+): string[] {
+  return source.filter((b) => b.get(givenTerm)!.value === termValue).map((b) => b.get(desiredTerm)!.value);
 }
-
 
 /* Removes duplicate values from an array
   param:
@@ -43,10 +42,9 @@ export function filterTermsByValue(source: Bindings[], desiredTerm: string, give
   returns:
   - an array containing
 */
-export function getUniqueValues(array: unknown[]): unknown[] {
-  return [ ... new Set(array) ]
+export function getUniqueValues<T>(array: T[]): T[] {
+  return [...new Set(array)];
 }
-
 
 /* function to format the uris into names
   param:
@@ -56,9 +54,9 @@ export function getUniqueValues(array: unknown[]): unknown[] {
   eg: 'http://xmlns.com/foaf/0.1/Document' would be formatted into 'Document'
 */
 export function formatURI(uri: string): string {
-  const result1: string = /[^#]+$/.exec(uri)[0]  
+  const result1: string = /[^#]+$/.exec(uri)[0];
   const result2: string = /[^\/]+$/.exec(uri)[0];
-  return result1.length < result2.length ? result1 : result2
+  return result1.length < result2.length ? result1 : result2;
 }
 
 export async function getDOMfromUrl(url: string): Promise<DOMNode[]> {
@@ -75,7 +73,7 @@ export function getDOMfromString(res: string): DOMNode[] {
 export function getStoreFromSPOBindings(bindings: Bindings[]): Store {
   const s: Store = new Store();
   bindings.map((b) => {
-    s.add(new Quad(<Term>b.get('s'),<Term>b.get('p'), <Term>b.get('o')));
+    s.add(new Quad(<Term>b.get('s'), <Term>b.get('p'), <Term>b.get('o')));
   });
   return s;
 }
