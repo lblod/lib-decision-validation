@@ -3,7 +3,7 @@ import { QueryEngine } from '@comunica/query-sparql';
 import { Bindings, BindingsStream } from '@comunica/types';
 import { DocumentType } from './types';
 const { getHTMLExampleOfDocumentType, getShapeOfDocumentType } = require('lib-decision-shapes');
-import { getDOMfromUrl, getDOMfromString } from './utils';
+import { getDOMfromString } from './utils';
 import { DOMNode } from 'html-dom-parser';
 
 export * from './queries';
@@ -71,35 +71,6 @@ export async function getBlueprintOfDocumentType(documentType: string): Promise<
       }]
     }
   );
-  return bindingsStream.toArray();
-}
-
-// TODO: review and update
-export async function getMaturityProperties(maturityLevel: string): Promise<Bindings[]> {
-  const shape = getShapeOfDocumentType('Notulen');
-
-  const bindingsStream: BindingsStream = await engine.queryBindings(
-    `
-      PREFIX lblodBesluit: <http://lblod.data.gift/vocabularies/besluit/>
-      PREFIX sh: <http://www.w3.org/ns/shacl#>
-      SELECT ?path
-      WHERE {
-          ?s lblodBesluit:maturiteitsniveau "${maturityLevel}" ;
-            sh:path ?path .
-      }    
-      `,
-    {
-      sources:  [
-        {
-          type: 'serialized',
-          value: shape,
-          mediaType: 'text/turtle',
-          baseIRI: 'http://example.org/',
-        }
-      ]
-    },
-  );
-
   return bindingsStream.toArray();
 }
 

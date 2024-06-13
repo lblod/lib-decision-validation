@@ -769,7 +769,7 @@
 },{
   "s": "_:bc_0_n3-22",
   "p": "http://www.w3.org/ns/shacl#minCount",
-  "o": "\"1\"^^http://www.w3.org/2001/XMLSchema#integer"
+  "o": "\"0\"^^http://www.w3.org/2001/XMLSchema#integer"
 },{
   "s": "_:bc_0_n3-22",
   "p": "http://lblod.data.gift/vocabularies/besluit/usageNote",

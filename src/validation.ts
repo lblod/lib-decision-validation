@@ -1,8 +1,17 @@
 import { Bindings } from '@comunica/types';
 import * as fs from 'fs';
-import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty, ProcessedProperty, ClassCollection } from './types';
+import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty, ProcessedProperty, ClassCollection, validatedPublication } from './types';
 import {filterTermsByValue, findTermByValue, getUniqueValues, formatURI} from './utils'
 
+
+const MATURITY_LEVEL: string[] = [
+  'Niveau 0',
+  'Niveau 1',
+  'Niveau 2',
+  'Niveau 3'
+]
+
+let FOUND_MATURITY = MATURITY_LEVEL[3]
 
 /* determines the document type based on a specific term
   param:
@@ -118,16 +127,19 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
   returns:
   - contains a report of all missing requirements for a publication
 */
-export function validatePublication(publication: Bindings[], blueprint: Bindings[]): ClassCollection[] {
+export function validatePublication(publication: Bindings[], blueprint: Bindings[]): validatedPublication {
   const parsedPublication = parsePublication(publication);
-  const result: ValidatedSubject[] = [];
 
+  const validatedSubjects: ValidatedSubject[]= []
   parsedPublication.forEach((subject) => {
     const resultSubject = validateSubject(subject, blueprint);
-    result.push(resultSubject);
+    validatedSubjects.push(resultSubject);
   });
 
-  return postProcess(result)
+  return {
+    classes: postProcess(validatedSubjects),
+    maturity: FOUND_MATURITY,
+  } as validatedPublication;
 }
 
 
@@ -149,6 +161,7 @@ function validateSubject(subject, blueprint: Bindings[]): ValidatedSubject {
 
     const validatedProperties = [];
     let validCount = 0;
+
     propertyKeys.forEach((propertyKey) => {
       const propertyShape: Bindings[] = blueprint.filter((b) => b.get('s')!.value === propertyKey);
       const validatedProperty: ValidatedProperty = validateProperty(subject, propertyShape, blueprint);
@@ -228,6 +241,10 @@ function validateProperty(subject, propertyShape: Bindings[], blueprint): Valida
         validatedProperty.maxCount = parseInt(p.get('o')!.value);
         break;
       }
+      case 'http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau': {
+        validatedProperty.maturityLevel= p.get('o')!.value;
+        break;
+      }
       default: {
       }
     }
@@ -254,6 +271,9 @@ function validateProperty(subject, propertyShape: Bindings[], blueprint): Valida
         v.class !== validatedProperty.targetClass
       }) 
     )
+  if (!validatedProperty.valid && validatedProperty.maturityLevel !== undefined && validatedProperty.maturityLevel <= FOUND_MATURITY) {
+    FOUND_MATURITY = MATURITY_LEVEL[MATURITY_LEVEL.indexOf(validatedProperty.maturityLevel) - 1] 
+  }
   return validatedProperty;
 }
 
@@ -315,17 +335,19 @@ function preProcess(publication: Bindings[], subjectKeys: string[], seenSubjects
   - an array of collections, a collection contains all the root objects in the publication that share the same RDF class
 */
 function postProcess(validatedSubjects: ValidatedSubject[]): ClassCollection[] {
-  const result: ClassCollection[] = []
+  const result: ClassCollection[] = [];
   // Combine all Root objects with the same type into one collection
-  const distinctClasses: string[] = getUniqueValues((validatedSubjects.map((p) => p.class))) as string[]
-  distinctClasses.forEach(c => {
-    const objects: ValidatedSubject[] = validatedSubjects.filter(s => s.class === c)
+  const distinctClasses: string[] = getUniqueValues(validatedSubjects.map((p) => p.class)) as string[];
+  distinctClasses.forEach((c) => {
+    const objects: ValidatedSubject[] = validatedSubjects.filter((s) => s.class === c);
     result.push({
       classURI: c,
       className: formatURI(c),
-      count: objects.length, 
-      objects: objects
-    })
-  })
-  return result
+      count: objects.length,
+      objects: objects,
+    });
+  });
+
+  return result;
 }
+
