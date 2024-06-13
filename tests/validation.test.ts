@@ -4,11 +4,18 @@ import { Bindings } from '@comunica/types';
 
 import HttpRequestMock from 'http-request-mock';
 
-import { determineDocumentType, validatePublication } from '../validation';
-import { fetchDocument, getBlueprintOfDocumentType, getExampleOfDocumentType, getExampleURLOfDocumentType, getMaturityProperties, getPublicationFromFileContent } from '../queries';
-import { enrichClassCollectionsWithExample } from '../examples';
+import { determineDocumentType, validatePublication } from '../src/validation';
+import {
+  fetchDocument,
+  getBlueprintOfDocumentType,
+  getExampleOfDocumentType,
+  getExampleURLOfDocumentType,
+  getMaturityProperties,
+  getPublicationFromFileContent,
+} from '../src/queries';
+import { enrichClassCollectionsWithExample } from '../src/examples';
 
-import { Store, Quad, Term } from "n3";
+import { Store, Quad, Term } from 'n3';
 
 import { getElementById, getElementsByTagName, getName } from 'domutils';
 
@@ -17,11 +24,21 @@ import { DOMNode, Element } from 'html-dom-parser';
 //const PROXY = 'https://corsproxy.io/?';
 const PROXY = '';
 
-import { AGENDA_LINK, AGENDA_LINK_2, AGENDA_LINK_3, AGENDA_LINK_4, BESLUITEN_LINK, BESLUITEN_LINK2, NOTULEN_LINK, TESTHTMLSTRING, TESTSTRING2 } from './data/testData';
+import {
+  AGENDA_LINK,
+  AGENDA_LINK_2,
+  AGENDA_LINK_3,
+  AGENDA_LINK_4,
+  BESLUITEN_LINK,
+  BESLUITEN_LINK2,
+  NOTULEN_LINK,
+  TESTHTMLSTRING,
+  TESTSTRING2,
+} from './data/testData';
 import { testResult } from './data/result-ex';
 
-import { getDOMfromString, getStoreFromSPOBindings, runQueryOverStore } from '../utils';
-import { ensureDirectoryExistence } from '../node-utils';
+import { getDOMfromString, getStoreFromSPOBindings, runQueryOverStore } from '../src/utils';
+import { ensureDirectoryExistence } from '../src/node-utils';
 import { getHTMLExampleOfDocumentType } from 'lib-decision-shapes';
 
 const MILLISECONDS = 7000;
@@ -35,10 +52,11 @@ describe('As a vendor, I want the tool to automatically determine the type of th
       method: 'get', // get, post, put, patch or delete
       delay: 0,
       status: 200,
-      headers: { // respone headers
-        'content-type': 'text/html;charset=UTF-8'
+      headers: {
+        // respone headers
+        'content-type': 'text/html;charset=UTF-8',
       },
-      body: fs.readFileSync(`./src/tests/data/${encodeURIComponent(AGENDA_LINK)}`)
+      body: fs.readFileSync(`tests/data/${encodeURIComponent(AGENDA_LINK)}`),
     });
 
     mocker.mock({
@@ -46,10 +64,11 @@ describe('As a vendor, I want the tool to automatically determine the type of th
       method: 'get', // get, post, put, patch or delete
       delay: 0,
       status: 200,
-      headers: { // respone headers
-        'content-type': 'text/html;charset=UTF-8'
+      headers: {
+        // respone headers
+        'content-type': 'text/html;charset=UTF-8',
       },
-      body: fs.readFileSync(`./src/tests/data/${encodeURIComponent(AGENDA_LINK_2)}`)
+      body: fs.readFileSync(`tests/data/${encodeURIComponent(AGENDA_LINK_2)}`),
     });
 
     mocker.mock({
@@ -57,10 +76,11 @@ describe('As a vendor, I want the tool to automatically determine the type of th
       method: 'get', // get, post, put, patch or delete
       delay: 0,
       status: 200,
-      headers: { // respone headers
-        'content-type': 'text/html;charset=UTF-8'
+      headers: {
+        // respone headers
+        'content-type': 'text/html;charset=UTF-8',
       },
-      body: fs.readFileSync(`./src/tests/data/${encodeURIComponent(AGENDA_LINK_4)}`)
+      body: fs.readFileSync(`tests/data/${encodeURIComponent(AGENDA_LINK_4)}`),
     });
 
     mocker.mock({
@@ -68,10 +88,11 @@ describe('As a vendor, I want the tool to automatically determine the type of th
       method: 'get', // get, post, put, patch or delete
       delay: 0,
       status: 200,
-      headers: { // respone headers
-        'content-type': 'text/html;charset=UTF-8'
+      headers: {
+        // respone headers
+        'content-type': 'text/html;charset=UTF-8',
       },
-      body: fs.readFileSync(`./src/tests/data/${encodeURIComponent(BESLUITEN_LINK)}`)
+      body: fs.readFileSync(`tests/data/${encodeURIComponent(BESLUITEN_LINK)}`),
     });
 
     mocker.mock({
@@ -79,10 +100,11 @@ describe('As a vendor, I want the tool to automatically determine the type of th
       method: 'get', // get, post, put, patch or delete
       delay: 0,
       status: 200,
-      headers: { // respone headers
-        'content-type': 'text/html;charset=UTF-8'
+      headers: {
+        // respone headers
+        'content-type': 'text/html;charset=UTF-8',
       },
-      body: fs.readFileSync(`./src/tests/data/${encodeURIComponent(BESLUITEN_LINK2)}`)
+      body: fs.readFileSync(`tests/data/${encodeURIComponent(BESLUITEN_LINK2)}`),
     });
 
     mocker.mock({
@@ -90,12 +112,13 @@ describe('As a vendor, I want the tool to automatically determine the type of th
       method: 'get', // get, post, put, patch or delete
       delay: 0,
       status: 200,
-      headers: { // respone headers
-        'content-type': 'text/html;charset=UTF-8'
+      headers: {
+        // respone headers
+        'content-type': 'text/html;charset=UTF-8',
       },
-      body: fs.readFileSync(`./src/tests/data/${encodeURIComponent(NOTULEN_LINK)}`)
+      body: fs.readFileSync(`tests/data/${encodeURIComponent(NOTULEN_LINK)}`),
     });
-    return ensureDirectoryExistence('src/tests/logs/');
+    return ensureDirectoryExistence('./logs/');
   });
 
   test('determine the type of a document using a link to fetch the publication', async () => {
@@ -111,7 +134,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
     const document: Bindings[] = await fetchDocument(AGENDA_LINK, PROXY);
 
     const actual: string = await determineDocumentType(document);
-    fs.writeFileSync('src/tests/logs/agenda.json', `${JSON.stringify(actual)}`);
+    fs.writeFileSync('./logs/agenda.json', `${JSON.stringify(actual)}`);
 
     expect(actual).toBe(expected);
   });
@@ -134,75 +157,70 @@ describe('As a vendor, I want the tool to automatically determine the type of th
 
   // TODO: fix mock data
   test('Get the blueprint for the corresponding document type', async () => {
-    const expected = `${fs.readFileSync('src/tests/data/blueprint-besluitenlijst.json')}`;
+    const expected = `${fs.readFileSync('tests/data/blueprint-besluitenlijst.json')}`;
     const documentType: string = 'Besluitenlijst';
     const actual = `${await getBlueprintOfDocumentType(documentType)}`;
     // Add following line to update the expected blueprint
-    // fs.writeFileSync('src/tests/data/blueprint-besluitenlijst.json', `${actual}`);
+    // fs.writeFileSync('./data/blueprint-besluitenlijst.json', `${actual}`);
 
     expect(actual).toBe(expected);
   });
 
   test('Validate `Besluitenlijst', async () => {
-    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Besluitenlijst');    
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Besluitenlijst');
     const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK, PROXY);
     const actual = await validatePublication(publication, blueprint);
-    fs.writeFileSync('src/tests/logs/besluitenlijst.json', `${JSON.stringify(actual)}`);
+    fs.writeFileSync('./logs/besluitenlijst.json', `${JSON.stringify(actual)}`);
   });
 
   test('Validate `Besluitenlijst 2', async () => {
     const blueprint: Bindings[] = await getBlueprintOfDocumentType('Besluitenlijst');
-    const publication: Bindings[] = await fetchDocument(
-      BESLUITEN_LINK2,
-      PROXY,
-    );
+    const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK2, PROXY);
     const actual = await validatePublication(publication, blueprint);
-    fs.writeFileSync('src/tests/logs/besluitenlijst2.json', `${JSON.stringify(actual)}`);
+    fs.writeFileSync('./logs/besluitenlijst2.json', `${JSON.stringify(actual)}`);
   });
 
   test('Validate Agenda', async () => {
     const blueprint: Bindings[] = await getBlueprintOfDocumentType('Agenda');
-    const publication: Bindings[] =  await fetchDocument(AGENDA_LINK, PROXY);
+    const publication: Bindings[] = await fetchDocument(AGENDA_LINK, PROXY);
     const actual = await validatePublication(publication, blueprint);
-    fs.writeFileSync('src/tests/logs/agenda.json', `${JSON.stringify(actual)}`);
+    fs.writeFileSync('./logs/agenda.json', `${JSON.stringify(actual)}`);
   });
 
   test('Validate Agenda 2', async () => {
     const blueprint: Bindings[] = await getBlueprintOfDocumentType('Agenda');
-    const publication: Bindings[] = await fetchDocument(
-      AGENDA_LINK_2,
-      PROXY,
-    );
+    const publication: Bindings[] = await fetchDocument(AGENDA_LINK_2, PROXY);
     const actual = await validatePublication(publication, blueprint);
-    fs.writeFileSync('src/tests/logs/agenda2.json', `${JSON.stringify(actual)}`);
+    fs.writeFileSync('./logs/agenda2.json', `${JSON.stringify(actual)}`);
   });
 
   test('Validate Agenda 3', async () => {
     const blueprint: Bindings[] = await getBlueprintOfDocumentType('Agenda');
-    const publication: Bindings[] = await fetchDocument(
-      AGENDA_LINK_4,
-      PROXY,
-    );
+    const publication: Bindings[] = await fetchDocument(AGENDA_LINK_4, PROXY);
     const actual = await validatePublication(publication, blueprint);
-    fs.writeFileSync('src/tests/logs/agenda3.json', `${JSON.stringify(actual)}`);
+    fs.writeFileSync('./logs/agenda3.json', `${JSON.stringify(actual)}`);
   });
 
-  test('Validate Notulen', async () => {
-    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Notulen');
-    const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
-    const actual = await validatePublication(publication, blueprint);
-    fs.writeFileSync('src/tests/logs/notulen.json', `${JSON.stringify(actual)}`);
-  }, MILLISECONDS);
+  test(
+    'Validate Notulen',
+    async () => {
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType('Notulen');
+      const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
+      const actual = await validatePublication(publication, blueprint);
+      fs.writeFileSync('./logs/notulen.json', `${JSON.stringify(actual)}`);
+    },
+    MILLISECONDS,
+  );
 
   test('Get the maturity level', async () => {
     const actual = await getMaturityProperties('Niveau 1');
-    fs.writeFileSync('src/tests/logs/maturitylevel.json', `${JSON.stringify(actual)}`);
+    fs.writeFileSync('./logs/maturitylevel.json', `${JSON.stringify(actual)}`);
   });
 });
 
 describe('As a vendor, I want to see a good example when something is not valid', () => {
   beforeAll(() => {
-    return ensureDirectoryExistence('src/tests/logs/');
+    return ensureDirectoryExistence('./logs/');
   });
 
   test('retrieve example URL for document type', async () => {
@@ -232,9 +250,13 @@ describe('As a vendor, I want to see a good example when something is not valid'
     const blueprint: Bindings[] = await getBlueprintOfDocumentType('Notulen');
     const store: Store = getStoreFromSPOBindings(blueprint);
     const firstBinding: Bindings = blueprint[0];
-    const firstBindingAsQuad: Quad = new Quad(<Term>firstBinding.get('s'),<Term>firstBinding.get('p'), <Term>firstBinding.get('o'));
-    
-    const actual: boolean = store.has(firstBindingAsQuad)
+    const firstBindingAsQuad: Quad = new Quad(
+      <Term>firstBinding.get('s'),
+      <Term>firstBinding.get('p'),
+      <Term>firstBinding.get('o'),
+    );
+
+    const actual: boolean = store.has(firstBindingAsQuad);
     expect(actual).toBeTruthy();
   });
 
@@ -289,41 +311,50 @@ describe('As a vendor, I want to see a good example when something is not valid'
     expect(actual[0].has('usageNote')).not.toEqual('');
   });
 
-  test('enrich results with examples', async () => {
-    const publication: Bindings[] = await fetchDocument(AGENDA_LINK, PROXY);
-    const documentType = determineDocumentType(publication);
-    const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
-    const example: DOMNode[] = getExampleOfDocumentType('Notulen');
+  test(
+    'enrich results with examples',
+    async () => {
+      const publication: Bindings[] = await fetchDocument(AGENDA_LINK, PROXY);
+      const documentType = determineDocumentType(publication);
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+      const example: DOMNode[] = getExampleOfDocumentType('Notulen');
 
-    const validationResult = await validatePublication(publication, blueprint);
-    const enrichedResults = await enrichClassCollectionsWithExample(validationResult, blueprint, example);
+      const validationResult = await validatePublication(publication, blueprint);
+      const enrichedResults = await enrichClassCollectionsWithExample(validationResult, blueprint, example);
 
-    let containsExample = false;
-    for(let r of enrichedResults) {
-      for (let o of r.objects) {
-        for (let p of o.properties) {
-          if (p.example) containsExample = true;
+      let containsExample = false;
+      for (let r of enrichedResults) {
+        for (let o of r.objects) {
+          for (let p of o.properties) {
+            if (p.example) containsExample = true;
+          }
         }
       }
-    }
-    expect(containsExample).toBeTruthy();
-  }, MILLISECONDS);
+      expect(containsExample).toBeTruthy();
+    },
+    MILLISECONDS,
+  );
 
-  test('demonstrate enriched validation result', async () => {
-    // Laatste college zitting Sint-Lievens-Houtem
-    const publicationLink = 'https://lblod.sint-lievens-houtem.be/LBLODWeb/Home/Overzicht/9522f42bdd7b46b3d5341b3cf196c9b6c981703022796b7af6e29746193bbf52/GetPublication?filename=BesluitenLijst_College_11-04-2024.html';
-    const proxy = '';
+  test(
+    'demonstrate enriched validation result',
+    async () => {
+      // Laatste college zitting Sint-Lievens-Houtem
+      const publicationLink =
+        'https://lblod.sint-lievens-houtem.be/LBLODWeb/Home/Overzicht/9522f42bdd7b46b3d5341b3cf196c9b6c981703022796b7af6e29746193bbf52/GetPublication?filename=BesluitenLijst_College_11-04-2024.html';
+      const proxy = '';
 
-    const publication: Bindings[] = await fetchDocument(publicationLink, proxy);
-    const documentType = determineDocumentType(publication);
-    const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
-    const validationResult = await validatePublication(publication, blueprint);
+      const publication: Bindings[] = await fetchDocument(publicationLink, proxy);
+      const documentType = determineDocumentType(publication);
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+      const validationResult = await validatePublication(publication, blueprint);
 
-    // NEW: get example and enrich results with specific examples
-    const example: DOMNode[] = await getExampleOfDocumentType(documentType);
-    const enrichedResults = await enrichClassCollectionsWithExample(validationResult, blueprint, example);
+      // NEW: get example and enrich results with specific examples
+      const example: DOMNode[] = await getExampleOfDocumentType(documentType);
+      const enrichedResults = await enrichClassCollectionsWithExample(validationResult, blueprint, example);
 
-    expect(enrichedResults.length).toBeGreaterThan(0);
-    fs.writeFileSync('src/tests/logs/enrichedResults-demonstrator.json', `${JSON.stringify(enrichedResults)}`);
-  }, MILLISECONDS*2);
+      expect(enrichedResults.length).toBeGreaterThan(0);
+      fs.writeFileSync('./logs/enrichedResults-demonstrator.json', `${JSON.stringify(enrichedResults)}`);
+    },
+    MILLISECONDS * 2,
+  );
 });
