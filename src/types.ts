@@ -1,4 +1,4 @@
-export type validatedPublication = {
+export type ValidatedPublication = {
   classes: ClassCollection[];
   maturity: string;
 }

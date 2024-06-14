@@ -144,54 +144,67 @@ describe('As a vendor, I want the tool to automatically determine the type of th
   });
 
   test('Validate `Besluitenlijst', async () => {
-    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Besluitenlijst');    
+    const documentType: string = 'Besluitenlijst';
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);    
     const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK, PROXY);
-    const actual = await validatePublication(publication, blueprint);
+    const example: DOMNode[] = await getExampleOfDocumentType(documentType);
+
+    const actual = await validatePublication(publication, blueprint, example);
     fs.writeFileSync('src/tests/logs/besluitenlijst.json', `${JSON.stringify(actual)}`);
   });
 
   test('Validate `Besluitenlijst 2', async () => {
-    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Besluitenlijst');
+    const documentType: string = 'Besluitenlijst';
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+    const example: DOMNode[] = await getExampleOfDocumentType(documentType);
 
     const publication: Bindings[] = await fetchDocument(
       BESLUITEN_LINK2,
       PROXY,
     );
-    const actual = await validatePublication(publication, blueprint);
+    const actual = await validatePublication(publication, blueprint, example);
     fs.writeFileSync('src/tests/logs/besluitenlijst2.json', `${JSON.stringify(actual)}`);
   });
 
   test('Validate Agenda', async () => {
-    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Agenda');
+    const documentType: string = 'Agenda';
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+    const example: DOMNode[] = await getExampleOfDocumentType(documentType);
     const publication: Bindings[] =  await fetchDocument(AGENDA_LINK, PROXY);
-    const actual = await validatePublication(publication, blueprint);
+    const actual = await validatePublication(publication, blueprint, example);
     fs.writeFileSync('src/tests/logs/agenda.json', `${JSON.stringify(actual)}`);
   });
 
   test('Validate Agenda 2', async () => {
-    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Agenda');
+    const documentType: string = 'Agenda';
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+    const example: DOMNode[] = await getExampleOfDocumentType(documentType);
     const publication: Bindings[] = await fetchDocument(
       AGENDA_LINK_2,
       PROXY,
     );
-    const actual = await validatePublication(publication, blueprint);
+    const actual = await validatePublication(publication, blueprint, example);
     fs.writeFileSync('src/tests/logs/agenda2.json', `${JSON.stringify(actual)}`);
   });
 
   test('Validate Agenda 3', async () => {
-    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Agenda');
+    const documentType: string = 'Agenda';
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+    const example: DOMNode[] = await getExampleOfDocumentType(documentType);
     const publication: Bindings[] = await fetchDocument(
       AGENDA_LINK_4,
       PROXY,
     );
-    const actual = await validatePublication(publication, blueprint);
+    const actual = await validatePublication(publication, blueprint, example);
     fs.writeFileSync('src/tests/logs/agenda3.json', `${JSON.stringify(actual)}`);
   });
 
   test('Validate Notulen', async () => {
-    const blueprint: Bindings[] = await getBlueprintOfDocumentType('Notulen');
+    const documentType: string = 'Notulen';
+    const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+    const example: DOMNode[] = await getExampleOfDocumentType(documentType);
     const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
-    const actual = await validatePublication(publication, blueprint);
+    const actual = await validatePublication(publication, blueprint, example);
     fs.writeFileSync('src/tests/logs/notulen.json', `${JSON.stringify(actual)}`);
   }, MILLISECONDS);
 
@@ -293,7 +306,7 @@ describe('As a vendor, I want to see a good example when something is not valid'
     const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
     const example: DOMNode[] = getExampleOfDocumentType('Notulen');
 
-    const validationResult = await validatePublication(publication, blueprint);
+    const validationResult = await validatePublication(publication, blueprint, example);
     const enrichedResults = await enrichClassCollectionsWithExample(validationResult.classes, blueprint, example);
 
     let containsExample = false;
@@ -315,11 +328,11 @@ describe('As a vendor, I want to see a good example when something is not valid'
     const publication: Bindings[] = await fetchDocument(publicationLink, proxy);
     const documentType = determineDocumentType(publication);
     const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
-    const validationResult = await validatePublication(publication, blueprint);
-
-    // NEW: get example and enrich results with specific examples
     const example: DOMNode[] = await getExampleOfDocumentType(documentType);
-    const enrichedResults = await enrichClassCollectionsWithExample(validationResult.classes, blueprint, example);
+    
+    // NEW: get example and enrich results with specific examples
+    const validationResult = await validatePublication(publication, blueprint, example);
+    const enrichedResults = validationResult.classes
 
     expect(enrichedResults.length).toBeGreaterThan(0);
     fs.writeFileSync('src/tests/logs/enrichedResults-demonstrator.json', `${JSON.stringify(enrichedResults)}`);
