@@ -26,6 +26,8 @@ export function findTermByValue(source: Bindings[], desiredTerm: string, givenTe
   - termValue: the value for givenTerm that we filter on
   returns:
   - an array containing the values of the desired terms
+  example: 
+    filterTermsByValue(blueprintShape, 'o', 'p', "http://www.w3.org/ns/shacl#property")
 */
 export function filterTermsByValue(
   source: Bindings[],
