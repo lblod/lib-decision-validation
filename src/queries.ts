@@ -35,7 +35,6 @@ export async function getPublicationFromFileContent(content: string): Promise<Bi
   return bindingsStream.toArray();
 }
 
-
 export async function fetchDocument(publicationLink: string, proxy: string = default_proxy): Promise<Bindings[]> {
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
@@ -54,22 +53,24 @@ export async function fetchDocument(publicationLink: string, proxy: string = def
 
 export async function getBlueprintOfDocumentType(documentType: string): Promise<Bindings[]> {
   const shape = getShapeOfDocumentType(documentType);
-  
+
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
         SELECT ?s ?p ?o 
         WHERE {
             ?s ?p ?o .
         }    
-        `, {
-    sources: [
-      {
-        type: 'serialized',
-        value: shape,
-        mediaType: 'text/turtle',
-        baseIRI: 'http://example.org/',
-      }]
-    }
+        `,
+    {
+      sources: [
+        {
+          type: 'serialized',
+          value: shape,
+          mediaType: 'text/turtle',
+          baseIRI: 'http://example.org/',
+        },
+      ],
+    },
   );
   return bindingsStream.toArray();
 }
@@ -78,16 +79,16 @@ export function getDocumentTypes(): DocumentType[] {
   return [
     {
       id: 'https://data.vlaanderen.be/id/concept/BesluitDocumentType/8e791b27-7600-4577-b24e-c7c29e0eb773',
-      label: 'Notulen'
+      label: 'Notulen',
     },
     {
       id: 'https://data.vlaanderen.be/id/concept/BesluitDocumentType/3fa67785-ffdc-4b30-8880-2b99d97b4dee',
-      label: 'Besluitenlijst'
+      label: 'Besluitenlijst',
     },
     {
       id: 'https://data.vlaanderen.be/id/concept/BesluitDocumentType/13fefad6-a9d6-4025-83b5-e4cbee3a8965',
-      label: 'Agenda'
-    }
+      label: 'Agenda',
+    },
   ];
 }
 
@@ -97,9 +98,9 @@ export function getExampleURLOfDocumentType(documentType: string): string {
   const exampleLink = {
     Notulen: HOST + 'notulen.html',
     Besluitenlijst: HOST + 'decision-list.html',
-    Agenda: HOST + 'basic-agenda.html'
+    Agenda: HOST + 'basic-agenda.html',
   };
-  
+
   return exampleLink[documentType];
 }
 
