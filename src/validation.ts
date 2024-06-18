@@ -1,5 +1,4 @@
 import { Bindings } from '@comunica/types';
-import * as fs from 'fs';
 import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty, ProcessedProperty, ClassCollection, ValidatedPublication } from './types';
 import {filterTermsByValue, findTermByValue, getUniqueValues, formatURI} from './utils'
 import { enrichClassCollectionsWithExample } from './examples';
