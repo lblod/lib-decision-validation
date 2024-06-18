@@ -1,17 +1,20 @@
 import { Bindings } from '@comunica/types';
-import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty, ProcessedProperty, ClassCollection, ValidatedPublication } from './types';
-import {filterTermsByValue, findTermByValue, getUniqueValues, formatURI} from './utils'
+import type {
+  ValidatedSubject,
+  ValidatedProperty,
+  ParsedSubject,
+  ParsedProperty,
+  ProcessedProperty,
+  ClassCollection,
+  ValidatedPublication,
+} from './types';
+import { filterTermsByValue, findTermByValue, getUniqueValues, formatURI } from './utils';
 import { enrichClassCollectionsWithExample } from './examples';
 import { DOMNode } from 'html-dom-parser';
 
 let BLUEPRINT: Bindings[] = [];
 let EXAMPLE: DOMNode[] = [];
-const MATURITY_LEVEL: string[] = [
-  'Niveau 0',
-  'Niveau 1',
-  'Niveau 2',
-  'Niveau 3'
-];
+const MATURITY_LEVEL: string[] = ['Niveau 0', 'Niveau 1', 'Niveau 2', 'Niveau 3'];
 
 let FOUND_MATURITY = MATURITY_LEVEL[3];
 
@@ -44,7 +47,6 @@ export function determineDocumentType(bindings: Bindings[]): string {
   return 'unknown document type';
 }
 
-
 /* function to parse a publication 
   param:
   - publication: object to be parsed as Comunica bindings 
@@ -71,7 +73,6 @@ export function parsePublication(publication: Bindings[]): ParsedSubject[] {
   return result;
 }
 
-
 /* function to parse a subject
   param:
   - publication: subject to be parsed
@@ -80,7 +81,7 @@ export function parsePublication(publication: Bindings[]): ParsedSubject[] {
 */
 function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects: string[]): ParsedSubject {
   const subjectURI: string = subject[0].get('s')!.value;
-  if(seenSubjects.includes(subjectURI)) return
+  if (seenSubjects.includes(subjectURI)) return;
 
   seenSubjects.push(subjectURI);
   const subjectClass: string = findTermByValue(subject, 'o', 'p', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
@@ -92,7 +93,7 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
         properties.push({
           path: b.get('p')!.value,
           value: b.get('o')!.value,
-        }); 
+        });
       }
       if (termType === 'NamedNode') {
         const foundRelationKey: string = findTermByValue(publication, 's', 's', b.get('o')!.value);
@@ -122,14 +123,17 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
   };
 }
 
-
 /* function to validate a publication 
   param:
   - publication: object to be validated
   returns:
   - contains a report of all missing requirements for a publication
 */
-export async function validatePublication(publication: Bindings[], blueprint: Bindings[], example: DOMNode[]): Promise<ValidatedPublication> {
+export async function validatePublication(
+  publication: Bindings[],
+  blueprint: Bindings[],
+  example: DOMNode[],
+): Promise<ValidatedPublication> {
   const parsedPublication = parsePublication(publication);
   BLUEPRINT = blueprint;
   EXAMPLE = example;
@@ -145,7 +149,6 @@ export async function validatePublication(publication: Bindings[], blueprint: Bi
   } as ValidatedPublication;
 }
 
-
 /* function to validate the properties of a subject
   param:
   - subject: subject to be validated
@@ -153,14 +156,13 @@ export async function validatePublication(publication: Bindings[], blueprint: Bi
   - validated subject
 */
 function validateSubject(subject): ValidatedSubject {
-
-  const blueprintShapeKey: string | undefined = BLUEPRINT
-    .find((b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' && b.get('o')!.value === subject.class)
-    ?.get('s')!.value;
+  const blueprintShapeKey: string | undefined = BLUEPRINT.find(
+    (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' && b.get('o')!.value === subject.class,
+  )?.get('s')!.value;
 
   if (blueprintShapeKey != undefined) {
     const blueprintShape: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === blueprintShapeKey);
-    const propertyKeys: string[] = filterTermsByValue(blueprintShape, 'o', 'p', "http://www.w3.org/ns/shacl#property")
+    const propertyKeys: string[] = filterTermsByValue(blueprintShape, 'o', 'p', 'http://www.w3.org/ns/shacl#property');
 
     const validatedProperties = [];
     let validCount = 0;
@@ -184,11 +186,11 @@ function validateSubject(subject): ValidatedSubject {
     };
   }
 
-  const propertyKeys: string[] = getUniqueValues(subject.properties.map(p => p.path)) as string[]
+  const propertyKeys: string[] = getUniqueValues(subject.properties.map((p) => p.path)) as string[];
   const processedProperties: ProcessedProperty[] = [];
-  propertyKeys.forEach(p => {
+  propertyKeys.forEach((p) => {
     processedProperties.push(processProperty(subject, p));
-  })
+  });
   return {
     uri: subject.uri,
     class: subject.class,
@@ -197,7 +199,6 @@ function validateSubject(subject): ValidatedSubject {
     totalCount: subject.properties.length,
   };
 }
-
 
 /* function to validate the properties of a subject
   param:
@@ -210,13 +211,13 @@ function validateSubject(subject): ValidatedSubject {
 function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty {
   // instantiate default value
   let validatedProperty: ValidatedProperty = {
-    name: "Naam niet gevonden",
-    description: "Beschrijving niet gevonden",
-    path: "URI niet gevonden",
-    value: ["Waarde niet gevonden"],
+    name: 'Naam niet gevonden',
+    description: 'Beschrijving niet gevonden',
+    path: 'URI niet gevonden',
+    value: ['Waarde niet gevonden'],
     minCount: 0,
     actualCount: 0,
-    valid: false
+    valid: false,
   };
   propertyShape.forEach((p) => {
     switch (p.get('p')!.value) {
@@ -245,7 +246,7 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
         break;
       }
       case 'http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau': {
-        validatedProperty.maturityLevel= p.get('o')!.value;
+        validatedProperty.maturityLevel = p.get('o')!.value;
         break;
       }
       default: {
@@ -253,8 +254,8 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
     }
   });
 
-  if(validatedProperty.path === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
-    validatedProperty.value = [ subject.class ]
+  if (validatedProperty.path === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
+    validatedProperty.value = [subject.class];
   } else {
     validatedProperty.value = subject.properties
       .filter((p) => p.path === validatedProperty.path)
@@ -269,17 +270,20 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
   validatedProperty.valid =
     (validatedProperty.minCount === undefined || validatedProperty.actualCount >= validatedProperty.minCount) &&
     (validatedProperty.maxCount === undefined || validatedProperty.actualCount <= validatedProperty.maxCount) &&
-    (validatedProperty.targetClass === undefined || validatedProperty.value === undefined || 
-      !validatedProperty.value.some(v => {
-        v.class !== validatedProperty.targetClass
-      }) 
-    )
-  if (!validatedProperty.valid && validatedProperty.maturityLevel !== undefined && validatedProperty.maturityLevel <= FOUND_MATURITY) {
-    FOUND_MATURITY = MATURITY_LEVEL[MATURITY_LEVEL.indexOf(validatedProperty.maturityLevel) - 1] 
+    (validatedProperty.targetClass === undefined ||
+      validatedProperty.value === undefined ||
+      !validatedProperty.value.some((v) => {
+        v.class !== validatedProperty.targetClass;
+      }));
+  if (
+    !validatedProperty.valid &&
+    validatedProperty.maturityLevel !== undefined &&
+    validatedProperty.maturityLevel <= FOUND_MATURITY
+  ) {
+    FOUND_MATURITY = MATURITY_LEVEL[MATURITY_LEVEL.indexOf(validatedProperty.maturityLevel) - 1];
   }
   return validatedProperty;
 }
-
 
 /* function to process a property which has no shape for validation
   param:
@@ -289,7 +293,7 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
   returns:
   - subject with validated properties
 */
-function processProperty(subject, propertyKey) : ProcessedProperty {
+function processProperty(subject, propertyKey): ProcessedProperty {
   let processProperty: ProcessedProperty = {
     name: formatURI(propertyKey),
     path: propertyKey,
@@ -309,9 +313,9 @@ function processProperty(subject, propertyKey) : ProcessedProperty {
       });
   }
   processProperty.actualCount = processProperty.value.length;
-  return processProperty
+  return processProperty;
 }
-  
+
 /* preprocessing function, currently it finds subjects that have no RDF type linked to it and adds them to seenSubjects. 
   Causing them to be skipped during parsing and validation.
   param:
@@ -321,16 +325,14 @@ function processProperty(subject, propertyKey) : ProcessedProperty {
   - an aggregated document
 */
 function preProcess(publication: Bindings[], subjectKeys: string[], seenSubjects: string[]): void {
-
   const typedSubjectKeys: string[] = getUniqueValues(
-    filterTermsByValue(publication, 's', 'p', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
+    filterTermsByValue(publication, 's', 'p', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
   ) as string[];
-  subjectKeys.forEach(b => {
-    if(!typedSubjectKeys.includes(b)) seenSubjects.push(b)
-  })
+  subjectKeys.forEach((b) => {
+    if (!typedSubjectKeys.includes(b)) seenSubjects.push(b);
+  });
 }
 
-  
 /* function to aggregate a document
   param:
   - validatedSubjects: subjects that have gone through validation
@@ -350,7 +352,6 @@ async function postProcess(validatedSubjects: ValidatedSubject[]): Promise<Class
       objects: objects,
     });
   });
-  const result: ClassCollection[] = await enrichClassCollectionsWithExample(classes, BLUEPRINT, EXAMPLE)
+  const result: ClassCollection[] = await enrichClassCollectionsWithExample(classes, BLUEPRINT, EXAMPLE);
   return result;
 }
-
