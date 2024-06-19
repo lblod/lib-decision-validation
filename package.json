@@ -17,8 +17,7 @@
     "test": "jest",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint:js": "eslint . --cache",
-    "lint:js:fix": "eslint . --fix",
-    "prepublish": "tsc"
+    "lint:js:fix": "eslint . --fix"
   },
   "keywords": [],
   "include": [
