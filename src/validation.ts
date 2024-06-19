@@ -60,8 +60,10 @@ export function parsePublication(publication: Bindings[]): ParsedSubject[] {
   const subjectKeys: string[] = tmp.filter((value, index, array) => array.indexOf(value) === index);
 
   const result: ParsedSubject[] = [];
-  const seenSubjects: string[] = [];
-  preProcess(publication, subjectKeys, seenSubjects);
+  const seenSubjects: {[key: string]: string[]} = {};
+  subjectKeys.forEach((subjectKey) => {
+    seenSubjects[subjectKey] = [];
+  });
 
   subjectKeys.forEach((subjectKey) => {
     const subject: Bindings[] = publication.filter((p) => p.get('s')!.value === subjectKey);
@@ -79,12 +81,11 @@ export function parsePublication(publication: Bindings[]): ParsedSubject[] {
   returns:
   - a parsed subject
 */
-function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects: string[]): ParsedSubject {
+function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects: {[key: string]: string[]}): ParsedSubject {
   const subjectURI: string = subject[0].get('s')!.value;
-  if (seenSubjects.includes(subjectURI)) return;
-
-  seenSubjects.push(subjectURI);
   const subjectClass: string = findTermByValue(subject, 'o', 'p', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+  if (!subjectClass) return; // stop when no class is found for this subject
+
   const properties: ParsedProperty[] = [];
   subject.forEach((b) => {
     if (b.get('p')!.value !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
@@ -97,9 +98,11 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
       }
       if (termType === 'NamedNode') {
         const foundRelationKey: string = findTermByValue(publication, 's', 's', b.get('o')!.value);
-        if (foundRelationKey != undefined) {
+        // Go deeper when this subject has not processed this object before
+        if (foundRelationKey != undefined && seenSubjects[subjectURI].indexOf(foundRelationKey) === -1) {
+          seenSubjects[subjectURI].push(foundRelationKey);
           const foundRelation: Bindings[] = publication.filter((p) => p.get('s')!.value === foundRelationKey);
-
+          
           const parsedSubject = parseSubject(foundRelation, publication, seenSubjects);
           if (parsedSubject != undefined) {
             properties.push({
@@ -144,7 +147,7 @@ export async function validatePublication(
   });
 
   return {
-    classes: await postProcess(validatedSubjects),
+    classes: await postProcess(validatedSubjects, BLUEPRINT),
     maturity: FOUND_MATURITY,
   } as ValidatedPublication;
 }
@@ -315,36 +318,23 @@ function processProperty(subject, propertyKey): ProcessedProperty {
   processProperty.actualCount = processProperty.value.length;
   return processProperty;
 }
-
-/* preprocessing function, currently it finds subjects that have no RDF type linked to it and adds them to seenSubjects. 
-  Causing them to be skipped during parsing and validation.
-  param:
-  - publication: publication to be preprocessed, 
-  - subjectKeys: array of keys of distinct subjects
-  returns:
-  - an aggregated document
-*/
-function preProcess(publication: Bindings[], subjectKeys: string[], seenSubjects: string[]): void {
-  const typedSubjectKeys: string[] = getUniqueValues(
-    filterTermsByValue(publication, 's', 'p', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
-  ) as string[];
-  subjectKeys.forEach((b) => {
-    if (!typedSubjectKeys.includes(b)) seenSubjects.push(b);
-  });
-}
-
+  
 /* function to aggregate a document
   param:
   - validatedSubjects: subjects that have gone through validation
   returns:
   - an array of collections, a collection contains all the root objects in the publication that share the same RDF class
 */
-async function postProcess(validatedSubjects: ValidatedSubject[]): Promise<ClassCollection[]> {
-  const classes: ClassCollection[] = [];
+async function postProcess(validatedSubjects: ValidatedSubject[], blueprint: Bindings[]): Promise<ClassCollection[]> {
+  const classes: ClassCollection[] = []
   // Combine all Root objects with the same type into one collection
-  const distinctClasses: string[] = getUniqueValues(validatedSubjects.map((p) => p.class)) as string[];
-  distinctClasses.forEach((c) => {
-    const objects: ValidatedSubject[] = validatedSubjects.filter((s) => s.class === c);
+  const distinctClasses: string[] = getUniqueValues((validatedSubjects.map((p) => p.class))) as string[];
+  const targetClasses: string[] = blueprint
+    .filter((b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass')
+    .map((b) => b.get('o')!.value);
+  const rootClasses: string[] = distinctClasses.filter((c) => targetClasses.indexOf(c) != -1);
+  rootClasses.forEach(c => {
+    const objects: ValidatedSubject[] = validatedSubjects.filter(s => s.class === c)
     classes.push({
       classURI: c,
       className: formatURI(c),
