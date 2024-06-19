@@ -11,7 +11,7 @@ pipeline:
     image: danlynn/ember-cli:4.4.0
     group: lint
     commands:
-      - npm install -g npm@10.8.1 && npm run lint:js
+      - npm install -g npm@10.8.1 && npm install -g node@18.17.0 && npm run lint:js
   test:
     image: danlynn/ember-cli:4.4.0
     commands:
