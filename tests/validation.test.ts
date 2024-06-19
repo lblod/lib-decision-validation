@@ -33,7 +33,6 @@ import {
   TESTHTMLSTRING,
   TESTSTRING2,
 } from './data/testData';
-import { testResult } from './data/result-ex';
 
 import { getDOMfromString, getStoreFromSPOBindings, runQueryOverStore } from '../src/utils';
 import { ensureDirectoryExistence } from '../src/node-utils';
@@ -336,9 +335,9 @@ describe('As a vendor, I want to see a good example when something is not valid'
       const enrichedResults = validationResult.classes;
 
       let containsExample = false;
-      for (let r of enrichedResults) {
-        for (let o of r.objects) {
-          for (let p of o.properties) {
+      for (const r of enrichedResults) {
+        for (const o of r.objects) {
+          for (const p of o.properties) {
             if (p.example) containsExample = true;
           }
         }

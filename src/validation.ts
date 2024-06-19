@@ -119,7 +119,7 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
   return {
     uri: subjectURI,
     class: subjectClass,
-    properties: properties,
+    properties,
   };
 }
 
@@ -181,7 +181,7 @@ function validateSubject(subject): ValidatedSubject {
       usedShape: blueprintShapeKey,
       shapeName: blueprintShapeKey ? formatURI(blueprintShapeKey!) : 'Unknown shape',
       totalCount: propertyKeys.length,
-      validCount: validCount,
+      validCount,
       properties: validatedProperties,
     };
   }
@@ -210,7 +210,7 @@ function validateSubject(subject): ValidatedSubject {
 */
 function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty {
   // instantiate default value
-  let validatedProperty: ValidatedProperty = {
+  const validatedProperty: ValidatedProperty = {
     name: 'Naam niet gevonden',
     description: 'Beschrijving niet gevonden',
     path: 'URI niet gevonden',
@@ -250,6 +250,7 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
         break;
       }
       default: {
+        break;
       }
     }
   });
@@ -294,7 +295,7 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
   - subject with validated properties
 */
 function processProperty(subject, propertyKey): ProcessedProperty {
-  let processProperty: ProcessedProperty = {
+  const processProperty: ProcessedProperty = {
     name: formatURI(propertyKey),
     path: propertyKey,
     value: ['Waarde niet gevonden'],
@@ -349,7 +350,7 @@ async function postProcess(validatedSubjects: ValidatedSubject[]): Promise<Class
       classURI: c,
       className: formatURI(c),
       count: objects.length,
-      objects: objects,
+      objects,
     });
   });
   const result: ClassCollection[] = await enrichClassCollectionsWithExample(classes, BLUEPRINT, EXAMPLE);

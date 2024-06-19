@@ -1,3 +1,3 @@
 declare module 'lib-decision-shapes' {
-  export function getHTMLExampleOfDocumentType(documentType: string): any;
+  export function getHTMLExampleOfDocumentType(documentType: string): string;
 }

@@ -56,8 +56,8 @@ export function getUniqueValues<T>(array: T[]): T[] {
   eg: 'http://xmlns.com/foaf/0.1/Document' would be formatted into 'Document'
 */
 export function formatURI(uri: string): string {
-  const result1: string = /[^#]+$/.exec(uri)[0];
-  const result2: string = /[^\/]+$/.exec(uri)[0];
+  const result1: string = /[^#]+$/.exec(uri)![0];
+  const result2: string = /[^/]+$/.exec(uri)![0];
   return result1.length < result2.length ? result1 : result2;
 }
 
@@ -75,7 +75,7 @@ export function getDOMfromString(res: string): DOMNode[] {
 export function getStoreFromSPOBindings(bindings: Bindings[]): Store {
   const s: Store = new Store();
   bindings.map((b) => {
-    s.add(new Quad(<Term>b.get('s'), <Term>b.get('p'), <Term>b.get('o')));
+    s.add(new Quad(b.get('s') as Term, b.get('p') as Term, b.get('o') as Term));
   });
   return s;
 }
