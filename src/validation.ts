@@ -273,9 +273,9 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
     (validatedProperty.maxCount === undefined || validatedProperty.actualCount <= validatedProperty.maxCount) &&
     (validatedProperty.targetClass === undefined ||
       validatedProperty.value === undefined ||
-      !validatedProperty.value.some((v) => {
-        v.class !== validatedProperty.targetClass;
-      }));
+      !validatedProperty.value.some((v) => 
+        v.class !== validatedProperty.targetClass
+      ));
   if (
     !validatedProperty.valid &&
     validatedProperty.maturityLevel !== undefined &&
