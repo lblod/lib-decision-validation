@@ -394,7 +394,7 @@ describe('As a vendor, I want to see a good example when something is not valid'
 
       const zittingResult = validationResult.find((r) => r.className === 'Zitting');
       let isGehoudenDoorValueFound = false;
-      for(let o of zittingResult?.objects) {
+      for(let o of zittingResult!.objects) {
         const isGehoudenDoorProperty = zittingResult?.objects[0].properties.find((p) => p.path === 'http://data.vlaanderen.be/ns/besluit#isGehoudenDoor');
         isGehoudenDoorValueFound = isGehoudenDoorProperty?.value != undefined && isGehoudenDoorProperty?.value.length > 0;
       }
