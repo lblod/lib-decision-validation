@@ -9,8 +9,8 @@ pipeline:
       run:
         - format
         - lint:js
-        - test || exit 0
-        - build # script name
+        - test
+        - build
       frozen_lockfile: true # recommended
       ignore_node_modules: true # recommended
 when:
