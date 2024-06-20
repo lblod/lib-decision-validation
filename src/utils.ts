@@ -76,7 +76,7 @@ export function getStoreFromSPOBindings(bindings: Bindings[]): Store {
   const s: Store = new Store();
   bindings.map((b) => {
     s.add(new Quad(<Term>b.get('s'), <Term>b.get('p'), <Term>b.get('o')));
-  });
+``  });
   return s;
 }
 
