@@ -8,7 +8,7 @@ pipeline:
     settings:
       token:
         from_secret: npm_access_token
-      folder: ember-acmidm-login
 when:
-  event: tag
-  tag: v*
+  branch: master
+  event: push
+  
