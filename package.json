@@ -1,5 +1,5 @@
 {
-  "name": "lib-decision-validation",
+  "name": "@lblod/lib-decision-validation",
   "version": "1.0.31",
   "description": "This module is used to validate publications in the context of the Flemish government.",
   "main": "dist/index.js",

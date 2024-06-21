@@ -1,9 +1,0 @@
-pipeline:
-  build:
-    image: plugins/npm
-    settings:
-      token:
-        from_secret: npm_access_token
-when:
-  branch: master
-  event: push
