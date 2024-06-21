@@ -97,11 +97,11 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
       }
       if (termType === 'NamedNode') {
         const foundRelationKey: string = findTermByValue(publication, 's', 's', b.get('o')!.value);
-        if (foundRelationKey != undefined) {
+        if (foundRelationKey !== undefined) {
           const foundRelation: Bindings[] = publication.filter((p) => p.get('s')!.value === foundRelationKey);
 
           const parsedSubject = parseSubject(foundRelation, publication, seenSubjects);
-          if (parsedSubject != undefined) {
+          if (parsedSubject !== undefined) {
             properties.push({
               path: b.get('p')!.value,
               value: parsedSubject,
@@ -119,7 +119,7 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
   return {
     uri: subjectURI,
     class: subjectClass,
-    properties: properties,
+    properties,
   };
 }
 
@@ -160,7 +160,7 @@ function validateSubject(subject): ValidatedSubject {
     (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' && b.get('o')!.value === subject.class,
   )?.get('s')!.value;
 
-  if (blueprintShapeKey != undefined) {
+  if (blueprintShapeKey !== undefined) {
     const blueprintShape: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === blueprintShapeKey);
     const propertyKeys: string[] = filterTermsByValue(blueprintShape, 'o', 'p', 'http://www.w3.org/ns/shacl#property');
 
@@ -181,7 +181,7 @@ function validateSubject(subject): ValidatedSubject {
       usedShape: blueprintShapeKey,
       shapeName: blueprintShapeKey ? formatURI(blueprintShapeKey!) : 'Unknown shape',
       totalCount: propertyKeys.length,
-      validCount: validCount,
+      validCount,
       properties: validatedProperties,
     };
   }
@@ -210,7 +210,7 @@ function validateSubject(subject): ValidatedSubject {
 */
 function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty {
   // instantiate default value
-  let validatedProperty: ValidatedProperty = {
+  const validatedProperty: ValidatedProperty = {
     name: 'Naam niet gevonden',
     description: 'Beschrijving niet gevonden',
     path: 'URI niet gevonden',
@@ -238,11 +238,11 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
         break;
       }
       case 'http://www.w3.org/ns/shacl#minCount': {
-        validatedProperty.minCount = parseInt(p.get('o')!.value);
+        validatedProperty.minCount = parseInt(p.get('o')!.value, 10);
         break;
       }
       case 'http://www.w3.org/ns/shacl#maxCount': {
-        validatedProperty.maxCount = parseInt(p.get('o')!.value);
+        validatedProperty.maxCount = parseInt(p.get('o')!.value, 10);
         break;
       }
       case 'http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau': {
@@ -250,6 +250,7 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
         break;
       }
       default: {
+        break;
       }
     }
   });
@@ -260,7 +261,7 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
     validatedProperty.value = subject.properties
       .filter((p) => p.path === validatedProperty.path)
       .map((s) => {
-        if (s.value.class != undefined) {
+        if (s.value.class !== undefined) {
           return validateSubject(s.value);
         } else return s.value;
       });
@@ -272,9 +273,8 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
     (validatedProperty.maxCount === undefined || validatedProperty.actualCount <= validatedProperty.maxCount) &&
     (validatedProperty.targetClass === undefined ||
       validatedProperty.value === undefined ||
-      !validatedProperty.value.some((v) => {
-        v.class !== validatedProperty.targetClass;
-      }));
+      !validatedProperty.value.some((v) => v.class !== validatedProperty.targetClass
+      ));
   if (
     !validatedProperty.valid &&
     validatedProperty.maturityLevel !== undefined &&
@@ -294,7 +294,7 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
   - subject with validated properties
 */
 function processProperty(subject, propertyKey): ProcessedProperty {
-  let processProperty: ProcessedProperty = {
+  const processProperty: ProcessedProperty = {
     name: formatURI(propertyKey),
     path: propertyKey,
     value: ['Waarde niet gevonden'],
@@ -307,7 +307,7 @@ function processProperty(subject, propertyKey): ProcessedProperty {
     processProperty.value = subject.properties
       .filter((p) => p.path === processProperty.path)
       .map((s) => {
-        if (s.value.class != undefined) {
+        if (s.value.class !== undefined) {
           return validateSubject(s.value);
         } else return s.value;
       });
@@ -349,7 +349,7 @@ async function postProcess(validatedSubjects: ValidatedSubject[]): Promise<Class
       classURI: c,
       className: formatURI(c),
       count: objects.length,
-      objects: objects,
+      objects,
     });
   });
   const result: ClassCollection[] = await enrichClassCollectionsWithExample(classes, BLUEPRINT, EXAMPLE);

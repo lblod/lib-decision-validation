@@ -75,7 +75,7 @@ export function getDOMfromString(res: string): DOMNode[] {
 export function getStoreFromSPOBindings(bindings: Bindings[]): Store {
   const s: Store = new Store();
   bindings.map((b) => {
-    s.add(new Quad(<Term>b.get('s'), <Term>b.get('p'), <Term>b.get('o')));
+    s.add(new Quad(b.get('s') as Term, b.get('p') as Term, b.get('o') as Term));
   });
   return s;
 }
