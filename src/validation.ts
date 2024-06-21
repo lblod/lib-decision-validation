@@ -8,7 +8,7 @@ import type {
   ClassCollection,
   ValidatedPublication,
 } from './types';
-import { filterTermsByValue, findTermByValue, getUniqueValues, formatURI } from './utils';
+import { filterTermsByValue, findTermByValue, getUniqueValues, formatURI, findTermsByValue } from './utils';
 import { enrichClassCollectionsWithExample } from './examples';
 import { DOMNode } from 'html-dom-parser';
 
@@ -83,11 +83,16 @@ export function parsePublication(publication: Bindings[]): ParsedSubject[] {
 */
 function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects: {[key: string]: string[]}): ParsedSubject {
   const subjectURI: string = subject[0].get('s')!.value;
-  const subjectClass: string = findTermByValue(subject, 'o', 'p', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
-  if (!subjectClass) return; // stop when no class is found for this subject
+  const tmpClasses: string[] = findTermsByValue(subject, 'o', 'p', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+  if (!tmpClasses.length) return; // stop when no class(es) is found for this subject
+
+  // Check if subject is a Document (note: documents can have multiple rdf:type for relating to specific types of documents)
+  const isSubjectDocument = tmpClasses.includes('http://xmlns.com/foaf/0.1/Document');
+  const subjectClass: string = isSubjectDocument ? 'http://xmlns.com/foaf/0.1/Document' : tmpClasses[0];
 
   const properties: ParsedProperty[] = [];
   subject.forEach((b) => {
+    // When rdf:type is not the class
     if (b.get('p')!.value !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
       const termType: string = b.get('o')!.termType;
       if (termType === 'Literal') {
@@ -117,6 +122,12 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
           });
         }
       }
+    } else if (isSubjectDocument && b.get('o')!.value != subjectClass) {
+      // rdf:type is used as property to indicate document type
+      properties.push({
+        path: b.get('p')!.value,
+        value: b.get('o')!.value,
+      });
     }
   });
   return {
@@ -257,18 +268,15 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
     }
   });
 
-  if (validatedProperty.path === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
-    validatedProperty.value = [subject.class];
-  } else {
-    validatedProperty.value = subject.properties
-      .filter((p) => p.path === validatedProperty.path)
-      .map((s) => {
-        if (s.value.class != undefined) {
-          return validateSubject(s.value);
-        } else return s.value;
-      });
-  }
-
+  const values = subject.properties
+    .filter((p) => p.path === validatedProperty.path)
+    .map((s) => {
+      if (s.value.class != undefined) {
+        return validateSubject(s.value);
+      } else return s.value;
+    });
+  if (values.length) validatedProperty.value = values;
+  
   validatedProperty.actualCount = validatedProperty.value.length;
   validatedProperty.valid =
     (validatedProperty.minCount === undefined || validatedProperty.actualCount >= validatedProperty.minCount) &&

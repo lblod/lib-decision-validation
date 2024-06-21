@@ -437,4 +437,24 @@ describe('As a vendor, I want to see a good example when something is not valid'
     },
     MILLISECONDS * 2,
   );
+  test(
+    'Document should have a value for document type (notulen, besluitenlijst, agenda) and is not foaf:Document',
+    async () => {
+      const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK4, PROXY);
+      const documentType = determineDocumentType(publication);
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+      const example: DOMNode[] = await getExampleOfDocumentType(documentType);
+      const validationResult = await validatePublication(publication, blueprint, example);
+
+      const result = validationResult.classes.find((r) => r.className === 'Document');
+      let valueFound = false;
+      for(let o of result!.objects) {
+        const foundProperty = o.properties.find((p) => p.path === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+        valueFound = foundProperty?.value != undefined && foundProperty?.value.length > 0 && (foundProperty?.value as string[]).includes('https://data.vlaanderen.be/id/concept/BesluitDocumentType/8e791b27-7600-4577-b24e-c7c29e0eb773');
+      }
+      expect(valueFound).toBeTruthy;
+      fs.writeFileSync('./logs/heeftDocumentType.json', `${JSON.stringify(validationResult)}`);
+    },
+    MILLISECONDS * 2,
+  );
 });
