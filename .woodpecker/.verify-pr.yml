@@ -12,7 +12,7 @@ pipeline:
   lint:
     image: woodpeckerci/plugin-node-pm
     commands: 
-      - npm run lint:js
+      - npm run lint
   test:
     image: woodpeckerci/plugin-node-pm
     commands: 

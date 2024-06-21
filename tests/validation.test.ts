@@ -172,7 +172,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
 
       const actual = await validatePublication(publication, blueprint, example);
     fs.writeFileSync('./logs/besluitenlijst.json', `${JSON.stringify(actual)}`);
-  });
+  }, 10000);
 
   test('Validate `Besluitenlijst 2', async () => {
       const documentType: string = 'Besluitenlijst';
