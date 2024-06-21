@@ -1,10 +1,9 @@
 pipeline:
   build:
-    image: plugins/docker
+    image: plugins/npm
     settings:
-      repo: ${CI_REPO}
-      tags: latest
-    secrets: [ docker_username, docker_password ]
+      token:
+        from_secret: npm_access_token
 when:
   branch: master
   event: push
