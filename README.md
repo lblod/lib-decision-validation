@@ -113,18 +113,16 @@ In order to properly validate an agenda item exists in a publication, we need to
 
 > To use the module, import it into your project:
 > ```javascript
-> import { validatePublication, getBlueprintOfDocumentType, fetchDocument, getExampleOfDocumentType, enrichClassCollectionsWithExample } from 'app-validation-tool/dist';
+> import { validatePublication, getBlueprintOfDocumentType, fetchDocument, getExampleOfDocumentType } from 'app-validation-tool/dist';
 > ```
 >
 > Then, call the `validatePublication` function with the publication data to validate:
 > ```typescript
 > const blueprint: Bindings[] = await getBlueprintOfDocumentType('Notulen');
+> const example: Document = getExampleOfDocumentType('Notulen');
 > const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
 >
-> const validationResult = await validatePublication(publication, blueprint);
->
-> const example: Document = getExampleOfDocumentType('Notulen');
-> const validationResultWithExamples = await enrichClassCollectionsWithExample(validationResult, blueprint, example);
+> const validationResult = await validatePublication(publication, blueprint, example);
 > ```
 >
 > The `validatePublication` function returns an array of subjects. Each subject is structured as follows:
