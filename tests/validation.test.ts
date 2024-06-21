@@ -390,12 +390,13 @@ describe('As a vendor, I want to see a good example when something is not valid'
       const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK3, PROXY);
       const documentType = determineDocumentType(publication);
       const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
-      const validationResult = await validatePublication(publication, blueprint);
+      const example: DOMNode[] = await getExampleOfDocumentType(documentType);
+      const validationResult = await validatePublication(publication, blueprint, example);
 
-      const zittingResult = validationResult.find((r) => r.className === 'Zitting');
+      const zittingResult = validationResult.classes.find((r) => r.className === 'Zitting');
       let isGehoudenDoorValueFound = false;
       for(let o of zittingResult!.objects) {
-        const isGehoudenDoorProperty = zittingResult?.objects[0].properties.find((p) => p.path === 'http://data.vlaanderen.be/ns/besluit#isGehoudenDoor');
+        const isGehoudenDoorProperty = o.properties.find((p) => p.path === 'http://data.vlaanderen.be/ns/besluit#isGehoudenDoor');
         isGehoudenDoorValueFound = isGehoudenDoorProperty?.value != undefined && isGehoudenDoorProperty?.value.length > 0;
       }
       expect(isGehoudenDoorValueFound).toBeTruthy;
