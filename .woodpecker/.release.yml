@@ -1,6 +1,6 @@
 pipeline:
   install:
-    image: danlynn/ember-cli:4.4.0
+    image: woodpeckerci/plugin-node-pm
     commands:
       - npm ci
   release:
@@ -8,7 +8,8 @@ pipeline:
     settings:
       token:
         from_secret: npm_access_token
+      access: public
 when:
   branch: master
   event: push
-  
+
