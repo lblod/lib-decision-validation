@@ -10,7 +10,7 @@ export * from './queries';
 
 const engine = new QueryEngine();
 
-const default_proxy = 'https://corsproxy.io/?';
+const defaultProxy = 'https://corsproxy.io/?';
 
 export async function getPublicationFromFileContent(content: string): Promise<Bindings[]> {
   const bindingsStream: BindingsStream = await engine.queryBindings(
@@ -35,7 +35,7 @@ export async function getPublicationFromFileContent(content: string): Promise<Bi
   return bindingsStream.toArray();
 }
 
-export async function fetchDocument(publicationLink: string, proxy: string = default_proxy): Promise<Bindings[]> {
+export async function fetchDocument(publicationLink: string, proxy: string = defaultProxy): Promise<Bindings[]> {
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
         SELECT ?s ?p ?o 

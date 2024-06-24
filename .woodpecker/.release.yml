@@ -1,0 +1,15 @@
+pipeline:
+  install:
+    image: woodpeckerci/plugin-node-pm
+    commands:
+      - npm ci
+  release:
+    image: plugins/npm
+    settings:
+      token:
+        from_secret: npm_access_token
+      access: public
+when:
+  branch: master
+  event: push
+

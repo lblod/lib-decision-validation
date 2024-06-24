@@ -1,6 +1,9 @@
 {
-  "name": "app-validation-tool",
+  "name": "lib-decision-validation",
   "version": "1.0.31",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "This module is used to validate publications in the context of the Flemish government.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -17,6 +20,7 @@
     "test": "jest",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
+    "lint:fix": "tslint -p tsconfig.json --fix",
     "prepublish": "tsc"
   },
   "keywords": [],
