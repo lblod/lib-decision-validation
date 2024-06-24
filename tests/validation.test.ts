@@ -29,6 +29,8 @@ import {
   AGENDA_LINK_4,
   BESLUITEN_LINK,
   BESLUITEN_LINK2,
+  BESLUITEN_LINK3,
+  BESLUITEN_LINK4,
   NOTULEN_LINK,
   TESTHTMLSTRING,
   TESTSTRING2,
@@ -103,6 +105,30 @@ describe('As a vendor, I want the tool to automatically determine the type of th
         'content-type': 'text/html;charset=UTF-8',
       },
       body: fs.readFileSync(`tests/data/${encodeURIComponent(BESLUITEN_LINK2)}`),
+    });
+
+    mocker.mock({
+      url: `${PROXY}${BESLUITEN_LINK3}`, // or RegExp: /.*\/some-api$/
+      method: 'get', // get, post, put, patch or delete
+      delay: 0,
+      status: 200,
+      headers: {
+        // respone headers
+        'content-type': 'text/html;charset=UTF-8',
+      },
+      body: fs.readFileSync(`tests/data/${encodeURIComponent(BESLUITEN_LINK3)}`),
+    });
+
+    mocker.mock({
+      url: `${PROXY}${BESLUITEN_LINK4}`, // or RegExp: /.*\/some-api$/
+      method: 'get', // get, post, put, patch or delete
+      delay: 0,
+      status: 200,
+      headers: {
+        // respone headers
+        'content-type': 'text/html;charset=UTF-8',
+      },
+      body: fs.readFileSync(`tests/data/${encodeURIComponent(BESLUITEN_LINK4)}`),
     });
 
     mocker.mock({
@@ -367,6 +393,67 @@ describe('As a vendor, I want to see a good example when something is not valid'
 
       expect(enrichedResults.length).toBeGreaterThan(0);
       fs.writeFileSync('./logs/enrichedResults-demonstrator.json', `${JSON.stringify(enrichedResults)}`);
+    },
+    MILLISECONDS * 2,
+  );
+
+  test(
+    'Zitting should have a value for isGehoudenDoor',
+    async () => {
+      const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK3, PROXY);
+      const documentType = determineDocumentType(publication);
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+      const example: DOMNode[] = await getExampleOfDocumentType(documentType);
+      const validationResult = await validatePublication(publication, blueprint, example);
+
+      const zittingResult = validationResult.classes.find((r) => r.className === 'Zitting');
+      let isGehoudenDoorValueFound = false;
+      for(let o of zittingResult!.objects) {
+        const isGehoudenDoorProperty = o.properties.find((p) => p.path === 'http://data.vlaanderen.be/ns/besluit#isGehoudenDoor');
+        isGehoudenDoorValueFound = isGehoudenDoorProperty?.value != undefined && isGehoudenDoorProperty?.value.length > 0;
+      }
+      expect(isGehoudenDoorValueFound).toBeTruthy;
+      fs.writeFileSync('./logs/isGehoudenDoor.json', `${JSON.stringify(validationResult)}`);
+    },
+    MILLISECONDS * 2,
+  );
+  test(
+    'Zitting should have a value for heeftSecretaris',
+    async () => {
+      const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK4, PROXY);
+      const documentType = determineDocumentType(publication);
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+      const example: DOMNode[] = await getExampleOfDocumentType(documentType);
+      const validationResult = await validatePublication(publication, blueprint, example);
+
+      const zittingResult = validationResult.classes.find((r) => r.className === 'Zitting');
+      let valueFound = false;
+      for(let o of zittingResult!.objects) {
+        const foundProperty = o.properties.find((p) => p.path === 'http://data.vlaanderen.be/ns/besluit#heeftSecretaris');
+        valueFound = foundProperty?.value != undefined && foundProperty?.value.length > 0;
+      }
+      expect(valueFound).toBeTruthy;
+      fs.writeFileSync('./logs/heeftSecretaris.json', `${JSON.stringify(validationResult)}`);
+    },
+    MILLISECONDS * 2,
+  );
+  test(
+    'Document should have a value for document type (notulen, besluitenlijst, agenda) and is not foaf:Document',
+    async () => {
+      const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK4, PROXY);
+      const documentType = determineDocumentType(publication);
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+      const example: DOMNode[] = await getExampleOfDocumentType(documentType);
+      const validationResult = await validatePublication(publication, blueprint, example);
+
+      const result = validationResult.classes.find((r) => r.className === 'Document');
+      let valueFound = false;
+      for(let o of result!.objects) {
+        const foundProperty = o.properties.find((p) => p.path === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+        valueFound = foundProperty?.value != undefined && foundProperty?.value.length > 0 && (foundProperty?.value as string[]).includes('https://data.vlaanderen.be/id/concept/BesluitDocumentType/8e791b27-7600-4577-b24e-c7c29e0eb773');
+      }
+      expect(valueFound).toBeTruthy;
+      fs.writeFileSync('./logs/heeftDocumentType.json', `${JSON.stringify(validationResult)}`);
     },
     MILLISECONDS * 2,
   );

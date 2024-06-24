@@ -18,6 +18,19 @@ export function findTermByValue(source: Bindings[], desiredTerm: string, givenTe
   return source.find((s) => s.get(givenTerm)!.value === termValue)?.get(desiredTerm)!.value;
 }
 
+/* function to filter triples by a certain condition and then get ALL the values of a certain term
+  param:
+  - source: source of triples to filter on
+  - desiredTerm: term that we want to find the value for
+  - givenTerm: term that should contains the value we have been given
+  - termValue: the value for givenTerm that we filter on
+  returns:
+  - values of the desired term
+*/
+export function findTermsByValue(source: Bindings[], desiredTerm: string, givenTerm: string, termValue: string): string[] {
+  return source.filter((s) => s.get(givenTerm)!.value === termValue).map((s) => s.get(desiredTerm)!.value);
+}
+
 /* function to filter triples by a certain condition and then get the value of a certain term
   param:
   - source: source of triples to filter on

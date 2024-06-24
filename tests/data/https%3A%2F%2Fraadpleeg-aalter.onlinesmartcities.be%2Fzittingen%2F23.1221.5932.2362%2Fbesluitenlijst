@@ -1,0 +1,997 @@
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    
+
+    <title>Raadpleegomgeving - Open Data - Besluitenlijst</title>
+    
+
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="_ctx" />
+
+    
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" />
+
+    <link rel="stylesheet" href="/lib/datatables/css/datatables.min.css" />
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/lib/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="/lib/datetimepicker/css/bootstrap-datetimepicker.min.css" />
+    <link rel="stylesheet" href="/lib/select2/css/select2.min.css" />
+    <link rel="stylesheet" href="/lib/select2/css/select2-bootstrap4.min.css" />
+    <link rel="stylesheet" href="/lib/select2/css/select2-readonly.css" />
+    <link rel="stylesheet" href="/lib/bootstrap-multiselect/css/bootstrap-multiselect.min.css" />
+    <link rel="stylesheet" href="/consult.css" />
+
+    <!-- GVSUP-1791 - remove when IE11 is not used anymore -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+
+    <script src="/lib/less/less.min.js"></script>
+    <script src="/lib/jquery/jquery-3.4.1.min.js"></script>
+    <script src="/lib/jquery-mustache/jquery.mustache.js"></script>
+    <script src="/lib/jquery-pagination/jquery-pagination.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/lib/bootbox/bootbox.min.js"></script>
+    <script src="/lib/underscore/underscore.min.js"></script>
+    <script src="/lib/datatables/js/datatables.min.js"></script>
+    <script src="/lib/moment/moment-with-locales.min.js"></script>
+    <script src="/lib/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/lib/select2/js/select2.min.js"></script>
+    <script src="/lib/select2/i18n/select2.nl.js"></script>
+    <script src="/lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
+    <script src="//sdk.companywebcast.com/sdk/player/client.js"></script>
+
+    
+    
+
+    <!-- Matomo -->
+    <script type="text/javascript">
+        var _paq = window._paq = window._paq || [];
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+            var u="https://onlinesmartcities.matomo.cloud/";
+            _paq.push(['setTrackerUrl', u+'matomo.php']);
+            _paq.push(['setSiteId', 1]);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.type='text/javascript'; g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+        })();
+    </script>
+    <!-- End Matomo Code -->
+
+    <script>
+        var _contextPath = '';
+        $(document).ready(function () {
+            var _ctxContent = $('meta[name=_ctx]').attr('content');
+            _contextPath = _ctxContent ? _ctxContent : '';
+        });
+    </script>
+
+    <script src="/js/consult.js"></script>
+</head>
+<body>
+    <nav>
+    <div class="container">
+        <div class="logo">
+            <a class="navi-logo" href="/"><img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAEYAAABGCAYAAABxLuKEAAAGXUlEQVR42u2aeWwUVRzHf29md2FroYAcUQi23e3Ssr22uzPbK9qIEQ+M9Y8CGkmImpCIYIKiIZJg4vUHLREIVEQpyCnIJSJHEErCVSyHpsUgPXZ2SSMBuWIL2NLx95Y3ZXa6W5CENNN93+Sb7rz35u3Mp7/f782xAFxcXFxcXFxcXFxcXFxcXFzm0pFRBfb9ltyi3QMLhnAaTEet3rzDJFs5AJnqXuL+Z5c1a1rcQznRL89ZQ7IvHYYsNQwG3OpOGKv+KGZOiVso9eC2nRLyTtZAtmoEs41kXN9hd4+OSzB1gnfuKchVo4KBDPUHIeP7+IsWe/HoeuJp6wnMJkjv3Gh158YVmLOitLIOPGrPYMao6+Mpahr7FbvOQl7HXTA57UfE3NpoYNbBmPa1/TOeiAswzaK0AsGoGpgT1rzptL1azFnWHYxLXS24PuvzUIIJRY83Ed+tLjCi57gKQMIXeVBg30MyG4xgVhFXywEosdxdzUoSgyDPUgTfBoVIuwPEVx0AX7VCfHuxbVUT+LPNB8bi/6QJvKoG5nfR94K+f48tq7QbGEhTV4jpE7Qxik1yK+CbpwjeNQjj1yD42tCq5maQS821ErnLbEEi/aWBqRe8dVq06LVTzDzaDYzg2qgfcw6e71cLXms4NaGkf0DwrWdgmuj1kanAnLflT6QHr4E5Y/VNjzbuJ0vOeCOY5cTZtjYpa7AiSi8FiXcLi5LWoChNpSBC4PuDzq2I8gTzpRGRd3eBId625kElg2KN3SqOPd5VfNG0KDcS71V9yqAbFPB7g4JUTrcDgrTEdFBC9oKRePAdGphzWDh7Gr9VzCrdDOnqQVzCG3C8AUhrAKS5NIWC4HUoIF2g9UZLLbMV3fe1EwuDsflfjjVWhY8FmiII5LYBiIrFdk8A5JS+s0yLcm0XGOK73pxc0j/auIA1Pw8L9FEjkEaEuR3rzlIx7bW+AyWp0KE/yQCRNxnHtIA3gdWKDiOU03gRuBoLcCU41MWCY0OfAROyyLMjrjOs+VMjosQiFeJK86cRCPpWDcmuDq9K4AyDWURSrywzYy2Jnkb+Q101Ah2yPz3yTi0pE0OCbx62txuh4PIbCFl98sZEzzAEc0MDsxBS1EUW51Omh9IyoGRoRHoI0lnajpftI7CQ7o8SJWqISPvOg/yoNsd3QvoqPZgvhdQvzB8ttoJXI05c9FeFrPl+TJ3z0aAguKX6+yKqNVa3pAezgKSc7AtpVBUJRq7GvzeiQOkMCfIHseb5hqQd0cBUQPLtRYnOYeYGI0jBqJER6Y6QKL/Z0zzLRdckDUw5JKsLROdE00JRkopT7weKIvrv+UaAplclcQQ0MOVCaqV5weAJ3wNK570iRa9KIW2mBmY+STlj5vqypCcwiuCf83/mWwAFdryOCYbBQHKnaesMFtpjMcEI8rcPMudCS+q4CpJyDcGoFWKq+R4xhG8EidQaFQqRj9EHTQ869/xEx/AKwTGt3OZK7zuFl0iXG+3F8fmGkT1meDYqGJt/MsSzglb/G92giPI2iHcpQv6HhhRqbYmdQs+g6eOEX+iqjE7T9T0WXpAA9qE3o8siFqo7+2ryoKvQKw1eiraj6TMg+hOT5bo+eg2VY9jvK/SLD+dRA4Tvmu+Cscifxhj6HPo2ug69Hn2ReQQ7mQb0NTR9VVsbrusAb7F9b6HLdXPRu+5q9EH0v+HHPHc+/4xOQu9n33WcjaOejZ7D5j3ExofQnejCh3ArkP+R7sax5uLQogExhm5nJ6+98shkB/kuupR9Hsf6BHQN+nQMMHpdQH+t2y5mc70TZawGJpFtZ7DtGQ+h+BY+iemzC2vN2/VQ1tN7nhPsPzpC55vshGewA0zT9dFQv/QAYKawuf5mfRd0gDUwNIUWs6ihEVPUm+XoJDsooyvQM2P0XWb7XmX14n7ATGT7LmbRSD3ZAOY3lkYqa4PeBkNze7zONw1gXtH17dCB2crqzyRWeHN1hdsIZiSLsH0sEnKZhxhSaRiD08j6ek3H0OsMbVfQn7MVhBbLBMNK1MI+j2I1Rx9Nnezkgiw69Hqdza0fvwU9C93BVi2tHrWj3+tNMPS3L8MNbfRSfyA70CxDH3176TK0jWb/fY8uYpzowVG+j96KuNlYD4uKBFb09aIF+BHg4uLi4uLi4uLi4uLi4uLi6l39B8dFvZq0dofTAAAAAElFTkSuQmCC" alt="Logo Raadpleegomgeving" /></a>
+        </div>
+        <div class="menu">
+            <span class="menu-item">
+                <a href="/"><i class="fal fa-home"></i><span class="d-none d-lg-inline-block">Startpagina</span></a>
+            </span>
+            <span class="menu-item">
+                <a href="/zittingen/kalender" class="calendar-link"><i class="fal fa-calendar-alt"></i><span class="d-none d-lg-inline-block">Kalender</span></a>
+            </span>
+            <span class="menu-item">
+                <a href="/bekendmakingen"><i class="far fa-bell"></i><span class="d-none d-lg-inline-block">Bekendmakingen</span></a>
+            </span>
+            
+            <span class="menu-item">
+                <a href="https://channel.royalcast.com/aalter" target="_blank"><i class="fal fa-video"></i><span class="d-none d-lg-inline-block">Webcast</span></a>
+            </span>
+            <span class="menu-item d-lg-none">
+                <a href="/zoeken"><i class="far fa-search"></i><span class="d-none d-lg-inline-block">Zoeken</span></a>
+            </span>
+            <div class="search menu-item d-none d-lg-inline-block">
+                <label for="search-field" class="sr-only">Zoeken</label>
+                <input type="text" autocomplete="off" id="search-field" />
+                <i class="far fa-search"></i>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section>
+        <div class="container">
+        <a href="/zittingen/23.1221.5932.2362" id="return-link"><span class="sr-only">Terug</span><i class="fal fa-arrow-circle-left"></i></a>
+        <div vocab="http://data.vlaanderen.be/ns/besluit#" prefix="eli: http://data.europa.eu/eli/ontology# besluitDocumentType: https://data.vlaanderen.be/id/concept/BesluitDocumentType/ foaf: http://xmlns.com/foaf/0.1/" resource="#" typeof="foaf:Document">
+            <div typeof="foaf:Document besluitDocumentType:3fa67785-ffdc-4b30-8880-2b99d97b4dee" resource="https://data.aalter.be/id/lblod/besluitenlijst/23.1221.5932.2362">
+                <span property="eli:date_publication" datatype="xsd:date" content="2024-05-23"></span>
+            </div>
+        </div>
+        <div class="publication-date">
+            Gepubliceerd op 23/05/2024
+        </div>
+        
+        <div><div class="opendata-html" vocab="http://data.vlaanderen.be/ns/besluit#" prefix="eli: http://data.europa.eu/eli/ontology# prov: http://www.w3.org/ns/prov# mandaat: http://data.vlaanderen.be/ns/mandaat# persoon: https://data.vlaanderen.be/ns/persoon# org: http://www.w3.org/ns/org# besluit: http://data.vlaanderen.be/ns/besluit# skos: http://www.w3.org/2004/02/skos/core# besluitDocumentType: https://data.vlaanderen.be/id/concept/BesluitDocumentType/">
+    <div class="opendata-meeting" typeof="besluit:Zitting" resource="https://data.aalter.be/id/zittingen/23.1221.5932.2362">
+        <div property="besluit:heeftBesluitenlijst" typeof="foaf:Document besluitDocumentType:3fa67785-ffdc-4b30-8880-2b99d97b4dee" resource="https://data.aalter.be/id/lblod/besluitenlijst/23.1221.5932.2362">
+            <span property="eli:passed_by" resource="http://data.lblod.info/id/bestuursorganen/0921318d-c195-4fbf-aadf-2534cdd63c7d"></span>
+            <div property="prov:value" datatype="xsd:string">
+                <div typeof="besluit:Zitting" resource="https://data.aalter.be/id/zittingen/23.1221.5932.2362">
+                    <h1 class="return-header" property="dc:title" datatype="xsd:string">
+                        <span>Besluitenlijst&nbsp;</span>
+                        <span class="organ" property="besluit:isGehoudenDoor" typeof="besluit:Bestuursorgaan" resource="http://data.lblod.info/id/bestuursorganen/0921318d-c195-4fbf-aadf-2534cdd63c7d">
+                            <span property="skos:prefLabel">Gemeenteraad</span>
+                            <span property="mandaat:isTijdspecialisatieVan" typeof="besluit:Bestuursorgaan" resource="http://data.lblod.info/id/bestuursorganen/a423b2ec-2162-4b06-9260-22ada39a90fd">
+                                <span property="skos:prefLabel" content="Gemeenteraad"></span>
+                            </span>
+                        </span>
+                    </h1>
+                    <div class="opendata-meetinginformation">
+                        <span class="opendata-meetingdate" property="besluit:geplandeStart" datatype="xsd:dateTime" content="2024-05-13T20:00:00.000+02:00">ma 13/05/2024 - 20:00</span>
+                        <span class="opendata-meetinglocation" property="prov:atLocation" datatype="xsd:string">*</span>
+                        <span class="opendata-meetingstarttime" property="prov:startedAtTime" datatype="xsd:dateTime" content="2024-05-13T20:01:00.000+02:00"></span>
+                        <span class="opendata-meetingendtime" property="prov:endedAtTime" datatype="xsd:dateTime" content="2024-05-13T21:19:00.000+02:00"></span>
+                        
+                    </div>
+                    <div class="opendata-meeting-items">
+                        <ul>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0503.5821.0398">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/b122db75-fd93-4f03-b57a-2a9269289782"></div>
+                                
+                                <h2 class="title" property="dc:title" datatype="xsd:string">Vastgesteld door voorzitter Kris Ally (CD&amp;V/NVA)</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0503.5821.0398">
+                                    <span property="besluit:onderwerp" lang="nl" content="Vastgesteld door voorzitter Kris Ally (CD&amp;V/NVA)"></span>
+                                    <span property="besluit:gevolg" lang="nl">Behandeld</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Punt 1 tot en met 26 werden hem meegedeeld door het college van burgemeester en schepenen.</p><p><strong>OPENBARE ZITTING</strong></p><ol><li>Regiowerking.&nbsp;Jaarrekening&nbsp;2023.&nbsp;Hulpverleningszone&nbsp;Meetjesland.&nbsp;Kennisname.</li><li>Kerkfabriek&nbsp;Sint-Cornelius&nbsp;(Aalter-centrum).&nbsp;Jaarrekening&nbsp;2023.&nbsp;Advies.</li><li>Kerkfabriek&nbsp;O.-L.-V.-&nbsp;Geboorte&nbsp;(Bellem).&nbsp;Jaarrekening&nbsp;2023.&nbsp;Advies.</li><li>Kerkfabriek&nbsp;Heilig&nbsp;Kruisverheffing&nbsp;(Lotenhulle).&nbsp;Jaarrekening&nbsp;2023.&nbsp;Advies.</li><li>Kerkfabriek&nbsp;Sint-Willibrordus&nbsp;(Knesselare).&nbsp;Jaarrekening&nbsp;2023.&nbsp;Advies.</li><li>Kerkfabriek&nbsp;Sint-Lambertus&nbsp;(Poeke).&nbsp;Jaarrekening&nbsp;2023.&nbsp;Advies.</li><li>Kerkfabriek&nbsp;Sint-Medardus&nbsp;(Ursel).&nbsp;Jaarrekening&nbsp;2023.&nbsp;Advies.</li><li>Kerkfabriek&nbsp;O.-L.-V.-&nbsp;Hulp&nbsp;der&nbsp;Christenen&nbsp;(Sint-Maria-Aalter).&nbsp;Jaarrekening&nbsp;2023.&nbsp;Advies.</li><li>Kerkfabriek&nbsp;Sint-Godelieve&nbsp;(Aalter-Brug).&nbsp;Jaarrekening&nbsp;2023.&nbsp;Advies.</li><li>Perceel&nbsp;grond&nbsp;Kloosterstraat.&nbsp;Wederverkoop.&nbsp;Akte.&nbsp;Goedkeuring.</li><li>Kraenepoelpad.&nbsp;Kosteloze&nbsp;grondafstand&nbsp;en&nbsp;plantrecht.&nbsp;Authentieke&nbsp;akte.&nbsp;Goedkeuring.</li><li>Gebruik&nbsp;van&nbsp;muziekinstrumenten&nbsp;en&nbsp;werkboeken&nbsp;Academie&nbsp;voor&nbsp;muziek,&nbsp;woord&nbsp;en&nbsp;dans. Retributiereglement.&nbsp;Aanpassing.&nbsp;Goedkeuring.</li><li>Inschrijvingsgeld&nbsp;Academie&nbsp;voor&nbsp;muziek,&nbsp;woord&nbsp;en&nbsp;dans.&nbsp;Retributiereglement.&nbsp;Aanpassing.&nbsp;Goedkeuring.</li><li>Laadinfrastuctuur elektrische voertuigen. Concessieleidraad. Goedkeuring.</li><li>Gemeentelijk&nbsp;administratieve&nbsp;sancties.&nbsp;Aanstelling&nbsp;provinciaal&nbsp;sanctionerende&nbsp;ambtenaren&nbsp;en tarifering. Goedkeuring.</li><li>Buitenschoolse&nbsp;kinderopvang.&nbsp;Huishoudelijk&nbsp;reglement.&nbsp;Goedkeuring.</li><li>Dagopvang&nbsp;Kwakkie.&nbsp;Huishoudelijk&nbsp;reglement.&nbsp;Goedkeuring.</li><li>Partnerschapsovereenkomst&nbsp;&#39;Allemaal&nbsp;Digi.Taal&#39;.&nbsp;Addendum.&nbsp;Goedkeuring.</li><li>Samenwerkingsovereenkomst&nbsp;tussen&nbsp;de&nbsp;gemeenten&nbsp;Aalter&nbsp;en&nbsp;Ruiselede&nbsp;betreffende&nbsp;het&nbsp;in stand houden van een bibliotheekvestiging in Ruiselede. Stopzetting. Goedkeuring.</li><li>Zitdagen&nbsp;FOD&nbsp;Financi&euml;n.&nbsp;Samenwerkingsovereenkomst.&nbsp;Goedkeuring.</li><li>IGS&nbsp;Westlede.&nbsp;Algemene&nbsp;vergadering&nbsp;van&nbsp;11&nbsp;juni&nbsp;2024.&nbsp;Vaststelling&nbsp;mandaat. Goedkeuring.</li><li>IVM&nbsp;ov.&nbsp;Algemene&nbsp;vergadering&nbsp;12&nbsp;juni&nbsp;2024.&nbsp;Vaststelling&nbsp;mandaat.&nbsp;Goedkeuring.</li><li>Veneco.&nbsp;Algemene&nbsp;vergadering&nbsp;13&nbsp;juni&nbsp;2024.&nbsp;Vaststelling&nbsp;mandaat.&nbsp;Goedkeuring.</li><li>Imewo&nbsp;ov.&nbsp;Algemene&nbsp;vergadering&nbsp;van&nbsp;17&nbsp;juni&nbsp;2024.&nbsp;Vaststelling&nbsp;mandaat.&nbsp;Goedkeuring.</li><li>Creat&nbsp;Services&nbsp;dv&nbsp;(voorheen&nbsp;TMVS&nbsp;dv).&nbsp;Algemene&nbsp;jaarvergadering&nbsp;18&nbsp;juni&nbsp;2024.&nbsp;Vaststelling&nbsp;mandaat.&nbsp;Goedkeuring.</li><li>Farys&nbsp;ov.&nbsp;Algemene&nbsp;vergadering&nbsp;21&nbsp;juni&nbsp;2024.&nbsp;Vaststelling&nbsp;mandaat.&nbsp;Goedkeuring.</li></ol><p><strong>BIJKOMENDE PUNTEN</strong></p><p>&nbsp; &nbsp; 27.Parkeren op fietspad in Venecolaan.<br>&nbsp; &nbsp; 28.Bezorgdheden deelkernen aanpakken. Deelkern Maria-Aalter. Goedkeuring.<br>&nbsp; &nbsp; 29.Haal meer uit Aalterse kerken.<br>&nbsp; &nbsp; 30. Studieplek voor de jeugd in elke deelkern.</p><p><strong>VRAGEN EN ANTWOORDEN</strong></p><p><br>
+</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0503.5821.0398">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0503.5821.0398"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0503.5821.0398" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="Vastgesteld door voorzitter Kris Ally (CD&amp;V/NVA)"></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0503.5821.0398"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0423.6637.7478">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">1.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00086 - Regiowerking. Jaarrekening 2023. Hulpverleningszone Meetjesland. Kennisname.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0423.6637.7478">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00086 - Regiowerking. Jaarrekening 2023. Hulpverleningszone Meetjesland. Kennisname."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>De zoneraad van de Hulpverleningszone Meetjesland heeft op 20 maart 2024 de jaarrekening 2023 vastgesteld.</p><p>&nbsp;Aan de gemeenteraad wordt gevraagd om kennis te nemen van de jaarrekening 2023 van de Hulpverleningszone Meetjesland.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0503.5821.0398">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0423.6637.7478">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0423.6637.7478"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0423.6637.7478" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00086 - Regiowerking. Jaarrekening 2023. Hulpverleningszone Meetjesland. Kennisname."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00086"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0423.6637.7478"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0415.2859.4176">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">2.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00073 - Kerkfabriek Sint-Cornelius (Aalter-centrum). Jaarrekening 2023. Advies. </h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.0005.9610">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00073 - Kerkfabriek Sint-Cornelius (Aalter-centrum). Jaarrekening 2023. Advies. "></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Het centraal kerkbestuur heeft de jaarrekeningen 2023 van de kerkfabrieken geco&ouml;rdineerd ingediend bij het gemeentebestuur. Bij de jaarrekening van de kerkfabriek Sint-Cornelius (Aalter-centrum) werden de nodige bewijsstukken gevoegd. Er werden geen budgetposten overschreden ten opzichte van het budget 2023. De resultaten van het vorig boekjaar en het bedrag van de gemeentelijke toelage werden correct opgenomen.</p><p>Aan de gemeenteraad wordt gevraagd om de jaarrekening van de kerkfabriek Sint-Cornelius (Aalter-centrum) voor het jaar 2023 gunstig te adviseren.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0423.6637.7478">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0415.2859.4176">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.0005.9610"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0415.2859.4176" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00073 - Kerkfabriek Sint-Cornelius (Aalter-centrum). Jaarrekening 2023. Advies. "></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00073"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0415.2859.4176"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0411.3748.6619">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">3.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00069 - Kerkfabriek O.-L.-V.- Geboorte (Bellem). Jaarrekening 2023. Advies.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.3096.6073">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00069 - Kerkfabriek O.-L.-V.- Geboorte (Bellem). Jaarrekening 2023. Advies."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Het centraal kerkbestuur heeft de jaarrekeningen 2023 van de kerkfabrieken geco&ouml;rdineerd ingediend bij het gemeentebestuur. Bij de rekening van de kerkfabriek O.-L.-V- Geboorte (Bellem) werden de nodige bewijsstukken gevoegd. Er werden geen budgetposten overschreden ten opzichte van het budget 2023. De resultaten van het vorig boekjaar en het bedrag van de gemeentelijke toelage werden correct opgenomen.</p><p>Aan de gemeenteraad wordt gevraagd de jaarrekening  van de kerkfabriek O.-L.-V- Geboorte (Bellem) voor het jaar 2023 gunstig te adviseren.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0415.2859.4176">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0411.3748.6619">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.3096.6073"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0411.3748.6619" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00069 - Kerkfabriek O.-L.-V.- Geboorte (Bellem). Jaarrekening 2023. Advies."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00069"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0411.3748.6619"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0411.7801.4103">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">4.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00067 - Kerkfabriek Heilig Kruisverheffing (Lotenhulle). Jaarrekening 2023. Advies.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.2638.1539">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00067 - Kerkfabriek Heilig Kruisverheffing (Lotenhulle). Jaarrekening 2023. Advies."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Het centraal kerkbestuur heeft de jaarrekeningen 2023 van de kerkfabrieken geco&ouml;rdineerd ingediend bij het gemeentebestuur. Bij de rekening van de kerkfabriek Heilig Kruisverheffing (Lotenhulle) werden de nodige bewijsstukken gevoegd. Er werden geen budgetposten overschreden ten opzichte van het budget 2023. De resultaten van het vorig boekjaar en het bedrag van de gemeentelijke toelage werden correct opgenomen.</p><p>Aan de gemeenteraad wordt gevraagd de jaarrekening van de kerkfabriek Heilig Kruisverheffing (Lotenhulle) voor het jaar 2023 gunstig te adviseren.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0411.3748.6619">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0411.7801.4103">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.2638.1539"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0411.7801.4103" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00067 - Kerkfabriek Heilig Kruisverheffing (Lotenhulle). Jaarrekening 2023. Advies."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00067"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0411.7801.4103"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0417.7652.6028">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">5.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00076 - Kerkfabriek Sint-Willibrordus (Knesselare). Jaarrekening 2023. Advies.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.8722.3078">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00076 - Kerkfabriek Sint-Willibrordus (Knesselare). Jaarrekening 2023. Advies."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Het centraal kerkbestuur heeft de jaarrekeningen 2023 van de kerkfabrieken geco&ouml;rdineerd ingediend bij het gemeentebestuur. Bij de rekening van de kerkfabriek Sint-Willibrordus (Knesselare) werden de nodige bewijsstukken gevoegd. Er werden geen budgetposten overschreden ten opzichte van het budget 2023. De resultaten van het vorig boekjaar en het bedrag van de gemeentelijke toelage werden correct opgenomen.</p><p>Aan de gemeenteraad wordt gevraagd de rekening van de kerkfabriek&nbsp;Sint-Willibrordus (Knesselare) voor het jaar 2023 gunstig te adviseren.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0411.7801.4103">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0417.7652.6028">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.8722.3078"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0417.7652.6028" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00076 - Kerkfabriek Sint-Willibrordus (Knesselare). Jaarrekening 2023. Advies."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00076"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0417.7652.6028"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0415.3746.5916">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">6.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00071 - Kerkfabriek Sint-Lambertus (Poeke). Jaarrekening 2023. Advies.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.7584.6001">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00071 - Kerkfabriek Sint-Lambertus (Poeke). Jaarrekening 2023. Advies."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Het centraal kerkbestuur heeft de jaarrekeningen 2023 van de kerkfabrieken geco&ouml;rdineerd ingediend bij het gemeentebestuur. Bij de rekening van de kerkfabriek Sint-Lambertus (Poeke) werden de nodige bewijsstukken gevoegd. Er werden geen budgetposten overschreden ten opzichte van het budget 2023. De resultaten van het vorig boekjaar en het bedrag van de gemeentelijke toelage werden correct opgenomen.</p><p>Aan de gemeenteraad wordt gevraagd de rekening van de kerkfabriek Sint-Lambertus (Poeke) voor het jaar 2023 gunstig te adviseren.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0417.7652.6028">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0415.3746.5916">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.7584.6001"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0415.3746.5916" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00071 - Kerkfabriek Sint-Lambertus (Poeke). Jaarrekening 2023. Advies."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00071"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0415.3746.5916"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0417.7598.9520">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">7.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00075 - Kerkfabriek Sint-Medardus (Ursel). Jaarrekening 2023. Advies.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.8432.8697">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00075 - Kerkfabriek Sint-Medardus (Ursel). Jaarrekening 2023. Advies."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Het centraal kerkbestuur heeft de jaarrekeningen 2023 van de kerkfabrieken geco&ouml;rdineerd ingediend bij het gemeentebestuur. Bij de jaarrekening van de kerkfabriek Sint-Medardus (Ursel)&nbsp; werden de nodige bewijsstukken gevoegd.  De resultaten van het vorig boekjaar en het bedrag van de gemeentelijke toelage werden correct opgenomen.</p><p>Aan de gemeenteraad wordt gevraagd de jaarrekening van de kerkfabriek Sint-Medardus (Ursel) voor het jaar 2023 gunstig te adviseren.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0415.3746.5916">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0417.7598.9520">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.8432.8697"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0417.7598.9520" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00075 - Kerkfabriek Sint-Medardus (Ursel). Jaarrekening 2023. Advies."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00075"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0417.7598.9520"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0412.4971.5393">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">8.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00072 - Kerkfabriek O.-L.-V.- Hulp der Christenen (Sint-Maria-Aalter). Jaarrekening 2023. Advies.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.7380.2895">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00072 - Kerkfabriek O.-L.-V.- Hulp der Christenen (Sint-Maria-Aalter). Jaarrekening 2023. Advies."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Het centraal kerkbestuur heeft de jaarrekeningen 2023 van de kerkfabrieken geco&ouml;rdineerd ingediend bij het gemeentebestuur. Bij de rekening van de kerkfabriek &nbsp;O.L.V. Hulp der Christenen (Sint-Maria-Aalter) werden de nodige bewijsstukken gevoegd. Er werden geen budgetposten overschreden ten opzichte van het budget 2023. De resultaten van het vorig boekjaar en het bedrag van de gemeentelijke toelage werden correct opgenomen.</p><p>Aan de gemeenteraad wordt gevraagd de jaarrekening van de kerkfabriek &nbsp;O.L.V. Hulp der Christenen (Sint-Maria-Aalter) voor het jaar 2023 gunstig te adviseren.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0417.7598.9520">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0412.4971.5393">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.7380.2895"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0412.4971.5393" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00072 - Kerkfabriek O.-L.-V.- Hulp der Christenen (Sint-Maria-Aalter). Jaarrekening 2023. Advies."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00072"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0412.4971.5393"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0415.1446.6004">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">9.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00068 - Kerkfabriek Sint-Godelieve (Aalter-Brug). Jaarrekening 2023. Advies.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.3716.3372">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00068 - Kerkfabriek Sint-Godelieve (Aalter-Brug). Jaarrekening 2023. Advies."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Het centraal kerkbestuur heeft de jaarrekeningen 2023 van de kerkfabrieken gecoördineerd ingediend bij het gemeentebestuur. Bij de rekening van de kerkfabriek Sint-Godelieve (Aalter-Brug) werden de nodige bewijsstukken gevoegd. Er werden geen budgetposten overschreden ten opzichte van het budget 2023. De resultaten van het vorig boekjaar en het bedrag van de gemeentelijke toelage werden correct opgenomen.</p><p>Aan de gemeenteraad wordt gevraagd de jaarrekening van de kerkfabriek Sint-Godelieve (Aalter-Brug) voor het jaar 2023 gunstig te adviseren.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0412.4971.5393">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0415.1446.6004">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.3716.3372"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0415.1446.6004" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00068 - Kerkfabriek Sint-Godelieve (Aalter-Brug). Jaarrekening 2023. Advies."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00068"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0415.1446.6004"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0410.8221.4249">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">10.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00080 - Gebruik van muziekinstrumenten en werkboeken Academie voor muziek, woord en dans. Retributiereglement. Aanpassing. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.4688.4628">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00080 - Gebruik van muziekinstrumenten en werkboeken Academie voor muziek, woord en dans. Retributiereglement. Aanpassing. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Vanaf het schooljaar 2024-2025 zal het werkboek waarmee de leerlingen in de klas werken, aangeboden worden via de Academie voor muziek, woord en dans. Dit boek zal tegen kostprijs geleverd worden aan de leerlingen. De modaliteiten hiervoor worden opgenomen in het reglement. Verder wordt ook de forfaitaire bijdrage  uit het reglement gehaald omdat dit samen met inschrijvingsgeld voor de Academie voor muziek, woord en dans zal ge&iuml;nd worden. Er wijzigt niets aan het aanbod instrumenten of het huurgeld.</p><em>
+</em><p>Aan de gemeenteraad wordt gevraagd het aangepast retributiereglement &#39;gebruik van muziekinstrumenten en werkboeken Academie voor muziek, woord en dans&#39; goed te keuren.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0415.1446.6004">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0410.8221.4249">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.4688.4628"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0410.8221.4249" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00080 - Gebruik van muziekinstrumenten en werkboeken Academie voor muziek, woord en dans. Retributiereglement. Aanpassing. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00080"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0410.8221.4249"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0410.9683.5992">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">11.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00081 - Inschrijvingsgeld Academie voor muziek, woord en dans. Retributiereglement. Aanpassing. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.6829.9590">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00081 - Inschrijvingsgeld Academie voor muziek, woord en dans. Retributiereglement. Aanpassing. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Elk jaar wordt het inschrijvingsgeld voor het deeltijds kunstonderwijs aangepast aan de inschrijvingsgelden opgelegd door de Vlaamse overheid. De tarieven zijn opgenomen in het decreet betreffende het deeltijds kunstonderwijs. Voor het schooljaar 2024-2025 gaat het opnieuw enkel om een indexering van de tarieven. De forfaitaire bijdrage van 7 euro per schooljaar en per domein (muziek, woord of dans) zal vanaf volgend schooljaar samen met het inschrijvingsgeld ge&iuml;nd worden en wordt daarom ook opgenomen in dit retributiereglement en geschrapt in het retributiereglement gebruik van muziekinstrumenten en &nbsp;lesmateriaal.</p>
+<p>Aan de gemeenteraad wordt gevraagd het aangepaste retributiereglement &#39;Inschrijvingsgeld Academie voor muziek, woord en dans&#39; voor het schooljaar 2024-2025 goed te keuren.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0410.8221.4249">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0410.9683.5992">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.6829.9590"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0410.9683.5992" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00081 - Inschrijvingsgeld Academie voor muziek, woord en dans. Retributiereglement. Aanpassing. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00081"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0410.9683.5992"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0402.5373.8782">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">12.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00066 - Gemeentelijk administratieve sancties. Aanstelling provinciaal sanctionerende ambtenaren en tarifering. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.8179.8547">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00066 - Gemeentelijk administratieve sancties. Aanstelling provinciaal sanctionerende ambtenaren en tarifering. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Voor de behandeling van de gemeentelijke administratieve sancties met betrekking tot overlast doet het gemeentebestuur beroep op de provinciaal sanctionerende ambtenaren van de provincie Oost-Vlaanderen.</p><p>De provincie Oost-Vlaanderen voerde voor deze samenwerking een tariefwijziging door en vraagt daarnaast ook om een vijfde provinciale sanctionerend ambtenaar aan te stellen om de continu&iuml;teit van de dienstverlening te kunnen blijven garanderen.</p>
+<p>Aan de gemeenteraad wordt gevraagd om akkoord te gaan met de aanstelling en de nieuwe tarieven.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0410.9683.5992">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0402.5373.8782">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.8179.8547"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0402.5373.8782" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00066 - Gemeentelijk administratieve sancties. Aanstelling provinciaal sanctionerende ambtenaren en tarifering. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00066"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0402.5373.8782"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0424.6732.6774">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">13.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00088 - Buitenschoolse kinderopvang. Huishoudelijk reglement. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.9323.4362">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00088 - Buitenschoolse kinderopvang. Huishoudelijk reglement. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Het huishoudelijk reglement van de buitenschoolse kinderopvang dient aangepast te worden aan de nieuwe regelgeving, o.a. voor het toedienen van medicatie.&nbsp;</p><p>Aan de gemeenteraad wordt gevraagd het huishoudelijk reglement van de buitenschoolse kinderopvang goed te keuren.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0402.5373.8782">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0424.6732.6774">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.9323.4362"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0424.6732.6774" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00088 - Buitenschoolse kinderopvang. Huishoudelijk reglement. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00088"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0424.6732.6774"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0424.0066.3848">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">14.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00087 - Dagopvang Kwakkie. Huishoudelijk reglement. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.1585.7281">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00087 - Dagopvang Kwakkie. Huishoudelijk reglement. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Het huishoudelijk reglement van de dagopvang Kwakkie dient aangepast te worden ten gevolge van nieuwe regelgeving, o.a. voor het toedienen van medicatie.</p><p>Aan de gemeenteraad wordt gevraagd het huishoudelijk reglement van de dagopvang Kwakkie goed te keuren.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0424.6732.6774">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0424.0066.3848">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.1585.7281"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0424.0066.3848" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00087 - Dagopvang Kwakkie. Huishoudelijk reglement. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00087"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0424.0066.3848"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0419.5358.6006">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">15.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00082 - Laadinfrastructuur elektrische voertuigen. Concessieleidraad. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.3459.1573">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00082 - Laadinfrastructuur elektrische voertuigen. Concessieleidraad. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Het lokaal bestuur Aalter wenst zich verder te profileren als duurzame en innovatieve gemeente. De transitie naar de duurzame mobiliteit is reeds sterk &nbsp;ingezet. Deze transitie kan met een nieuwe concessieleidraad &#39;laadinfrastructuur elektrische voertuigen&#39;&nbsp;versneld worden.</p><p>De concessieleidraad omvat het van A-tot-Z plaatsen van laadinfrastructuur op het openbaar domein. Dit zowel boven- als ondergronds. Er wordt een duurtijd van 10 jaar voorzien en deze is &eacute;&eacute;nmalig verlengbaar met 5 jaar. De plaatsing zal gebeuren volgens het laadpalenplan die het lokaal bestuur heeft opgemaakt. Het gebruiksgemak en de kwaliteit zijn leidend geweest bij de opmaak van deze leidraad.
+</p><p>De bestaande concessieovereenkomst met het&nbsp;departement Mobiliteit en Openbare werken voldoet niet aan de eisen en wensen van het lokaal bestuur. Deze overeenkomst loopt af op 7 oktober 2024. Het gemeentebestuur  wenst met een nieuwe concessieleidraad de doelstellingen uit het Lokaal Energie- en Klimaatpact te bewerkstelligen enerzijds en tegemoet te komen aan alle verplichtingen die door Vlaanderen worden opgelegd anderzijds.</p><p>Aan de gemeenteraad wordt gevraagd om de voorliggende concessieleidraad goed te keuren.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0424.0066.3848">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0419.5358.6006">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.3459.1573"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0419.5358.6006" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00082 - Laadinfrastructuur elektrische voertuigen. Concessieleidraad. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00082"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0419.5358.6006"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0416.4710.0715">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">16.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00074 - Kraenepoelpad. Kosteloze grondafstand en plantrecht. Authentieke akte. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.9645.5104">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00074 - Kraenepoelpad. Kosteloze grondafstand en plantrecht. Authentieke akte. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Er  werd een akte kosteloze grondafstand en overname plantrecht opgemaakt voor de overdracht van 2.000 m&sup2; grond gelegen in het Kraenepoelpad.</p><p>Aan de gemeenteraad wordt gevraagd goedkeuring te verlenen aan de authentieke akte.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0419.5358.6006">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0416.4710.0715">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.9645.5104"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0416.4710.0715" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00074 - Kraenepoelpad. Kosteloze grondafstand en plantrecht. Authentieke akte. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00074"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0416.4710.0715"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0405.9553.1197">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">17.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00061 - Perceel grond Kloosterstraat. Wederverkoop. Akte. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.5558.4009">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00061 - Perceel grond Kloosterstraat. Wederverkoop. Akte. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>De gemeenteraad keurde op 11 oktober 2021 de akte voor de ruil van het kloostergebouw in de Kloosterstraat met de schoolgebouwen in de Wingenestraat en Bellemdorpweg goed. Deze wederverkoop van 185,42 m&sup2; grond maakte deel uit van de oorspronkelijke ruilovereenkomst.</p><p>De afdeling Vastgoedtransacties maakte de akte wederverkoop op.</p><p>Aan de gemeenteraad wordt gevraagd goedkeuring te verlenen aan deze akte.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0416.4710.0715">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0405.9553.1197">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.5558.4009"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0405.9553.1197" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00061 - Perceel grond Kloosterstraat. Wederverkoop. Akte. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00061"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0405.9553.1197"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0415.2446.1947">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">18.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00078 - Partnerschapsovereenkomst &#39;Allemaal Digi.Taal&#39;. Addendum. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.4312.4895">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00078 - Partnerschapsovereenkomst &#39;Allemaal Digi.Taal&#39;. Addendum. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>In het kader van de uitbouw van een e-inclusiebeleid maakt de Vlaamse regering 4.3 miljard euro vrij voor het relanceplan &#39;Vlaamse Veerkracht&#39;. De gemeenten Aalter, Assenede, Eeklo, Kaprijke, Lievegem en Sint-Laureins dienden samen een dossier in dat vervolgens werd goedgekeurd door de Vlaamse regering.&nbsp;
+</p><p>Om de samenwerking vlot te laten verlopen werd een partnerschapsovereenkomst ontwikkeld.
+Door diverse wijzigingen in de werking van het project &#39;Allemaal Digi.Taal&#39;, is het noodzakelijk om een addendum toe te voegen aan de huidige partnerschapsovereenkomst.</p><p>Aan de gemeenteraad wordt gevraagd om het addendum goed te keuren.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0405.9553.1197">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0415.2446.1947">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.4312.4895"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0415.2446.1947" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00078 - Partnerschapsovereenkomst &#39;Allemaal Digi.Taal&#39;. Addendum. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00078"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0415.2446.1947"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0416.1576.8688">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">19.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00070 - Samenwerkingsovereenkomst tussen de gemeenten Aalter en Ruiselede betreffende het in stand houden van een bibliotheekvestiging in Ruiselede. Stopzetting. Goedkeuring</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.9761.6181">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00070 - Samenwerkingsovereenkomst tussen de gemeenten Aalter en Ruiselede betreffende het in stand houden van een bibliotheekvestiging in Ruiselede. Stopzetting. Goedkeuring"></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Lokaal bestuur Aalter heeft sinds 1997 een samenwerkingsovereenkomst met lokaal bestuur Ruiselede wat betreft het in stand houden van een bibliotheekvestiging in Ruiselede. De medewerkers van de bibliotheek van Aalter verzorgen de baliepermanentie, bestellen, verwerken en onderhouden de collectie en organiseren activiteiten voor de bibliotheek van Ruiselede. Jaarlijks vergoedt lokaal bestuur Ruiselede deze diensten op basis van een terugbetalingsdossier.&nbsp;</p><p>Lokale besturen Ruiselede en Wingene gaven te kennen dat zij vanaf 1 januari 2025 fuseren. Als gevolg hiervan wensen zij  de samenwerking met de bibliotheek van Aalter stop te zetten. Deze vraag tot stopzetting van de samenwerking moet minstens een half jaar voor de stopzetting aangevraagd worden en moet door de gemeenteraden van beide gemeenten goedgekeurd worden.&nbsp;</p><p>Aan de gemeenteraad wordt gevraagd om de samenwerkingsovereenkomst betreffende de instandhouding van de bibliotheekvestiging in Ruiselede stop te zetten.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0415.2446.1947">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0416.1576.8688">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.9761.6181"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0416.1576.8688" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00070 - Samenwerkingsovereenkomst tussen de gemeenten Aalter en Ruiselede betreffende het in stand houden van een bibliotheekvestiging in Ruiselede. Stopzetting. Goedkeuring"></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00070"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0416.1576.8688"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0416.5297.0474">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">20.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00079 - Zitdagen FOD Financiën. Samenwerkingsovereenkomst. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.4701.7309">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00079 - Zitdagen FOD Financiën. Samenwerkingsovereenkomst. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>De samenwerkingsovereenkomst heeft als doel de samenwerking te optimaliseren tussen de FOD Financi&euml;n Administratie Particulieren en alle steden/gemeenten die actief deelnemen aan de hulp voor het invullen van de aangiften.</p><p>Aan de gemeenteraad wordt gevraagd de samenwerkingsovereenkomst tussen de FOD Financi&euml;n en de steden en gemeenten in het kader van lokale hulp bij het invullen van belastingaangiften goed te keuren en opnieuw een &#39;Zitdag Belastingen&#39; te organiseren in het gemeentehuis.</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0416.1576.8688">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0416.5297.0474">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.4701.7309"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0416.5297.0474" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00079 - Zitdagen FOD Financiën. Samenwerkingsovereenkomst. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00079"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0416.5297.0474"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0404.5949.1610">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">21.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00062 - IGS Westlede. Algemene vergadering van 11 juni 2024. Vaststelling mandaat. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.4636.0953">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00062 - IGS Westlede. Algemene vergadering van 11 juni 2024. Vaststelling mandaat. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>De algemene vergadering van IGS Westlede vindt plaats op 11 juni 2024. Er werd een voorstel van agenda bezorgd.</p><p>Aan de gemeenteraad wordt gevraagd om:</p><ul><li>de punten op de agenda goed te keuren</li><li>de vertegenwoordiger en plaatsvervanger te mandateren voor de algemene vergadering op 11 juni 2024.</li></ul><ul>
+</ul></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0416.5297.0474">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0404.5949.1610">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.4636.0953"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0404.5949.1610" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00062 - IGS Westlede. Algemene vergadering van 11 juni 2024. Vaststelling mandaat. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00062"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0404.5949.1610"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0423.6351.9751">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">22.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00085 - IVM ov. Algemene vergadering 12 juni 2024. Vaststelling mandaat. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.3762.9206">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00085 - IVM ov. Algemene vergadering 12 juni 2024. Vaststelling mandaat. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>De algemene vergadering van IVM vindt plaats op 12 juni 2024. Er werd een voorstel van agenda bezorgd.</p>
+<p>De gemeenteraad dient ook de vertegenwoordiger en plaatsvervanger te mandateren voor deze vergadering.</p>
+<p>Aan de gemeenteraad wordt gevraagd om:</p>
+<ul><li>de punten op de agenda goed te keuren;</li>
+<li>de vertegenwoordiger en de  plaatsvervanger te mandateren voor de algemene vergadering op 12 juni 2024.</li></ul></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0404.5949.1610">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0423.6351.9751">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.3762.9206"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0423.6351.9751" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00085 - IVM ov. Algemene vergadering 12 juni 2024. Vaststelling mandaat. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00085"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0423.6351.9751"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0325.1644.5574">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">23.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00064 - Veneco. Algemene vergadering 13 juni 2024. Vaststelling mandaat. Goedkeuring. </h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.2505.1633">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00064 - Veneco. Algemene vergadering 13 juni 2024. Vaststelling mandaat. Goedkeuring. "></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><div class="form-group">
+<div>
+<div class="form-group">
+<div>
+<p>De algemene vergadering van Veneco vindt plaats op 13 juni 2024. Er werd een voorstel van agenda bezorgd.</p>
+<p>De gemeenteraad dient ook de vertegenwoordiger en plaatsvervanger te mandateren voor deze vergadering.</p>
+<p>Aan de gemeenteraad wordt gevraagd om:</p>
+<ul>
+<li>de punten op de agenda goed te keuren;</li>
+<li>de vertegenwoordiger en de plaatsvervanger te mandateren voor de algemene vergadering van 13 juni 2024.</li>
+</ul>
+</div>
+</div>
+</div>
+</div></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0423.6351.9751">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0325.1644.5574">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.2505.1633"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0325.1644.5574" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00064 - Veneco. Algemene vergadering 13 juni 2024. Vaststelling mandaat. Goedkeuring. "></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00064"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0325.1644.5574"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0409.5405.5500">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">24.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00063 - Imewo ov. Algemene vergadering van 17 juni 2024. Vaststelling mandaat. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.8745.8838">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00063 - Imewo ov. Algemene vergadering van 17 juni 2024. Vaststelling mandaat. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>De algemene vergadering van Imewo&nbsp;vindt plaats op 17 juni 2024. Er werd een voorstel van agenda bezorgd.</p><p>De gemeenteraad dient ook de vertegenwoordiger en plaatsvervanger te mandateren voor deze vergadering.</p>
+
+<p>Aan de gemeenteraad wordt gevraagd om:</p>
+<ul>
+<li>de punten op de agenda goed te keuren</li>
+<li>de vertegenwoordiger en plaatsvervanger te mandateren voor de&nbsp;algemene vergadering op 17 juni 2024.</li>
+</ul></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0325.1644.5574">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0409.5405.5500">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.8745.8838"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0409.5405.5500" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00063 - Imewo ov. Algemene vergadering van 17 juni 2024. Vaststelling mandaat. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00063"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0409.5405.5500"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0424.4305.0726">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">25.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00083 - Creat Services dv (voorheen TMVS dv). Algemene jaarvergadering 18 juni 2024. Vaststelling mandaat. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.4911.0357">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00083 - Creat Services dv (voorheen TMVS dv). Algemene jaarvergadering 18 juni 2024. Vaststelling mandaat. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>De algemene jaarvergadering vindt plaats op 18 juni 2024. Er werd een voorstel van agenda bezorgd.</p><p>De gemeenteraad dient ook de vertegenwoordiger en plaatsvervanger te mandateren voor deze vergadering.</p>
+
+<p>Aan de gemeenteraad wordt gevraagd om:</p>
+<ul>
+<li>de punten op de agenda goed te keuren</li>
+<li>de vertegenwoordiger en plaatsvervanger te mandateren voor de algemene jaarvergadering op 18 juni 2024.</li>
+</ul></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0409.5405.5500">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0424.4305.0726">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.4911.0357"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0424.4305.0726" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00083 - Creat Services dv (voorheen TMVS dv). Algemene jaarvergadering 18 juni 2024. Vaststelling mandaat. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00083"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0424.4305.0726"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0422.3164.2280">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">26.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00084 - Farys ov. Algemene vergadering 21 juni 2024. Vaststelling mandaat. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.4146.5963">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00084 - Farys ov. Algemene vergadering 21 juni 2024. Vaststelling mandaat. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>De algemene jaarvergadering van Farys ov vindt plaats op 21 juni 2024. Er werd een voorstel van agenda bezorgd.</p><p>Aan de gemeenteraad wordt gevraagd om:</p><ul><li>de punten op de agenda goed te keuren</li><li>de vertegenwoordiger en plaatsvervanger te mandateren voor de&nbsp;algemene jaarvergadering op 21 juni 2024.</li></ul></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0424.4305.0726">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0422.3164.2280">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.4146.5963"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0422.3164.2280" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00084 - Farys ov. Algemene vergadering 21 juni 2024. Vaststelling mandaat. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00084"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0422.3164.2280"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0508.3122.6129">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">27.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00098 -  Parkeren op fietspad in Venecolaan.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.1124.9197">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00098 -  Parkeren op fietspad in Venecolaan."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>In de Venecolaan tussen het bedrijf FrieslandCampina en Aveve, parkeren vrachtwagens vaak op het 
+ fietspad. Deze vrachtwagens verhinderen fietsers om op het fietspad te fietsen. Gevolg is dat fietsers 
+ op de rijweg moeten fietsen. Dat is heel gevaarlijk, want er rijdt heel veel zwaar verkeer aan hoge 
+ snelheid in de Venecolaan. Fietsen op de rijweg in straten met een fietspad, is bovendien niet 
+ wettelijk.&nbsp;</p><p>
+ Doordat vrachtwagens daar regelmatig parkeren op het fietspad, is het fietspad bovendien volledig 
+ stuk gereden. Dat maakt het ook minder comfortabel fietsen.&nbsp;</p><p>
+ FrieslandCampina zelf meldde dit probleem al meermaals. De directie en de gezamenlijk 
+ vakbondsfront ACV-ABVV van FrieslandCampina, gaven aan om mee te willen werken aan een 
+ oplossing. Ze hebben betonblokken ter beschikking om naast het fietspad te plaatsen zodat parkeren 
+ op het fietspad niet meer kan. </p><p>
+ FrieslandCampina vraagt aan het gemeentebestuur ervoor te zorgen dat parkeren op het fietspad 
+ onmogelijk wordt. </p><p>
+ Groen stelt voor om op deze vraag in te gaan om zo de verkeers- en fietsveiligheid in de Venecolaan 
+ te verhogen. Daarom vraagt Groen dat het gemeentebestuur een fysieke barri&egrave;re aanbrengt naast 
+ het fietspad zodat vrachtwagens niet meer kunnen parkeren op het fietspad. Groen vraagt ook dat er 
+ meer controles worden uitgevoerd in de Venecolaan op foutparkeren en snelheid. 
+</p><p> 
+</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0422.3164.2280">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0508.3122.6129">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.1124.9197"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0508.3122.6129" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00098 -  Parkeren op fietspad in Venecolaan."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00098"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0508.3122.6129"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0508.3708.7968">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">28.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00099 - Bezorgdheden deelkernen aanpakken. Deelkern Maria Aalter. Goedkeuring.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.3497.8697">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00099 - Bezorgdheden deelkernen aanpakken. Deelkern Maria Aalter. Goedkeuring."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Uit een bevraging in Maria Aalter kwamen een aantal bezorgdheden uit de bus:</p><p>Een overzicht van de belangrijkste aandachtspunten.</p><p>&bull; Het onderhoud van de wegen is onvoldoende. De Leegweg en Hooggoed zijn de voornaamste straten die aan vernieuwing toe zijn. Andere straten zijn voor de auto wel ok, maar als fietser is het gevaarlijk als je bij het passeren van een auto op het &ldquo;randje&rdquo; moet rijden. De enige fietsstraat wordt nog steeds als een miskleun bekeken. Een smalle fietsstaat in twee richtingen met voorrang van rechts erin, betonblokken op de weg, roosters naast de baan waar je niet kunt op stappen, putten en plassen&hellip;. De putten langs de straat Stratem worden om de zoveel maanden opnieuw gevuld. Na enkele weken zijn deze soms terug 20 cm diep. Groen wil een structurele oplossing.</p><p>&bull; De jeugdvereniging, de Scouts, is verhuisd naar de oude school. Prachtige locatie. Net tegenover het domein van de broeders, maar de toestand van de gebouwen is wat anders. Er zal wel ergens al een groot project in jullie lade te vinden zijn. Hopelijk is dit nog niet zo en krijgen de bewoners eerst inspraak.</p><p>&bull; De feestzaal heeft een grote capaciteit en wordt veel gebruikt. Bar en keukenruimte zijn niet ingericht voor meer dan 200 bezoekers.</p><p>&bull; Verkeersveiligheid is zeer belangrijk maar gebruik het gezond verstand. Trajectcontrole buiten het centrum, twee bruggen: twee snelheden, smalle straatjes ene 30 andere 70 enz..</p><p> 
+</p><p> 
+</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0508.3122.6129">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0508.3708.7968">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.3497.8697"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0508.3708.7968" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00099 - Bezorgdheden deelkernen aanpakken. Deelkern Maria Aalter. Goedkeuring."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00099"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0508.3708.7968"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0508.5057.8431">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">29.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00096 - Haal meer uit Aalterse kerken.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.9849.9725">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00096 - Haal meer uit Aalterse kerken."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Kerken dragen bij aan het karakter van onze kernen en bieden voor sommige Aalternaren nog steeds een plek om de eredienst te volgen. Toch neemt het gebruik van kerken voor de eredienst al enkele decennia af. Het is daarom zinvol om de kerk ook nieuwe functies te geven. Iets wat in Aalter al gedeeltelijk, maar nog niet voldoende gebeurt. Twee stappen die nu reeds gezet kunnen worden, zijn enerzijds het opstarten van een participatiemoment waarbij burgers voorstellen kunnen doen omtrent toekomstige initiatieven in de Aalterse kerken en anderzijds het opstarten van onderhandelingen met de betrokken kerkelijke instanties om het mogelijk te maken er ook niet-religieuze trouwen, begrafenissen of geboortevieringen te laten doorgaan.</p><p> 
+</p><p> 
+</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0508.3708.7968">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0508.5057.8431">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.9849.9725"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0508.5057.8431" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00096 - Haal meer uit Aalterse kerken."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00096"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0508.5057.8431"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0508.3709.6389">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/bdf68a65-ce15-42c8-ae1b-19eeb39e20d0"></div>
+                                <div class="position">
+                                    <span class="label">30.</span>
+                                </div>
+                                <h2 class="title" property="dc:title" datatype="xsd:string">2024_GR_00097 - Studieplek voor de jeugd in elke deelkern.</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0513.5778.7771">
+                                    <span property="besluit:onderwerp" lang="nl" content="2024_GR_00097 - Studieplek voor de jeugd in elke deelkern."></span>
+                                    <span property="besluit:gevolg" lang="nl">Goedgekeurd</span>
+                                </div>
+                                <span class="summary" property="dc:description" datatype="xsd:string"><p>Traditioneel zoekt de Aalterse studerende jeugd in de maanden december-januari en mei-juni een studieplek waar men samen met anderen kan studeren voor de aankomende examens. Jeugdcentrum Kadans in Aalter-Centrum heeft reeds een initiatief waarbij ze heel wat plekken aanbieden en ook in de bib van Aalter kan men terecht. Toch merken we dat heel wat jongeren uit de deelgemeenten nood hebben aan studielocaties dichter bij huis.</p><p>Er zijn enkele initiatieven, bijvoorbeeld van jeugdbewegingen, maar daar kan logischerwijs niet iedereen terecht. Het is daarom nodig dat gemeente Aalter minstens &eacute;&eacute;n locatie in elke deelkern openstelt waar alle jongeren terecht kunnen. In Lotenhulle en Poeke kan &eacute;&eacute;n gezamenlijke studielocatie volstaan gezien de verbondenheid van die deelkernen.</p><p> 
+</p><p> 
+</p></span>
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0508.5057.8431">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0508.3709.6389">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0513.5778.7771"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0508.3709.6389" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="2024_GR_00097 - Studieplek voor de jeugd in elke deelkern."></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string" content="2024_GR_00097"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0508.3709.6389"></span>
+                                </div>
+                            </li>
+                            <li property="besluit:behandelt" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0503.2770.0154">
+                                <div style="display: none;" property="besluit:Agendapunt.type" typeof="skos:Concept" resource="http://lblod.data.gift/concepts/b122db75-fd93-4f03-b57a-2a9269289782"></div>
+                                
+                                <h2 class="title" property="dc:title" datatype="xsd:string">Vragen en antwoorden</h2>
+                                <div typeof="besluit:Stemming" class="positive opendata-meetingitem-decision" resource="https://data.aalter.be/id/stemmingen/24.0503.2770.0154">
+                                    <span property="besluit:onderwerp" lang="nl" content="Vragen en antwoorden"></span>
+                                    <span property="besluit:gevolg" lang="nl">Behandeld</span>
+                                </div>
+                                
+                                <span property="besluit:geplandOpenbaar" datatype="xsd:boolean" content="true"></span>
+                                <meta property="besluit:aangebrachtNa" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0508.3709.6389">
+
+                                <div typeof="besluit:BehandelingVanAgendapunt" resource="https://data.aalter.be/id/behandelingen-van-agendapunten/24.0503.2770.0154">
+                                    <span property="besluit:heeftStemming" resource="https://data.aalter.be/id/stemmingen/24.0503.2770.0154"></span>
+                                    <div property="prov:generated" typeof=”besluit:Besluit” resource="https://data.aalter.be/id/besluiten/24.0503.2770.0154" >
+                                        <span property="eli:title eli:description" datatype="xsd:string" content="Vragen en antwoorden"></span>
+                                        <span property="besluit:citeeropschrift" datatype="xsd:string"></span>
+                                    </div>
+                                    <span property="openbaar" datatype="xsd:boolean" content="true"></span>
+                                    <span property="dc:subject" typeof="besluit:Agendapunt" resource="https://data.aalter.be/id/agendapunten/24.0503.2770.0154"></span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+    </div>
+    </section>
+    <footer>
+    
+
+    <div class="container">
+        <div class="copyright">
+            &copy;&nbsp;<a href="https://www.greenvalleybelgium.be" target="_blank">Green Valley Belgium</a>
+        </div>
+        <div class="contact"></div>
+    </div>
+</footer>
+    <script>
+        (function ($) {
+            $(document).ready(function () {
+                $('#return-link').prependTo($("h1.return-header"));
+                $('.publication-date').prependTo($("div.opendata-meetinginformation"));
+            });
+        })(jQuery);
+    </script>
+</body>
+</html>
