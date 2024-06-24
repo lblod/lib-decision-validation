@@ -14,8 +14,8 @@ import { DOMNode } from 'html-dom-parser';
 
 let BLUEPRINT: Bindings[] = [];
 let EXAMPLE: DOMNode[] = [];
-const MATURITY_LEVEL: string[] = ['Niveau 0', 'Niveau 1', 'Niveau 2', 'Niveau 3'];
 
+const MATURITY_LEVEL: string[] = ['Niveau 0', 'Niveau 1', 'Niveau 2', 'Niveau 3'];
 let FOUND_MATURITY = MATURITY_LEVEL[3];
 
 /* determines the document type based on a specific term
@@ -123,7 +123,7 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
           });
         }
       }
-    } else if (isSubjectDocument && b.get('o')!.value != subjectClass) {
+    } else if (isSubjectDocument && b.get('o')!.value !== subjectClass) {
       // rdf:type is used as property to indicate document type
       properties.push({
         path: b.get('p')!.value,
@@ -159,7 +159,7 @@ export async function validatePublication(
   });
 
   return {
-    classes: await postProcess(validatedSubjects, BLUEPRINT),
+    classes: await postProcess(validatedSubjects),
     maturity: FOUND_MATURITY,
   } as ValidatedPublication;
 }
@@ -279,7 +279,6 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
     });
   if (values.length) validatedProperty.value = values;
   
-
   validatedProperty.actualCount = validatedProperty.value.length;
   validatedProperty.valid =
     (validatedProperty.minCount === undefined || validatedProperty.actualCount >= validatedProperty.minCount) &&
@@ -290,7 +289,7 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
       ));
   if (
     !validatedProperty.valid &&
-    validatedProperty.maturityLevel !== undefined &&
+    MATURITY_LEVEL.includes(validatedProperty.maturityLevel) &&
     validatedProperty.maturityLevel <= FOUND_MATURITY
   ) {
     FOUND_MATURITY = MATURITY_LEVEL[MATURITY_LEVEL.indexOf(validatedProperty.maturityLevel) - 1];
@@ -324,7 +323,7 @@ function processProperty(subject, propertyKey): ProcessedProperty {
           return validateSubject(s.value);
         } else return s.value;
       });
-  }
+  };
   processProperty.actualCount = processProperty.value.length;
   return processProperty;
 }
@@ -335,14 +334,14 @@ function processProperty(subject, propertyKey): ProcessedProperty {
   returns:
   - an array of collections, a collection contains all the root objects in the publication that share the same RDF class
 */
-async function postProcess(validatedSubjects: ValidatedSubject[], blueprint: Bindings[]): Promise<ClassCollection[]> {
+async function postProcess(validatedSubjects: ValidatedSubject[]): Promise<ClassCollection[]> {
   const classes: ClassCollection[] = []
   // Combine all Root objects with the same type into one collection
   const distinctClasses: string[] = getUniqueValues((validatedSubjects.map((p) => p.class))) as string[];
-  const targetClasses: string[] = blueprint
+  const targetClasses: string[] = BLUEPRINT
     .filter((b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass')
     .map((b) => b.get('o')!.value);
-  const rootClasses: string[] = distinctClasses.filter((c) => targetClasses.indexOf(c) != -1);
+  const rootClasses: string[] = distinctClasses.filter((c) => targetClasses.indexOf(c) !== -1);
   rootClasses.forEach(c => {
     const objects: ValidatedSubject[] = validatedSubjects.filter(s => s.class === c)
     classes.push({
