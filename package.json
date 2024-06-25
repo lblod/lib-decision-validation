@@ -1,6 +1,6 @@
 {
-  "name": "lib-decision-validation",
-  "version": "1.0.31",
+  "name": "@lblod/lib-decision-validation",
+  "version": "1.0.32",
   "publishConfig": {
     "access": "public"
   },
