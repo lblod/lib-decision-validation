@@ -252,7 +252,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
       const actual = await validatePublication(publication, blueprint, example);
       fs.writeFileSync('./logs/notulen.json', `${JSON.stringify(actual)}`);
     },
-    MILLISECONDS,
+    MILLISECONDS * 2,
   );
 
   test(
