@@ -32,10 +32,10 @@ import {
   BESLUITEN_LINK3,
   BESLUITEN_LINK4,
   NOTULEN_LINK,
+  NOTULEN_LINK_2,
   TESTHTMLSTRING,
   TESTSTRING2,
 } from './data/testData';
-import { testResult } from './data/result-ex';
 
 import { getDOMfromString, getStoreFromSPOBindings, runQueryOverStore } from '../src/utils';
 import { ensureDirectoryExistence } from '../src/node-utils';
@@ -251,6 +251,20 @@ describe('As a vendor, I want the tool to automatically determine the type of th
 
       const actual = await validatePublication(publication, blueprint, example);
       fs.writeFileSync('./logs/notulen.json', `${JSON.stringify(actual)}`);
+    },
+    MILLISECONDS,
+  );
+
+  test(
+    'Validate Notulen 2',
+    async () => {
+      const publication: Bindings[] = await fetchDocument(NOTULEN_LINK_2, PROXY);
+      const documentType: string = determineDocumentType(publication);
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+      const example: DOMNode[] = await getExampleOfDocumentType(documentType);
+
+      const actual = await validatePublication(publication, blueprint, example);
+      fs.writeFileSync('./logs/notulen2.json', `${JSON.stringify(actual)}`);
     },
     MILLISECONDS,
   );
