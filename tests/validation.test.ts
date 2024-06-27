@@ -191,7 +191,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
     expect(actual).toBe(expected);
   });
 
-  test('Validate `Besluitenlijst', async () => {
+  test('Validate Besluitenlijst', async () => {
       const documentType: string = 'Besluitenlijst';
       const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
       const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK, PROXY);
@@ -199,9 +199,9 @@ describe('As a vendor, I want the tool to automatically determine the type of th
 
       const actual = await validatePublication(publication, blueprint, example);
     fs.writeFileSync('./logs/besluitenlijst.json', `${JSON.stringify(actual)}`);
-  }, MILLISECONDS);
+  }, MILLISECONDS * 2);
 
-  test('Validate `Besluitenlijst 2', async () => {
+  test('Validate Besluitenlijst 2', async () => {
       const documentType: string = 'Besluitenlijst';
       const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
       const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK2, PROXY);
