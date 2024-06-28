@@ -11,6 +11,7 @@ import type {
 import { filterTermsByValue, findTermByValue, getUniqueValues, formatURI, findTermsByValue } from './utils';
 import { enrichClassCollectionsWithExample } from './examples';
 import { DOMNode } from 'html-dom-parser';
+import { Quad } from 'n3';
 
 let BLUEPRINT: Bindings[] = [];
 let EXAMPLE: DOMNode[] = [];
@@ -189,6 +190,8 @@ function validateSubject(subject): ValidatedSubject {
       validatedProperties.push(validatedProperty);
     });
 
+    const complete: boolean = isComplete(validatedProperties)
+
     return {
       uri: subject.uri,
       class: subject.class,
@@ -196,7 +199,8 @@ function validateSubject(subject): ValidatedSubject {
       usedShape: blueprintShapeKey,
       shapeName: blueprintShapeKey ? formatURI(blueprintShapeKey!) : 'Unknown shape',
       totalCount: propertyKeys.length,
-      validCount,
+      validCount: validCount,
+      complete: complete,
       properties: validatedProperties,
     };
   }
@@ -215,6 +219,24 @@ function validateSubject(subject): ValidatedSubject {
   };
 }
 
+/* function to check if a subject is complete. Being complete means all values are present. But not necessarily correct
+  param:
+  - subject: array of properties to be validated
+  returns:
+  - subject with validated properties
+*/
+function isComplete(validatedProperties : ValidatedProperty[] | ProcessedProperty[]) : boolean {
+  return validatedProperties.every(p => {
+    if (!p.valid) return false;
+    p.value.every(s => {
+      if ((s as ValidatedSubject).class !== undefined) {
+        return isComplete((s as ValidatedSubject).properties) 
+      } return true
+    })
+    return true 
+  })
+}
+
 /* function to validate the properties of a subject
   param:
   - subject: array of properties to be validated
@@ -229,7 +251,7 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
     name: 'Naam niet gevonden',
     description: 'Beschrijving niet gevonden',
     path: 'URI niet gevonden',
-    value: ['Waarde niet gevonden'],
+    value: [],
     minCount: 0,
     actualCount: 0,
     valid: false,
@@ -280,13 +302,11 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
   if (values.length) validatedProperty.value = values;
   
   validatedProperty.actualCount = validatedProperty.value.length;
-  validatedProperty.valid =
-    (validatedProperty.minCount === undefined || validatedProperty.actualCount >= validatedProperty.minCount) &&
-    (validatedProperty.maxCount === undefined || validatedProperty.actualCount <= validatedProperty.maxCount) &&
-    (validatedProperty.targetClass === undefined ||
-      validatedProperty.value === undefined ||
-      !validatedProperty.value.some((v) => v.class !== validatedProperty.targetClass
-      ));
+  if (validatedProperty.actualCount === 0) {
+    validatedProperty.value = ['Waarde niet gevonden'];
+  } 
+  validatedProperty.valid = isValid(validatedProperty)
+
   if (
     !validatedProperty.valid &&
     MATURITY_LEVEL.includes(validatedProperty.maturityLevel) &&
@@ -295,6 +315,25 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
     FOUND_MATURITY = MATURITY_LEVEL[MATURITY_LEVEL.indexOf(validatedProperty.maturityLevel) - 1];
   }
   return validatedProperty;
+}
+
+/* function to check whether a property is valid or not
+  param:
+  - subject: array of properties to be validated
+  - propertyShape: the blueprint shape of the validated property
+  - blueprint: complete blueprint
+  returns:
+  - subject with validated properties
+*/
+function isValid(validatedProperty: ValidatedProperty): boolean {
+  const valid: boolean =
+    (validatedProperty.minCount === undefined || validatedProperty.actualCount >= validatedProperty.minCount) &&
+    (validatedProperty.maxCount === undefined || validatedProperty.actualCount <= validatedProperty.maxCount) &&
+    (validatedProperty.targetClass === undefined ||
+      validatedProperty.value === undefined ||
+      !validatedProperty.value.some((v) => v.class !== validatedProperty.targetClass)) ||
+      validatedProperty.value.every((s) => (s as ValidatedSubject).complete)
+  return valid
 }
 
 /* function to process a property which has no shape for validation

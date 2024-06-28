@@ -29,6 +29,8 @@ export type ValidatedSubject = {
   shapeName?: string;
   totalCount: number;
   validCount?: number;
+  inValidCount?: number;
+  complete?: boolean;
   properties: ValidatedProperty[] | ProcessedProperty[];
 };
 

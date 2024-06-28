@@ -201,7 +201,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
     fs.writeFileSync('./logs/besluitenlijst.json', `${JSON.stringify(actual)}`);
   }, MILLISECONDS * 2);
 
-  test('Validate Besluitenlijst 2', async () => {
+  test.only('Validate Besluitenlijst 2', async () => {
       const documentType: string = 'Besluitenlijst';
       const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
       const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK2, PROXY);
