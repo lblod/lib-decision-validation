@@ -8,14 +8,14 @@ import type {
   ClassCollection,
   ValidatedPublication,
 } from './types';
-import { filterTermsByValue, findTermByValue, getUniqueValues, formatURI } from './utils';
+import { filterTermsByValue, findTermByValue, getUniqueValues, formatURI, findTermsByValue } from './utils';
 import { enrichClassCollectionsWithExample } from './examples';
 import { DOMNode } from 'html-dom-parser';
 
 let BLUEPRINT: Bindings[] = [];
 let EXAMPLE: DOMNode[] = [];
-const MATURITY_LEVEL: string[] = ['Niveau 0', 'Niveau 1', 'Niveau 2', 'Niveau 3'];
 
+const MATURITY_LEVEL: string[] = ['Niveau 0', 'Niveau 1', 'Niveau 2', 'Niveau 3'];
 let FOUND_MATURITY = MATURITY_LEVEL[3];
 
 /* determines the document type based on a specific term
@@ -60,8 +60,10 @@ export function parsePublication(publication: Bindings[]): ParsedSubject[] {
   const subjectKeys: string[] = tmp.filter((value, index, array) => array.indexOf(value) === index);
 
   const result: ParsedSubject[] = [];
-  const seenSubjects: string[] = [];
-  preProcess(publication, subjectKeys, seenSubjects);
+  const seenSubjects: {[key: string]: string[]} = {};
+  subjectKeys.forEach((subjectKey) => {
+    seenSubjects[subjectKey] = [];
+  });
 
   subjectKeys.forEach((subjectKey) => {
     const subject: Bindings[] = publication.filter((p) => p.get('s')!.value === subjectKey);
@@ -79,14 +81,18 @@ export function parsePublication(publication: Bindings[]): ParsedSubject[] {
   returns:
   - a parsed subject
 */
-function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects: string[]): ParsedSubject {
+function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects: {[key: string]: string[]}): ParsedSubject {
   const subjectURI: string = subject[0].get('s')!.value;
-  if (seenSubjects.includes(subjectURI)) return;
+  const tmpClasses: string[] = findTermsByValue(subject, 'o', 'p', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+  if (!tmpClasses.length) return; // stop when no class(es) is found for this subject
 
-  seenSubjects.push(subjectURI);
-  const subjectClass: string = findTermByValue(subject, 'o', 'p', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+  // Check if subject is a Document (note: documents can have multiple rdf:type for relating to specific types of documents)
+  const isSubjectDocument = tmpClasses.includes('http://xmlns.com/foaf/0.1/Document');
+  const subjectClass: string = isSubjectDocument ? 'http://xmlns.com/foaf/0.1/Document' : tmpClasses[0];
+
   const properties: ParsedProperty[] = [];
   subject.forEach((b) => {
+    // When rdf:type is not the class
     if (b.get('p')!.value !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
       const termType: string = b.get('o')!.termType;
       if (termType === 'Literal') {
@@ -97,9 +103,12 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
       }
       if (termType === 'NamedNode') {
         const foundRelationKey: string = findTermByValue(publication, 's', 's', b.get('o')!.value);
-        if (foundRelationKey !== undefined) {
-          const foundRelation: Bindings[] = publication.filter((p) => p.get('s')!.value === foundRelationKey);
+        // Go deeper when this subject has not processed this object before
+        if (foundRelationKey !== undefined && seenSubjects[subjectURI].indexOf(foundRelationKey) === -1) {
+          seenSubjects[subjectURI].push(foundRelationKey);
 
+          const foundRelation: Bindings[] = publication.filter((p) => p.get('s')!.value === foundRelationKey);
+          
           const parsedSubject = parseSubject(foundRelation, publication, seenSubjects);
           if (parsedSubject !== undefined) {
             properties.push({
@@ -114,6 +123,12 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
           });
         }
       }
+    } else if (isSubjectDocument && b.get('o')!.value !== subjectClass) {
+      // rdf:type is used as property to indicate document type
+      properties.push({
+        path: b.get('p')!.value,
+        value: b.get('o')!.value,
+      });
     }
   });
   return {
@@ -255,18 +270,15 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
     }
   });
 
-  if (validatedProperty.path === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
-    validatedProperty.value = [subject.class];
-  } else {
-    validatedProperty.value = subject.properties
-      .filter((p) => p.path === validatedProperty.path)
-      .map((s) => {
-        if (s.value.class !== undefined) {
-          return validateSubject(s.value);
-        } else return s.value;
-      });
-  }
-
+  const values = subject.properties
+    .filter((p) => p.path === validatedProperty.path)
+    .map((s) => {
+      if (s.value.class !== undefined) {
+        return validateSubject(s.value);
+      } else return s.value;
+    });
+  if (values.length) validatedProperty.value = values;
+  
   validatedProperty.actualCount = validatedProperty.value.length;
   validatedProperty.valid =
     (validatedProperty.minCount === undefined || validatedProperty.actualCount >= validatedProperty.minCount) &&
@@ -277,7 +289,7 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
       ));
   if (
     !validatedProperty.valid &&
-    validatedProperty.maturityLevel !== undefined &&
+    MATURITY_LEVEL.includes(validatedProperty.maturityLevel) &&
     validatedProperty.maturityLevel <= FOUND_MATURITY
   ) {
     FOUND_MATURITY = MATURITY_LEVEL[MATURITY_LEVEL.indexOf(validatedProperty.maturityLevel) - 1];
@@ -311,28 +323,11 @@ function processProperty(subject, propertyKey): ProcessedProperty {
           return validateSubject(s.value);
         } else return s.value;
       });
-  }
+  };
   processProperty.actualCount = processProperty.value.length;
   return processProperty;
 }
-
-/* preprocessing function, currently it finds subjects that have no RDF type linked to it and adds them to seenSubjects. 
-  Causing them to be skipped during parsing and validation.
-  param:
-  - publication: publication to be preprocessed, 
-  - subjectKeys: array of keys of distinct subjects
-  returns:
-  - an aggregated document
-*/
-function preProcess(publication: Bindings[], subjectKeys: string[], seenSubjects: string[]): void {
-  const typedSubjectKeys: string[] = getUniqueValues(
-    filterTermsByValue(publication, 's', 'p', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
-  ) as string[];
-  subjectKeys.forEach((b) => {
-    if (!typedSubjectKeys.includes(b)) seenSubjects.push(b);
-  });
-}
-
+  
 /* function to aggregate a document
   param:
   - validatedSubjects: subjects that have gone through validation
@@ -340,11 +335,15 @@ function preProcess(publication: Bindings[], subjectKeys: string[], seenSubjects
   - an array of collections, a collection contains all the root objects in the publication that share the same RDF class
 */
 async function postProcess(validatedSubjects: ValidatedSubject[]): Promise<ClassCollection[]> {
-  const classes: ClassCollection[] = [];
+  const classes: ClassCollection[] = []
   // Combine all Root objects with the same type into one collection
-  const distinctClasses: string[] = getUniqueValues(validatedSubjects.map((p) => p.class)) as string[];
-  distinctClasses.forEach((c) => {
-    const objects: ValidatedSubject[] = validatedSubjects.filter((s) => s.class === c);
+  const distinctClasses: string[] = getUniqueValues((validatedSubjects.map((p) => p.class))) as string[];
+  const targetClasses: string[] = BLUEPRINT
+    .filter((b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass')
+    .map((b) => b.get('o')!.value);
+  const rootClasses: string[] = distinctClasses.filter((c) => targetClasses.indexOf(c) !== -1);
+  rootClasses.forEach(c => {
+    const objects: ValidatedSubject[] = validatedSubjects.filter(s => s.class === c)
     classes.push({
       classURI: c,
       className: formatURI(c),
