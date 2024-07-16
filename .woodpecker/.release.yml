@@ -11,5 +11,6 @@ pipeline:
       access: public
 when:
   branch: master
-  event: push
+  event: tag
+  ref: refs/tags/v*
 
