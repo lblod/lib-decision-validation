@@ -10,7 +10,6 @@ pipeline:
         from_secret: npm_access_token
       access: public
 when:
-  branch: master
   event: tag
   ref: refs/tags/v*
 
