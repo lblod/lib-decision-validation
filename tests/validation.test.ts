@@ -472,4 +472,20 @@ describe('As a vendor, I want to see a good example when something is not valid'
     },
     MILLISECONDS * 2,
   );
+  test(
+    'The shape of besluitenlijst should contain heeftOnderwerp',
+    async () => {
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType("Besluitenlijst");
+      expect(blueprint.toString().indexOf('heeftOnderwerp')).toBeGreaterThan(0);
+  },
+    MILLISECONDS * 2,
+  );
+ test(
+    'The shape of besluitenlijst should contain geeftAanleidingTot',
+    async () => {
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType("Besluitenlijst");
+      expect(blueprint.toString().indexOf('geeftAanleidingTot')).toBeGreaterThan(0);
+  },
+    MILLISECONDS * 2,
+  );
 });
