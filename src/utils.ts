@@ -99,3 +99,28 @@ export async function runQueryOverStore(query: string, store: Store): Promise<Bi
   });
   return await bindingsStream.toArray();
 }
+
+export async function getLblodURIsFromBindings(b: Bindings[]): Promise<Bindings[]> {
+  const store: Store = getStoreFromSPOBindings(b);
+  const query = `
+      select distinct ?id
+      where {
+        {
+          select distinct ?id
+          where {
+            ?id ?p ?o .
+            filter(regex(str(?id), "data.lblod.info/id/(mandatarissen|personen|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
+          }
+        }
+        UNION {
+          select distinct ?id
+          where {
+            ?s ?p ?id .
+            filter(regex(str(?id), "data.lblod.info/id/(mandatarissen|personen|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
+          }
+        }
+      }
+    `;
+
+  return await runQueryOverStore(query, store);
+}

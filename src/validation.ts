@@ -8,9 +8,10 @@ import type {
   ClassCollection,
   ValidatedPublication,
 } from './types';
-import { filterTermsByValue, findTermByValue, getUniqueValues, formatURI, findTermsByValue } from './utils';
+import { filterTermsByValue, findTermByValue, getUniqueValues, formatURI, findTermsByValue, getLblodURIsFromBindings } from './utils';
 import { enrichClassCollectionsWithExample } from './examples';
 import { DOMNode } from 'html-dom-parser';
+import { fetchDocument } from './queries';
 
 let BLUEPRINT: Bindings[] = [];
 let EXAMPLE: DOMNode[] = [];
@@ -60,9 +61,12 @@ export function parsePublication(publication: Bindings[]): ParsedSubject[] {
   const subjectKeys: string[] = tmp.filter((value, index, array) => array.indexOf(value) === index);
 
   const result: ParsedSubject[] = [];
-  const seenSubjects: {[key: string]: string[]} = {};
+  // Key: subject URI
+  // Map: predicate URI -> object URIs that are seen []
+  // Map allows an object to be processed multiple times if different predicate is used
+  const seenSubjects: {[key: string]: Map<string, string[]>} = {};
   subjectKeys.forEach((subjectKey) => {
-    seenSubjects[subjectKey] = [];
+    seenSubjects[subjectKey] = new Map<string, string[]>;
   });
 
   subjectKeys.forEach((subjectKey) => {
@@ -81,7 +85,7 @@ export function parsePublication(publication: Bindings[]): ParsedSubject[] {
   returns:
   - a parsed subject
 */
-function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects: {[key: string]: string[]}): ParsedSubject {
+function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects: {[key: string]: Map<string, string[]>}): ParsedSubject {
   const subjectURI: string = subject[0].get('s')!.value;
   const tmpClasses: string[] = findTermsByValue(subject, 'o', 'p', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
   if (!tmpClasses.length) return; // stop when no class(es) is found for this subject
@@ -92,21 +96,26 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
 
   const properties: ParsedProperty[] = [];
   subject.forEach((b) => {
+    const predicate = b.get('p')!.value;
+
     // When rdf:type is not the class
-    if (b.get('p')!.value !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
+    if (predicate !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
       const termType: string = b.get('o')!.termType;
       if (termType === 'Literal') {
         properties.push({
-          path: b.get('p')!.value,
+          path: predicate,
           value: b.get('o')!.value,
         });
       }
       if (termType === 'NamedNode') {
         const foundRelationKey: string = findTermByValue(publication, 's', 's', b.get('o')!.value);
-        // Go deeper when this subject has not processed this object before
-        if (foundRelationKey !== undefined && seenSubjects[subjectURI].indexOf(foundRelationKey) === -1) {
-          seenSubjects[subjectURI].push(foundRelationKey);
-
+        // Go deeper when this subject has not processed this object before 
+        if (foundRelationKey !== undefined && (!seenSubjects[subjectURI].has(predicate) || seenSubjects[subjectURI].get(predicate).indexOf(foundRelationKey) === -1)) {
+          if(!seenSubjects[subjectURI].has(predicate)) seenSubjects[subjectURI].set(predicate, [foundRelationKey]);
+          else {
+            const extendedKeys = seenSubjects[subjectURI].get(predicate).concat(...foundRelationKey);
+            seenSubjects[subjectURI].set(predicate, extendedKeys);
+          }
           const foundRelation: Bindings[] = publication.filter((p) => p.get('s')!.value === foundRelationKey);
           
           const parsedSubject = parseSubject(foundRelation, publication, seenSubjects);
@@ -149,13 +158,32 @@ export async function validatePublication(
   blueprint: Bindings[],
   example: DOMNode[],
 ): Promise<ValidatedPublication> {
-  const parsedPublication = parsePublication(publication);
+  let enrichedPublication: Bindings[] = publication;
+  let lblodUris: Bindings[] = await getLblodURIsFromBindings(publication);
+  const containsBestuurseenheden = lblodUris.filter((element) => element.get('id').value.indexOf('bestuurseenheden') != -1).length > 0;
+  for (const u of lblodUris) {
+    const uri = u.get('id').value;
+    const dereferencedLblodUri = await fetchDocument(uri);
+    // Go one level deeper in bestuursorganen if bestuurseenheden is not yet part of uris that will be fetched
+    if (!containsBestuurseenheden && uri.indexOf('bestuursorganen') != -1) {
+      let lblodUrisFromBestuursorganen: Bindings[] = await getLblodURIsFromBindings(dereferencedLblodUri);
+      lblodUris = lblodUris.concat(lblodUrisFromBestuursorganen);
+    }
+    for (const b of dereferencedLblodUri) {
+      // Only add binding when not already exists
+      if (enrichedPublication.filter((element) => element.equals(b)).length === 0) {
+        enrichedPublication.push(b);
+      }
+    }
+  }
+  const parsedPublication = await parsePublication(enrichedPublication);
   BLUEPRINT = blueprint;
   EXAMPLE = example;
-  const validatedSubjects: ValidatedSubject[] = [];
+
+  let validatedSubjects: ValidatedSubject[] = [];
   parsedPublication.forEach((subject) => {
-    const resultSubject = validateSubject(subject);
-    validatedSubjects.push(resultSubject);
+    const resultSubjects = validateSubject(subject);
+    validatedSubjects = validatedSubjects.concat(...resultSubjects);
   });
 
   return {
@@ -170,12 +198,15 @@ export async function validatePublication(
   returns:
   - validated subject
 */
-function validateSubject(subject): ValidatedSubject {
-  const blueprintShapeKey: string | undefined = BLUEPRINT.find(
-    (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' && b.get('o')!.value === subject.class,
-  )?.get('s')!.value;
+function validateSubject(subject): ValidatedSubject[] {
+  const validatedSubjects: ValidatedSubject[] = [];
 
-  if (blueprintShapeKey !== undefined) {
+  // In case of Bestuursorgaan, multiple shapes can match the subject
+  const blueprintShapeKeys = BLUEPRINT.filter(
+    (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' && b.get('o')!.value === subject.class,
+  );
+    for (const b of blueprintShapeKeys) {
+     const blueprintShapeKey = b.get('s')!.value;
     const blueprintShape: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === blueprintShapeKey);
     const propertyKeys: string[] = filterTermsByValue(blueprintShape, 'o', 'p', 'http://www.w3.org/ns/shacl#property');
 
@@ -189,7 +220,7 @@ function validateSubject(subject): ValidatedSubject {
       validatedProperties.push(validatedProperty);
     });
 
-    return {
+    validatedSubjects.push({
       uri: subject.uri,
       class: subject.class,
       className: subject.class ? formatURI(subject.class!) : 'Unknown class',
@@ -198,21 +229,22 @@ function validateSubject(subject): ValidatedSubject {
       totalCount: propertyKeys.length,
       validCount,
       properties: validatedProperties,
-    };
+    });
   }
+  if (validatedSubjects.length) return validatedSubjects;
 
   const propertyKeys: string[] = getUniqueValues(subject.properties.map((p) => p.path)) as string[];
   const processedProperties: ProcessedProperty[] = [];
   propertyKeys.forEach((p) => {
     processedProperties.push(processProperty(subject, p));
   });
-  return {
+  return [{
     uri: subject.uri,
     class: subject.class,
     className: subject.class ? formatURI(subject.class!) : 'Unknown class',
     properties: processedProperties,
     totalCount: subject.properties.length,
-  };
+  }];
 }
 
 /* function to validate the properties of a subject
@@ -270,13 +302,17 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
     }
   });
 
-  const values = subject.properties
-    .filter((p) => p.path === validatedProperty.path)
-    .map((s) => {
-      if (s.value.class !== undefined) {
-        return validateSubject(s.value);
-      } else return s.value;
-    });
+  let values = [];
+  let ps = subject.properties
+    .filter((p) => p.path === validatedProperty.path);
+  for (let s of ps) {
+    if (s.value.class !== undefined) {
+      for (let v of validateSubject(s.value)) {
+        values.push(v);
+      }
+    } else values.push(s.value);
+  }
+  
   if (values.length) validatedProperty.value = values;
   
   validatedProperty.actualCount = validatedProperty.value.length;
