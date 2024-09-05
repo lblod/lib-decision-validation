@@ -473,9 +473,25 @@ describe('As a vendor, I want to see a good example when something is not valid'
     MILLISECONDS * 2,
   );
   test(
+    'The shape of besluitenlijst should contain heeftOnderwerp',
+    async () => {
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType("Besluitenlijst");
+      expect(blueprint.toString().indexOf('heeftOnderwerp')).toBeGreaterThan(0);
+  },
+    MILLISECONDS * 2,
+  );
+ test(
+    'The shape of besluitenlijst should contain geeftAanleidingTot',
+    async () => {
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType("Besluitenlijst");
+      expect(blueprint.toString().indexOf('geeftAanleidingTot')).toBeGreaterThan(0);
+  },
+    MILLISECONDS * 2,
+  );
+  test(
     'Location of a publication should be enriched with name and werkingsgebiedniveau',
     async () => {
-      const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK4, PROXY);
+      const publication: Bindings[] = await fetchDocument(NOTULEN_LINK_2, PROXY);
       const documentType = determineDocumentType(publication);
       const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
       const example: DOMNode[] = await getExampleOfDocumentType(documentType);
@@ -499,6 +515,5 @@ describe('As a vendor, I want to see a good example when something is not valid'
       expect(naamIngevuld).toBeTruthy;
       expect(werkingsgebiedNiveauIngevuld).toBeTruthy;
     },
-    MILLISECONDS * 10,
-  );
+    MILLISECONDS * 20);
 });

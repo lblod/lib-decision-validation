@@ -3,6 +3,7 @@ import { Store, Quad, Term } from 'n3';
 import parse, { DOMNode } from 'html-dom-parser';
 
 import { QueryEngine } from '@comunica/query-sparql';
+import { fetchDocument } from './queries';
 const myEngine = new QueryEngine();
 
 /* function to filter triples by a certain condition and then get the value of a certain term
@@ -123,4 +124,17 @@ export async function getLblodURIsFromBindings(b: Bindings[]): Promise<Bindings[
     `;
 
   return await runQueryOverStore(query, store);
+}
+
+export async function processLblodUris(lblodUris: Bindings[], destination: Bindings[]) {
+  for (const u of lblodUris) {
+    const uri = u.get('id').value;
+    const dereferencedLblodUri = await fetchDocument(uri.split(/[?#]/)[0]);
+    for (const b of dereferencedLblodUri) {
+      // Only add binding when not already exists
+      if (destination.filter((element) => element.equals(b)).length === 0) {
+        destination.push(b);
+      }
+    }
+  }
 }
