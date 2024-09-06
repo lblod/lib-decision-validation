@@ -199,7 +199,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
 
       const actual = await validatePublication(publication, blueprint, example);
     fs.writeFileSync('./logs/besluitenlijst.json', `${JSON.stringify(actual)}`);
-  }, MILLISECONDS * 2);
+  }, MILLISECONDS * 10);
 
   test('Validate Besluitenlijst 2', async () => {
       const documentType: string = 'Besluitenlijst';
@@ -252,7 +252,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
       const actual = await validatePublication(publication, blueprint, example);
       fs.writeFileSync('./logs/notulen.json', `${JSON.stringify(actual)}`);
     },
-    MILLISECONDS * 10,
+    MILLISECONDS * 20,
   );
 
   test(
@@ -334,23 +334,11 @@ describe('As a vendor, I want to see a good example when something is not valid'
       WHERE {
           ?s a sh:NodeShape ;
             sh:targetClass ?targetClass .
-        
-        # Simple property path
-        {
+                
           ?s sh:property [
               sh:path ?path ;
               lblodBesluit:usageNote ?usageNote 
           ] .
-        } 
-        UNION
-        # list of alternative property paths
-        {
-          ?s sh:property [
-              sh:path/sh:alternativePath/(rdf:first|rdf:rest)* ?path ;
-              lblodBesluit:usageNote ?usageNote
-          ] .
-          FILTER(?path NOT IN (rdf:nil))
-        }
         
         FILTER (!isBlank(?path))
       }

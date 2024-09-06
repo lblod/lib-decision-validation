@@ -16,23 +16,11 @@ async function getTargetClassPropertyPathAndUsageNotesFromBlueprint(blueprint: B
       WHERE {
           ?s a sh:NodeShape ;
             sh:targetClass ?targetClass .
-        
-        # Simple property path
-        {
+                
           ?s sh:property [
               sh:path ?path ;
               lblodBesluit:usageNote ?usageNote 
           ] .
-        } 
-        UNION
-        # list of alternative property paths
-        {
-          ?s sh:property [
-              sh:path/sh:alternativePath/(rdf:first|rdf:rest)* ?path ;
-              lblodBesluit:usageNote ?usageNote
-          ] .
-          FILTER(?path NOT IN (rdf:nil))
-        }
         
         FILTER (!isBlank(?path))
       }
