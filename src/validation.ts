@@ -188,7 +188,7 @@ export async function validatePublication(
   // If bestuurseenheid is not contained in publication, then we need to go two levels deep in bestuursorgaan. Otherwise one level deep suffices
   const containsBestuurseenheden = lblodUris.filter((element) => element.get('id').value.indexOf('bestuurseenheden') !== -1).length > 0;
   if (!containsBestuurseenheden) {
-    let lblodUrisFromBestuursorgaan: Bindings[] = await getLblodURIsFromBindings(dereferencedBestuursorgaanLblodUris);
+    const lblodUrisFromBestuursorgaan: Bindings[] = await getLblodURIsFromBindings(dereferencedBestuursorgaanLblodUris);
     for (const ufromb of lblodUrisFromBestuursorgaan) {
       const urifromb = ufromb.get('id').value.split(/[?#]/)[0];
       if ((urifromb.indexOf('bestuursorganen') !== -1 || urifromb.indexOf('bestuurseenheden') !== -1) && retrievedUris.indexOf(urifromb) === -1) {
