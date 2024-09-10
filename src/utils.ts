@@ -107,19 +107,20 @@ export async function getLblodURIsFromBindings(b: Bindings[]): Promise<Bindings[
       select distinct ?id
       where {
         {
-          select distinct ?id
+          select distinct ?idWithoutHttp
           where {
-            ?id ?p ?o .
-            filter(regex(str(?id), "data.lblod.info/id/(mandatarissen|personen|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
+            ?idWithoutHttp ?p ?o .
+            filter(regex(str(?idWithoutHttp), "data.lblod.info/id/(mandatarissen|personen|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
           }
         }
         UNION {
-          select distinct ?id
+          select distinct ?idWithoutHttp
           where {
-            ?s ?p ?id .
-            filter(regex(str(?id), "data.lblod.info/id/(mandatarissen|personen|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
+            ?s ?p ?idWithoutHttp .
+            filter(regex(str(?idWithoutHttp), "data.lblod.info/id/(mandatarissen|personen|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
           }
         }
+        BIND(replace(str(?idWithoutHttp), 'http://', 'https://') as ?id)
       }
     `;
 
