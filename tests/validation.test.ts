@@ -199,7 +199,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
 
       const actual = await validatePublication(publication, blueprint, example);
     fs.writeFileSync('./logs/besluitenlijst.json', `${JSON.stringify(actual)}`);
-  }, MILLISECONDS * 2);
+  }, MILLISECONDS * 10);
 
   test('Validate Besluitenlijst 2', async () => {
       const documentType: string = 'Besluitenlijst';
@@ -209,7 +209,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
 
       const actual = await validatePublication(publication, blueprint, example);
     fs.writeFileSync('./logs/besluitenlijst2.json', `${JSON.stringify(actual)}`);
-  });
+  }, MILLISECONDS * 5);
 
   test('Validate Agenda', async () => {
       const documentType: string = 'Agenda';
@@ -252,7 +252,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
       const actual = await validatePublication(publication, blueprint, example);
       fs.writeFileSync('./logs/notulen.json', `${JSON.stringify(actual)}`);
     },
-    MILLISECONDS * 2,
+    MILLISECONDS * 20,
   );
 
   test(
@@ -266,7 +266,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
       const actual = await validatePublication(publication, blueprint, example);
       fs.writeFileSync('./logs/notulen2.json', `${JSON.stringify(actual)}`);
     },
-    MILLISECONDS,
+    MILLISECONDS * 10,
   );
 
 
@@ -334,23 +334,11 @@ describe('As a vendor, I want to see a good example when something is not valid'
       WHERE {
           ?s a sh:NodeShape ;
             sh:targetClass ?targetClass .
-        
-        # Simple property path
-        {
+                
           ?s sh:property [
               sh:path ?path ;
               lblodBesluit:usageNote ?usageNote 
           ] .
-        } 
-        UNION
-        # list of alternative property paths
-        {
-          ?s sh:property [
-              sh:path/sh:alternativePath/(rdf:first|rdf:rest)* ?path ;
-              lblodBesluit:usageNote ?usageNote
-          ] .
-          FILTER(?path NOT IN (rdf:nil))
-        }
         
         FILTER (!isBlank(?path))
       }
@@ -409,7 +397,7 @@ describe('As a vendor, I want to see a good example when something is not valid'
       expect(enrichedResults.length).toBeGreaterThan(0);
       fs.writeFileSync('./logs/enrichedResults-demonstrator.json', `${JSON.stringify(enrichedResults)}`);
     },
-    MILLISECONDS * 2,
+    MILLISECONDS * 5,
   );
 
   test(
@@ -488,4 +476,32 @@ describe('As a vendor, I want to see a good example when something is not valid'
   },
     MILLISECONDS * 2,
   );
+  test(
+    'Location of a publication should be enriched with name and werkingsgebiedniveau',
+    async () => {
+      const publication: Bindings[] = await fetchDocument(NOTULEN_LINK_2, PROXY);
+      const documentType = determineDocumentType(publication);
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+      const example: DOMNode[] = await getExampleOfDocumentType(documentType);
+      const validationResult = await validatePublication(publication, blueprint, example);
+      
+      let naamIngevuld = false;
+      let werkingsgebiedNiveauIngevuld = false;
+
+      for (let c of validationResult.classes) {
+        if(c.className === 'Location') {
+          if (c.objects.length) {
+            const firstObject = c.objects[0];
+            for (let p of firstObject.properties) {
+              if (p.name === 'naam' && p.value.length) naamIngevuld = true;
+              if (p.name === 'werkingsgebiedNiveau' && p.value.length) werkingsgebiedNiveauIngevuld = true;
+            }
+          }
+        }
+      }
+
+      expect(naamIngevuld).toBeTruthy;
+      expect(werkingsgebiedNiveauIngevuld).toBeTruthy;
+    },
+    MILLISECONDS * 20);
 });

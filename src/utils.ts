@@ -3,6 +3,7 @@ import { Store, Quad, Term } from 'n3';
 import parse, { DOMNode } from 'html-dom-parser';
 
 import { QueryEngine } from '@comunica/query-sparql';
+import { fetchDocument } from './queries';
 const myEngine = new QueryEngine();
 
 /* function to filter triples by a certain condition and then get the value of a certain term
@@ -98,4 +99,43 @@ export async function runQueryOverStore(query: string, store: Store): Promise<Bi
     sources: [store],
   });
   return await bindingsStream.toArray();
+}
+
+export async function getLblodURIsFromBindings(b: Bindings[]): Promise<Bindings[]> {
+  const store: Store = getStoreFromSPOBindings(b);
+  const query = `
+      select distinct ?id
+      where {
+        {
+          select distinct ?idWithoutHttp
+          where {
+            ?idWithoutHttp ?p ?o .
+            filter(regex(str(?idWithoutHttp), "data.lblod.info/id/(mandatarissen|personen|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
+          }
+        }
+        UNION {
+          select distinct ?idWithoutHttp
+          where {
+            ?s ?p ?idWithoutHttp .
+            filter(regex(str(?idWithoutHttp), "data.lblod.info/id/(mandatarissen|personen|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
+          }
+        }
+        BIND(replace(str(?idWithoutHttp), 'http://', 'https://') as ?id)
+      }
+    `;
+
+  return await runQueryOverStore(query, store);
+}
+
+export async function processLblodUris(lblodUris: Bindings[], destination: Bindings[]) {
+  for (const u of lblodUris) {
+    const uri = u.get('id').value;
+    const dereferencedLblodUri = await fetchDocument(uri.split(/[?#]/)[0]);
+    for (const b of dereferencedLblodUri) {
+      // Only add binding when not already exists
+      if (destination.filter((element) => element.equals(b)).length === 0) {
+        destination.push(b);
+      }
+    }
+  }
 }
