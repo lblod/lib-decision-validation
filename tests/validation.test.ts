@@ -1,8 +1,23 @@
-import * as fs from 'fs';
-
 import { Bindings } from '@comunica/types';
+import { ensureDirectoryExistence } from '../src/node-utils';
+import * as fs from 'fs';
+import {
+  AGENDA_LINK,
+  AGENDA_LINK_2,
+  AGENDA_LINK_3,
+  AGENDA_LINK_4,
+  BESLUITEN_LINK,
+  BESLUITEN_LINK2,
+  BESLUITEN_LINK3,
+  BESLUITEN_LINK4,
+  NOTULEN_LINK,
+  NOTULEN_LINK_2,
+  TESTHTMLSTRING,
+  TESTSTRING2,
+} from './data/testData';
 
-import HttpRequestMock from 'http-request-mock';
+//const PROXY = 'https://corsproxy.io/?';
+const PROXY = '';
 
 import { determineDocumentType, validatePublication } from '../src/validation';
 import {
@@ -19,130 +34,16 @@ import { getElementById, getElementsByTagName } from 'domutils';
 
 import { DOMNode, Element } from 'html-dom-parser';
 
-//const PROXY = 'https://corsproxy.io/?';
-const PROXY = '';
-
-import {
-  AGENDA_LINK,
-  AGENDA_LINK_2,
-  AGENDA_LINK_3,
-  AGENDA_LINK_4,
-  BESLUITEN_LINK,
-  BESLUITEN_LINK2,
-  BESLUITEN_LINK3,
-  BESLUITEN_LINK4,
-  NOTULEN_LINK,
-  NOTULEN_LINK_2,
-  TESTHTMLSTRING,
-  TESTSTRING2,
-} from './data/testData';
-
 import { getDOMfromString, getStoreFromSPOBindings, runQueryOverStore } from '../src/utils';
-import { ensureDirectoryExistence } from '../src/node-utils';
-import { getHTMLExampleOfDocumentType } from 'lib-decision-shapes';
+import { getHTMLExampleOfDocumentType } from '@lblod/lib-decision-shapes';
+import { setupMocker } from './utils';
 
 const MILLISECONDS = 7000;
 
 describe('As a vendor, I want the tool to automatically determine the type of the document (agenda, besluitenlijst, notulen)', () => {
   beforeAll(() => {
-    const mocker = HttpRequestMock.setup();
-
-    mocker.mock({
-      url: `${PROXY}${AGENDA_LINK}`, // or RegExp: /.*\/some-api$/
-      method: 'get', // get, post, put, patch or delete
-      delay: 0,
-      status: 200,
-      headers: {
-        // respone headers
-        'content-type': 'text/html;charset=UTF-8',
-      },
-      body: fs.readFileSync(`tests/data/${encodeURIComponent(AGENDA_LINK)}`),
-    });
-
-    mocker.mock({
-      url: `${PROXY}${AGENDA_LINK_2}`, // or RegExp: /.*\/some-api$/
-      method: 'get', // get, post, put, patch or delete
-      delay: 0,
-      status: 200,
-      headers: {
-        // respone headers
-        'content-type': 'text/html;charset=UTF-8',
-      },
-      body: fs.readFileSync(`tests/data/${encodeURIComponent(AGENDA_LINK_2)}`),
-    });
-
-    mocker.mock({
-      url: `${PROXY}${AGENDA_LINK_4}`, // or RegExp: /.*\/some-api$/
-      method: 'get', // get, post, put, patch or delete
-      delay: 0,
-      status: 200,
-      headers: {
-        // respone headers
-        'content-type': 'text/html;charset=UTF-8',
-      },
-      body: fs.readFileSync(`tests/data/${encodeURIComponent(AGENDA_LINK_4)}`),
-    });
-
-    mocker.mock({
-      url: `${PROXY}${BESLUITEN_LINK}`, // or RegExp: /.*\/some-api$/
-      method: 'get', // get, post, put, patch or delete
-      delay: 0,
-      status: 200,
-      headers: {
-        // respone headers
-        'content-type': 'text/html;charset=UTF-8',
-      },
-      body: fs.readFileSync(`tests/data/${encodeURIComponent(BESLUITEN_LINK)}`),
-    });
-
-    mocker.mock({
-      url: `${PROXY}${BESLUITEN_LINK2}`, // or RegExp: /.*\/some-api$/
-      method: 'get', // get, post, put, patch or delete
-      delay: 0,
-      status: 200,
-      headers: {
-        // respone headers
-        'content-type': 'text/html;charset=UTF-8',
-      },
-      body: fs.readFileSync(`tests/data/${encodeURIComponent(BESLUITEN_LINK2)}`),
-    });
-
-    mocker.mock({
-      url: `${PROXY}${BESLUITEN_LINK3}`, // or RegExp: /.*\/some-api$/
-      method: 'get', // get, post, put, patch or delete
-      delay: 0,
-      status: 200,
-      headers: {
-        // respone headers
-        'content-type': 'text/html;charset=UTF-8',
-      },
-      body: fs.readFileSync(`tests/data/${encodeURIComponent(BESLUITEN_LINK3)}`),
-    });
-
-    mocker.mock({
-      url: `${PROXY}${BESLUITEN_LINK4}`, // or RegExp: /.*\/some-api$/
-      method: 'get', // get, post, put, patch or delete
-      delay: 0,
-      status: 200,
-      headers: {
-        // respone headers
-        'content-type': 'text/html;charset=UTF-8',
-      },
-      body: fs.readFileSync(`tests/data/${encodeURIComponent(BESLUITEN_LINK4)}`),
-    });
-
-    mocker.mock({
-      url: `${PROXY}${NOTULEN_LINK}`, // or RegExp: /.*\/some-api$/
-      method: 'get', // get, post, put, patch or delete
-      delay: 0,
-      status: 200,
-      headers: {
-        // respone headers
-        'content-type': 'text/html;charset=UTF-8',
-      },
-      body: fs.readFileSync(`tests/data/${encodeURIComponent(NOTULEN_LINK)}`),
-    });
-    return ensureDirectoryExistence('./logs/');
+    setupMocker();
+    ensureDirectoryExistence('./logs/');
   });
 
   test('determine the type of a document using a link to fetch the publication', async () => {
@@ -274,7 +175,8 @@ describe('As a vendor, I want the tool to automatically determine the type of th
 
 describe('As a vendor, I want to see a good example when something is not valid', () => {
   beforeAll(() => {
-    return ensureDirectoryExistence('./logs/');
+    setupMocker();
+    ensureDirectoryExistence('./logs/');
   });
 
   test('retrieve example URL for document type', async () => {
@@ -334,23 +236,11 @@ describe('As a vendor, I want to see a good example when something is not valid'
       WHERE {
           ?s a sh:NodeShape ;
             sh:targetClass ?targetClass .
-        
-        # Simple property path
-        {
+                
           ?s sh:property [
               sh:path ?path ;
               lblodBesluit:usageNote ?usageNote 
           ] .
-        } 
-        UNION
-        # list of alternative property paths
-        {
-          ?s sh:property [
-              sh:path/sh:alternativePath/(rdf:first|rdf:rest)* ?path ;
-              lblodBesluit:usageNote ?usageNote
-          ] .
-          FILTER(?path NOT IN (rdf:nil))
-        }
         
         FILTER (!isBlank(?path))
       }
@@ -472,4 +362,105 @@ describe('As a vendor, I want to see a good example when something is not valid'
     },
     MILLISECONDS * 2,
   );
+  test(
+    'The shape of besluitenlijst should contain heeftOnderwerp',
+    async () => {
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType("Besluitenlijst");
+      expect(blueprint.toString().indexOf('heeftOnderwerp')).toBeGreaterThan(0);
+  },
+    MILLISECONDS * 2,
+  );
+ test(
+    'The shape of besluitenlijst should contain geeftAanleidingTot',
+    async () => {
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType("Besluitenlijst");
+      expect(blueprint.toString().indexOf('geeftAanleidingTot')).toBeGreaterThan(0);
+  },
+    MILLISECONDS * 2,
+  );
+  test(
+    'Location of a publication should be enriched with name and werkingsgebiedniveau',
+    async () => {
+      const publication: Bindings[] = await fetchDocument(NOTULEN_LINK_2, PROXY);
+      const documentType = determineDocumentType(publication);
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+      const example: DOMNode[] = await getExampleOfDocumentType(documentType);
+      const validationResult = await validatePublication(publication, blueprint, example);
+      
+      let naamIngevuld = false;
+      let werkingsgebiedNiveauIngevuld = false;
+
+      for (let c of validationResult.classes) {
+        if(c.className === 'Location') {
+          if (c.objects.length) {
+            const firstObject = c.objects[0];
+            for (let p of firstObject.properties) {
+              if (p.name === 'naam' && p.value.length) naamIngevuld = true;
+              if (p.name === 'werkingsgebiedNiveau' && p.value.length) werkingsgebiedNiveauIngevuld = true;
+            }
+          }
+        }
+      }
+
+      expect(naamIngevuld).toBeTruthy;
+      expect(werkingsgebiedNiveauIngevuld).toBeTruthy;
+    },
+    MILLISECONDS * 20);
+  });
+
+  describe('As an ABB validator, I want to use SPARQL for complex validations', () => {
+    beforeAll(() => {
+      setupMocker();
+      ensureDirectoryExistence('./logs/');
+    });
+
+    test(
+      'Class instances of validation result should contain a sparqlValidationResult',
+      async () => {
+        const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
+        const documentType = determineDocumentType(publication);
+        const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+        const example: DOMNode[] = await getExampleOfDocumentType(documentType);
+        const validationResult =  await validatePublication(publication, blueprint, example);
+        
+        let containsSparqlValidationResults = false;
+  
+        for (let c of validationResult.classes) {
+          for (let o of c.objects) {
+            if (o.sparqlValidationResults && o.sparqlValidationResults.length) {
+              containsSparqlValidationResults = true;
+              return;
+            }
+          }
+        }
+  
+        expect(containsSparqlValidationResults).toBeTruthy;
+      },
+      MILLISECONDS * 20);
+
+      test(
+        'Property instances of validation result should contain a sparqlValidationResult',
+        async () => {
+          const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
+          const documentType = determineDocumentType(publication);
+          const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+          const example: DOMNode[] = await getExampleOfDocumentType(documentType);
+          const validationResult =  await validatePublication(publication, blueprint, example);
+          
+          let containsSparqlValidationResults = false;
+    
+          for (let c of validationResult.classes) {
+            for (let o of c.objects) {
+              for (let p of o.properties) {
+                if (p.sparqlValidationResults && p.sparqlValidationResults.length) {
+                  containsSparqlValidationResults = true;
+                  return;
+                }
+              }
+            }
+          }
+    
+          expect(containsSparqlValidationResults).toBeTruthy;
+        },
+        MILLISECONDS * 20);
 });

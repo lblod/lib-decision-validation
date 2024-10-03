@@ -7,16 +7,23 @@ import type {
   ProcessedProperty,
   ClassCollection,
   ValidatedPublication,
+  ValidationResult,
 } from './types';
-import { filterTermsByValue, findTermByValue, getUniqueValues, formatURI, findTermsByValue } from './utils';
+import { filterTermsByValue, findTermByValue, getUniqueValues, formatURI, findTermsByValue, getLblodURIsFromBindings, getStoreFromSPOBindings, validateSubjectWithSparqlConstraint } from './utils';
 import { enrichClassCollectionsWithExample } from './examples';
 import { DOMNode } from 'html-dom-parser';
+import { fetchDocument } from './queries';
+import { Store } from 'n3';
 
 let BLUEPRINT: Bindings[] = [];
 let EXAMPLE: DOMNode[] = [];
+let PUBLICATION: Bindings[] = [];
+let PUBLICATION_STORE: Store;
 
 const MATURITY_LEVEL: string[] = ['Niveau 0', 'Niveau 1', 'Niveau 2', 'Niveau 3'];
 let FOUND_MATURITY = MATURITY_LEVEL[3];
+
+let VALIDATED_SUBJECTS_CACHE: Map<string, any> = new Map();
 
 /* determines the document type based on a specific term
   param:
@@ -101,7 +108,8 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
           value: b.get('o')!.value,
         });
       }
-      if (termType === 'NamedNode') {
+      // termType is undefined when referring to blank node
+      if (termType === 'NamedNode' || termType === 'BlankNode') {
         const foundRelationKey: string = findTermByValue(publication, 's', 's', b.get('o')!.value);
         // Go deeper when this subject has not processed this object before
         if (foundRelationKey !== undefined && seenSubjects[subjectURI].indexOf(foundRelationKey) === -1) {
@@ -152,11 +160,17 @@ export async function validatePublication(
   const parsedPublication = parsePublication(publication);
   BLUEPRINT = blueprint;
   EXAMPLE = example;
-  const validatedSubjects: ValidatedSubject[] = [];
-  parsedPublication.forEach((subject) => {
-    const resultSubject = validateSubject(subject);
-    validatedSubjects.push(resultSubject);
-  });
+  PUBLICATION = publication;
+  PUBLICATION_STORE = await getStoreFromSPOBindings(publication);
+
+  let validatedSubjects: ValidatedSubject[] = [];
+  for (const subject of parsedPublication) {
+    if (subject !== undefined) {
+      const resultSubjects = VALIDATED_SUBJECTS_CACHE.has(subject.uri) ? VALIDATED_SUBJECTS_CACHE.get(subject.uri) : await validateSubject(subject);
+      if(!VALIDATED_SUBJECTS_CACHE.has(subject.uri)) VALIDATED_SUBJECTS_CACHE.set(subject.uri, resultSubjects);
+      validatedSubjects = validatedSubjects.concat(...resultSubjects);
+    }
+  };
 
   return {
     classes: await postProcess(validatedSubjects),
@@ -170,26 +184,40 @@ export async function validatePublication(
   returns:
   - validated subject
 */
-function validateSubject(subject): ValidatedSubject {
-  const blueprintShapeKey: string | undefined = BLUEPRINT.find(
-    (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' && b.get('o')!.value === subject.class,
-  )?.get('s')!.value;
+async function validateSubject(subject: ParsedSubject): Promise<ValidatedSubject[]> {
+  const validatedSubjects: ValidatedSubject[] = [];
 
-  if (blueprintShapeKey !== undefined) {
+  // In case of Bestuursorgaan, multiple shapes can match the subject
+  const blueprintShapeKeys = BLUEPRINT.filter(
+    (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' && b.get('o')!.value === subject.class,
+  );
+
+  for (const b of blueprintShapeKeys) {
+    const blueprintShapeKey = b.get('s')!.value;
     const blueprintShape: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === blueprintShapeKey);
+    // Process property shapes
     const propertyKeys: string[] = filterTermsByValue(blueprintShape, 'o', 'p', 'http://www.w3.org/ns/shacl#property');
 
     const validatedProperties = [];
     let validCount = 0;
 
-    propertyKeys.forEach((propertyKey) => {
+    for (const propertyKey of propertyKeys) {
       const propertyShape: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === propertyKey);
-      const validatedProperty: ValidatedProperty = validateProperty(subject, propertyShape);
+      const validatedProperty: ValidatedProperty = await validateProperty(subject, propertyShape);
       if (validatedProperty.valid) validCount++;
       validatedProperties.push(validatedProperty);
-    });
+    };
 
-    return {
+    // Process sparql-based constraints
+    let sparqlValidationResults = [];
+    const sparqlConstraintKeys: string[] = filterTermsByValue(blueprintShape, 'o', 'p', 'http://www.w3.org/ns/shacl#sparql');
+    for (const sparqlConstraintKey of sparqlConstraintKeys) {
+      const sparqlConstraintBindings: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === sparqlConstraintKey);
+      const validationResultsOfSparqlConstraint: ValidationResult[] = await validateSubjectWithSparqlConstraint(subject, sparqlConstraintBindings, PUBLICATION_STORE);
+      sparqlValidationResults = sparqlValidationResults.concat(validationResultsOfSparqlConstraint);
+    };
+
+    return [{
       uri: subject.uri,
       class: subject.class,
       className: subject.class ? formatURI(subject.class!) : 'Unknown class',
@@ -197,22 +225,23 @@ function validateSubject(subject): ValidatedSubject {
       shapeName: blueprintShapeKey ? formatURI(blueprintShapeKey!) : 'Unknown shape',
       totalCount: propertyKeys.length,
       validCount,
+      sparqlValidationResults: sparqlValidationResults,
       properties: validatedProperties,
-    };
+    }];
   }
 
   const propertyKeys: string[] = getUniqueValues(subject.properties.map((p) => p.path)) as string[];
   const processedProperties: ProcessedProperty[] = [];
-  propertyKeys.forEach((p) => {
-    processedProperties.push(processProperty(subject, p));
-  });
-  return {
+  for (const p of propertyKeys) {
+    processedProperties.push(await processProperty(subject, p));
+  }
+  return [{
     uri: subject.uri,
     class: subject.class,
     className: subject.class ? formatURI(subject.class!) : 'Unknown class',
     properties: processedProperties,
     totalCount: subject.properties.length,
-  };
+  }];
 }
 
 /* function to validate the properties of a subject
@@ -223,7 +252,7 @@ function validateSubject(subject): ValidatedSubject {
   returns:
   - subject with validated properties
 */
-function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty {
+async function validateProperty(subject, propertyShape: Bindings[]): Promise<ValidatedProperty> {
   // instantiate default value
   const validatedProperty: ValidatedProperty = {
     name: 'Naam niet gevonden',
@@ -233,6 +262,7 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
     minCount: 0,
     actualCount: 0,
     valid: false,
+    sparqlValidationResults: []
   };
   propertyShape.forEach((p) => {
     switch (p.get('p')!.value) {
@@ -270,16 +300,47 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
     }
   });
 
-  const values = subject.properties
-    .filter((p) => p.path === validatedProperty.path)
-    .map((s) => {
-      if (s.value.class !== undefined) {
-        return validateSubject(s.value);
-      } else return s.value;
-    });
-  if (values.length) validatedProperty.value = values;
+  const values = [];
+  const ps = subject.properties
+    .filter((p) => p.path === validatedProperty.path);
+  for (const s of ps) {
+    if (s.value !== undefined && s.value.class !== undefined) {
+      const validatedSubject = VALIDATED_SUBJECTS_CACHE.has(s.value.uri) ? VALIDATED_SUBJECTS_CACHE.get(s.value.uri) : await validateSubject(s.value);
+      if(!VALIDATED_SUBJECTS_CACHE.has(s.value.uri)) VALIDATED_SUBJECTS_CACHE.set(s.value.uri, validatedSubject);
+      for (const v of validatedSubject) {
+        values.push(v);
+      }
+    } else values.push(s.value);
+  }
   
-  validatedProperty.actualCount = validatedProperty.value.length;
+  // Overwrite default value "Waarde niet gevonden" when actual values are found
+  if (values.length) {
+    validatedProperty.value = values;
+    validatedProperty.actualCount = validatedProperty.value.length;
+  }
+
+  // Count of isGehoudenDoor is based on distinct instances
+  if (validatedProperty.path === 'http://data.vlaanderen.be/ns/besluit#isGehoudenDoor' || validatedProperty.path === 'https://data.vlaanderen.be/ns/generiek#isTijdspecialisatieVan' || validatedProperty.path === 'http://data.vlaanderen.be/ns/mandaat#isTijdspecialisatieVan') {
+    const distinctBestuursorganen = [];
+    for (const v of validatedProperty.value) {
+       // typecast and check if the function exists
+      if ((v as ValidatedSubject).uri) {
+        const uri = (v as ValidatedSubject).uri;
+        if (distinctBestuursorganen.indexOf(uri) === -1) distinctBestuursorganen.push(uri);
+      }
+    }
+    validatedProperty.actualCount = distinctBestuursorganen.length;
+  }
+
+  // Process sparql-based constraints
+  let sparqlValidationResults = [];
+  const sparqlConstraintKeys: string[] = filterTermsByValue(propertyShape, 'o', 'p', 'http://www.w3.org/ns/shacl#sparql');
+  for (const sparqlConstraintKey of sparqlConstraintKeys) {
+    const sparqlConstraintBindings: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === sparqlConstraintKey);
+    const validationResultsOfSparqlConstraint: ValidationResult[] = await validateSubjectWithSparqlConstraint(subject, sparqlConstraintBindings, PUBLICATION_STORE, validatedProperty.path);
+    sparqlValidationResults = sparqlValidationResults.concat(validationResultsOfSparqlConstraint);
+  };
+
   validatedProperty.valid =
     (validatedProperty.minCount === undefined || validatedProperty.actualCount >= validatedProperty.minCount) &&
     (validatedProperty.maxCount === undefined || validatedProperty.actualCount <= validatedProperty.maxCount) &&
@@ -305,7 +366,7 @@ function validateProperty(subject, propertyShape: Bindings[]): ValidatedProperty
   returns:
   - subject with validated properties
 */
-function processProperty(subject, propertyKey): ProcessedProperty {
+async function processProperty(subject, propertyKey): Promise<ProcessedProperty> {
   const processProperty: ProcessedProperty = {
     name: formatURI(propertyKey),
     path: propertyKey,
@@ -316,13 +377,24 @@ function processProperty(subject, propertyKey): ProcessedProperty {
   if (processProperty.path === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
     processProperty.value = [subject.class];
   } else {
-    processProperty.value = subject.properties
-      .filter((p) => p.path === processProperty.path)
-      .map((s) => {
-        if (s.value.class !== undefined) {
-          return validateSubject(s.value);
-        } else return s.value;
-      });
+    const values = [];
+    const ps = subject.properties
+      .filter((p) => p.path === processProperty.path);
+    for (const s of ps) {
+      if (s.value !== undefined && s.value.class !== undefined) {
+        const validatedSubject = VALIDATED_SUBJECTS_CACHE.has(s.value.uri) ? VALIDATED_SUBJECTS_CACHE.get(s.value.uri) : await validateSubject(s.value);
+        if(!VALIDATED_SUBJECTS_CACHE.has(s.value.uri)) VALIDATED_SUBJECTS_CACHE.set(s.value.uri, validatedSubject);
+        for (const v of validatedSubject) {
+          values.push(v);
+        }
+      } else values.push(s.value);
+    }
+
+    // Overwrite default value "Waarde niet gevonden" when actual values are found
+    if (values.length) {
+      processProperty.value = values;
+      processProperty.actualCount = processProperty.value.length;
+    }
   };
   processProperty.actualCount = processProperty.value.length;
   return processProperty;

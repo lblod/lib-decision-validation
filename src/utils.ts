@@ -3,7 +3,8 @@ import { Store, Quad, Term } from 'n3';
 import parse, { DOMNode } from 'html-dom-parser';
 
 import { QueryEngine } from '@comunica/query-sparql';
-const myEngine = new QueryEngine();
+import { fetchDocument } from './queries';
+import { ParsedSubject, ValidationResult } from './types';
 
 /* function to filter triples by a certain condition and then get the value of a certain term
   param:
@@ -94,8 +95,78 @@ export function getStoreFromSPOBindings(bindings: Bindings[]): Store {
 }
 
 export async function runQueryOverStore(query: string, store: Store): Promise<Bindings[]> {
+  const myEngine = new QueryEngine();
   const bindingsStream = await myEngine.queryBindings(query, {
     sources: [store],
   });
   return await bindingsStream.toArray();
+}
+
+export async function getLblodURIsFromBindings(b: Bindings[]): Promise<Bindings[]> {
+  const store: Store = getStoreFromSPOBindings(b);
+  const query = `
+      select distinct ?id
+      where {
+        {
+          select distinct ?idWithoutHttp
+          where {
+            ?idWithoutHttp ?p ?o .
+            filter(regex(str(?idWithoutHttp), "data.lblod.info/id/(mandatarissen|personen|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
+          }
+        }
+        UNION {
+          select distinct ?idWithoutHttp
+          where {
+            ?s ?p ?idWithoutHttp .
+            filter(regex(str(?idWithoutHttp), "data.lblod.info/id/(mandatarissen|personen|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
+          }
+        }
+        BIND(replace(str(?idWithoutHttp), 'http://', 'https://') as ?id)
+      }
+    `;
+
+  return await runQueryOverStore(query, store);
+}
+
+export async function processLblodUris(lblodUris: Bindings[], destination: Bindings[]) {
+  for (const u of lblodUris) {
+    const uri = u.get('id').value;
+    const dereferencedLblodUri = await fetchDocument(uri.split(/[?#]/)[0]);
+    for (const b of dereferencedLblodUri) {
+      // Only add binding when not already exists
+      if (destination.filter((element) => element.equals(b)).length === 0) {
+        destination.push(b);
+      }
+    }
+  }
+}
+
+export async function validateSubjectWithSparqlConstraint(subject: ParsedSubject, sparqlConstraintBindings: Bindings[], publicationStore: Store, path?: string): Promise<ValidationResult[]> {
+  const results: ValidationResult[] = [];
+
+  const selectBinding = sparqlConstraintBindings.filter((b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#select');
+  if (!selectBinding.length) return results;
+  const select = selectBinding[0].get('o').value;
+
+  const messageBinding = sparqlConstraintBindings.filter((b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#message');
+  if (!messageBinding.length) return results;
+  const message = messageBinding[0].get('o').value;
+
+  // Rewrite select query so $this is filled in with subject URI
+  // We expect a sparql constraint query to return ?this, ?path and ?value
+  let rewrittenSelect = select.replaceAll('$this', `<${subject.uri}>`).replaceAll('\t', '').replaceAll('\n', ' ');
+  // Fill in $path when sparql constraint on property shape
+  if (path) rewrittenSelect = rewrittenSelect.replaceAll('$path', `<${path}>`);
+
+  const queryResults: Bindings[] = await runQueryOverStore(rewrittenSelect, publicationStore);
+  // We expect that the query contains ?this, ?path and ?value bindings
+  for (let r of queryResults) {
+    results.push({
+      'focusNode': r.get('this').value,
+      'resultPath': path ? path : r.get('path').value,
+      'value': r.get('value').value,
+      'resultMessage': message
+    });
+  }
+  return results;
 }

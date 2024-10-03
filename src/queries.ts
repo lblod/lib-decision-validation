@@ -2,7 +2,7 @@ import { ProxyHandlerStatic } from '@comunica/actor-http-proxy';
 import { QueryEngine } from '@comunica/query-sparql';
 import { Bindings, BindingsStream } from '@comunica/types';
 import { DocumentType } from './types';
-const { getHTMLExampleOfDocumentType, getShapeOfDocumentType } = require('lib-decision-shapes');
+const { getHTMLExampleOfDocumentType, getShapeOfDocumentType } = require('@lblod/lib-decision-shapes');
 import { getDOMfromString } from './utils';
 import { DOMNode } from 'html-dom-parser';
 
@@ -33,7 +33,10 @@ export async function getPublicationFromFileContent(content: string): Promise<Bi
   return bindingsStream.toArray();
 }
 
-export async function fetchDocument(publicationLink: string, proxy: string): Promise<Bindings[]> {
+export async function fetchDocument(publicationLink: string, proxy?: string): Promise<Bindings[]> {
+  let proxyHandler;
+  if (proxy) proxyHandler = new ProxyHandlerStatic(proxy);
+
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
         SELECT ?s ?p ?o 
@@ -43,7 +46,7 @@ export async function fetchDocument(publicationLink: string, proxy: string): Pro
     `,
     {
       sources: [publicationLink],
-      httpProxyHandler: new ProxyHandlerStatic(proxy),
+      httpProxyHandler: proxyHandler,
     },
   );
   return bindingsStream.toArray();
