@@ -67,15 +67,19 @@ export function parsePublication(publication: Bindings[]): ParsedSubject[] {
   const subjectKeys: string[] = tmp.filter((value, index, array) => array.indexOf(value) === index);
 
   const result: ParsedSubject[] = [];
-  const seenSubjects: {[key: string]: string[]} = {};
+  // Key: subject URI
+  // Map: predicate URI -> array of object URIs that are processed
+  // Map allows an object to be processed multiple times if different predicate is used
+  const seenSubjects: {[key: string]: Map<string, string[]>} = {};
+  const parsedSubjectsLookup: {[key: string]: ParsedSubject} = {}; // Key: subject URI - Value : ParsedSubject
   subjectKeys.forEach((subjectKey) => {
-    seenSubjects[subjectKey] = [];
+    seenSubjects[subjectKey] = new Map<string, string[]>;
   });
 
   subjectKeys.forEach((subjectKey) => {
     const subject: Bindings[] = publication.filter((p) => p.get('s')!.value === subjectKey);
-    const parsedSubject = parseSubject(subject, publication, seenSubjects);
-    if (parsedSubject != null) {
+    const parsedSubject = parseSubject(subject, publication, seenSubjects, parsedSubjectsLookup);
+    if (parsedSubject !== null) {
       result.push(parsedSubject);
     }
   });
@@ -88,8 +92,10 @@ export function parsePublication(publication: Bindings[]): ParsedSubject[] {
   returns:
   - a parsed subject
 */
-function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects: {[key: string]: string[]}): ParsedSubject {
+function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects: {[key: string]: Map<string, string[]>}, parsedSubjectsLookup: {[key: string]: ParsedSubject}): ParsedSubject {
   const subjectURI: string = subject[0].get('s')!.value;
+  if (parsedSubjectsLookup[subjectURI] !== undefined) return parsedSubjectsLookup[subjectURI];
+
   const tmpClasses: string[] = findTermsByValue(subject, 'o', 'p', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
   if (!tmpClasses.length) return; // stop when no class(es) is found for this subject
 
@@ -99,25 +105,30 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
 
   const properties: ParsedProperty[] = [];
   subject.forEach((b) => {
+    const predicate = b.get('p')!.value;
+
     // When rdf:type is not the class
-    if (b.get('p')!.value !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
+    if (predicate !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
       const termType: string = b.get('o')!.termType;
       if (termType === 'Literal') {
         properties.push({
-          path: b.get('p')!.value,
+          path: predicate,
           value: b.get('o')!.value,
         });
       }
       // termType is undefined when referring to blank node
       if (termType === 'NamedNode' || termType === 'BlankNode') {
         const foundRelationKey: string = findTermByValue(publication, 's', 's', b.get('o')!.value);
-        // Go deeper when this subject has not processed this object before
-        if (foundRelationKey !== undefined && seenSubjects[subjectURI].indexOf(foundRelationKey) === -1) {
-          seenSubjects[subjectURI].push(foundRelationKey);
-
+        // Go deeper when this subject has not processed this object before 
+        if (foundRelationKey !== undefined && (!seenSubjects[subjectURI].has(predicate) || seenSubjects[subjectURI].get(predicate).indexOf(foundRelationKey) === -1)) {
+          if(!seenSubjects[subjectURI].has(predicate)) seenSubjects[subjectURI].set(predicate, [foundRelationKey]);
+          else {
+            const extendedKeys = seenSubjects[subjectURI].get(predicate).concat([foundRelationKey]);
+            seenSubjects[subjectURI].set(predicate, extendedKeys);
+          }
           const foundRelation: Bindings[] = publication.filter((p) => p.get('s')!.value === foundRelationKey);
           
-          const parsedSubject = parseSubject(foundRelation, publication, seenSubjects);
+          const parsedSubject = parseSubject(foundRelation, publication, seenSubjects, parsedSubjectsLookup);
           if (parsedSubject !== undefined) {
             properties.push({
               path: b.get('p')!.value,
@@ -139,11 +150,13 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
       });
     }
   });
-  return {
+  const res = {
     uri: subjectURI,
     class: subjectClass,
     properties,
   };
+  parsedSubjectsLookup[subjectURI] = res;
+  return res;
 }
 
 /* function to validate a publication 
@@ -157,7 +170,63 @@ export async function validatePublication(
   blueprint: Bindings[],
   example: DOMNode[],
 ): Promise<ValidatedPublication> {
-  const parsedPublication = parsePublication(publication);
+  const enrichedPublication: Bindings[] = publication;
+  const lblodUris: Bindings[] = await getLblodURIsFromBindings(publication);
+  const retrievedUris: string[] = [];
+  const dereferencedBestuursorgaanLblodUris: Bindings[] = [];
+
+  for (const u of lblodUris) {
+    const uri = u.get('id').value.split(/[?#]/)[0];
+    const dereferencedLblodUri = await fetchDocument(uri);
+
+    for (const b of dereferencedLblodUri) {
+      // Only add binding when not already exists
+      if (enrichedPublication.filter((element) => element.equals(b)).length === 0) {
+        enrichedPublication.push(b);
+      }
+
+      if (uri.indexOf('bestuursorganen') !== -1) {
+        dereferencedBestuursorgaanLblodUris.push(b);
+      }
+    }
+    retrievedUris.push(uri);
+  }
+
+  // If bestuurseenheid is not contained in publication, then we need to go two levels deep in bestuursorgaan. Otherwise one level deep suffices
+  const containsBestuurseenheden = lblodUris.filter((element) => element.get('id').value.indexOf('bestuurseenheden') !== -1).length > 0;
+  if (!containsBestuurseenheden) {
+    const lblodUrisFromBestuursorgaan: Bindings[] = await getLblodURIsFromBindings(dereferencedBestuursorgaanLblodUris);
+    for (const ufromb of lblodUrisFromBestuursorgaan) {
+      const urifromb = ufromb.get('id').value.split(/[?#]/)[0];
+      if ((urifromb.indexOf('bestuursorganen') !== -1 || urifromb.indexOf('bestuurseenheden') !== -1) && retrievedUris.indexOf(urifromb) === -1) {
+        const dereferencedBestuursOrgaanOrEenheidLblodUri = await fetchDocument(urifromb);
+        for (const b of dereferencedBestuursOrgaanOrEenheidLblodUri) {
+          // Only add binding when not already exists
+          if (enrichedPublication.filter((element) => element.equals(b)).length === 0) {
+            enrichedPublication.push(b);
+          }
+        }
+        retrievedUris.push(urifromb);
+
+        const lblodUrisFromBestuursorgaanOrEenheid: Bindings[] = await getLblodURIsFromBindings(dereferencedBestuursOrgaanOrEenheidLblodUri);
+        for (const ufrombOrEenheid of lblodUrisFromBestuursorgaanOrEenheid) {
+          const urifrombOrEenheid = ufrombOrEenheid.get('id').value.split(/[?#]/)[0];
+          if (urifrombOrEenheid.indexOf('bestuurseenheden') !== -1 && retrievedUris.indexOf(urifrombOrEenheid) === -1) {
+            const dereferencedBestuursEenheidLblodUri = await fetchDocument(urifrombOrEenheid);
+            for (const b of dereferencedBestuursEenheidLblodUri) {
+              // Only add binding when not already exists
+              if (enrichedPublication.filter((element) => element.equals(b)).length === 0) {
+                enrichedPublication.push(b);
+              }
+            }
+            retrievedUris.push(urifrombOrEenheid);
+          }
+        }
+      }
+    }
+  }
+
+  const parsedPublication = await parsePublication(enrichedPublication);
   BLUEPRINT = blueprint;
   EXAMPLE = example;
   PUBLICATION = publication;
@@ -229,6 +298,7 @@ async function validateSubject(subject: ParsedSubject): Promise<ValidatedSubject
       properties: validatedProperties,
     }];
   }
+  if (validatedSubjects.length) return validatedSubjects;
 
   const propertyKeys: string[] = getUniqueValues(subject.properties.map((p) => p.path)) as string[];
   const processedProperties: ProcessedProperty[] = [];
@@ -344,10 +414,23 @@ async function validateProperty(subject, propertyShape: Bindings[]): Promise<Val
   validatedProperty.valid =
     (validatedProperty.minCount === undefined || validatedProperty.actualCount >= validatedProperty.minCount) &&
     (validatedProperty.maxCount === undefined || validatedProperty.actualCount <= validatedProperty.maxCount) &&
-    (validatedProperty.targetClass === undefined ||
+    ((validatedProperty.targetClass === undefined ||
       validatedProperty.value === undefined ||
       !validatedProperty.value.some((v) => v.class !== validatedProperty.targetClass
-      ));
+      )) ||
+      (validatedProperty.targetClass === 'http://www.w3.org/ns/prov#Location' && validatedProperty.actualCount > 0) ||
+      (validatedProperty.targetClass === 'http://data.lblod.info/vocabularies/leidinggevenden/Functionaris' 
+        && validatedProperty.value.every((v) => {
+          if(typeof v !== "string") {
+            const vTyped = v as ValidatedSubject;
+            return vTyped.class === validatedProperty.targetClass || vTyped.class === 'http://data.vlaanderen.be/ns/mandaat#Mandataris'
+          } else {
+            return false;
+          }
+      })) ||
+      validatedProperty.value.every((v) => typeof v === 'string' && v.startsWith('http')) ||
+      validatedProperty.actualCount === 0 && validatedProperty.minCount === 0
+    );
   if (
     !validatedProperty.valid &&
     MATURITY_LEVEL.includes(validatedProperty.maturityLevel) &&
@@ -396,7 +479,7 @@ async function processProperty(subject, propertyKey): Promise<ProcessedProperty>
       processProperty.actualCount = processProperty.value.length;
     }
   };
-  processProperty.actualCount = processProperty.value.length;
+
   return processProperty;
 }
   
@@ -412,6 +495,7 @@ async function postProcess(validatedSubjects: ValidatedSubject[]): Promise<Class
   const distinctClasses: string[] = getUniqueValues((validatedSubjects.map((p) => p.class))) as string[];
   const targetClasses: string[] = BLUEPRINT
     .filter((b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass')
+    .filter((b) => b.get('o')!.value !== 'http://data.vlaanderen.be/ns/besluit#Bestuursorgaan')
     .map((b) => b.get('o')!.value);
   const rootClasses: string[] = distinctClasses.filter((c) => targetClasses.indexOf(c) !== -1);
   rootClasses.forEach(c => {

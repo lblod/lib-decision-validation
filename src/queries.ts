@@ -36,7 +36,6 @@ export async function getPublicationFromFileContent(content: string): Promise<Bi
 export async function fetchDocument(publicationLink: string, proxy?: string): Promise<Bindings[]> {
   let proxyHandler;
   if (proxy) proxyHandler = new ProxyHandlerStatic(proxy);
-
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
         SELECT ?s ?p ?o 

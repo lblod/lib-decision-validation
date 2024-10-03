@@ -100,7 +100,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
 
       const actual = await validatePublication(publication, blueprint, example);
     fs.writeFileSync('./logs/besluitenlijst.json', `${JSON.stringify(actual)}`);
-  }, MILLISECONDS * 2);
+  }, MILLISECONDS * 10);
 
   test('Validate Besluitenlijst 2', async () => {
       const documentType: string = 'Besluitenlijst';
@@ -110,7 +110,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
 
       const actual = await validatePublication(publication, blueprint, example);
     fs.writeFileSync('./logs/besluitenlijst2.json', `${JSON.stringify(actual)}`);
-  });
+  }, MILLISECONDS * 5);
 
   test('Validate Agenda', async () => {
       const documentType: string = 'Agenda';
@@ -153,7 +153,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
       const actual = await validatePublication(publication, blueprint, example);
       fs.writeFileSync('./logs/notulen.json', `${JSON.stringify(actual)}`);
     },
-    MILLISECONDS * 2,
+    MILLISECONDS * 20,
   );
 
   test(
@@ -167,7 +167,7 @@ describe('As a vendor, I want the tool to automatically determine the type of th
       const actual = await validatePublication(publication, blueprint, example);
       fs.writeFileSync('./logs/notulen2.json', `${JSON.stringify(actual)}`);
     },
-    MILLISECONDS,
+    MILLISECONDS * 10,
   );
 
 
@@ -299,7 +299,7 @@ describe('As a vendor, I want to see a good example when something is not valid'
       expect(enrichedResults.length).toBeGreaterThan(0);
       fs.writeFileSync('./logs/enrichedResults-demonstrator.json', `${JSON.stringify(enrichedResults)}`);
     },
-    MILLISECONDS * 2,
+    MILLISECONDS * 5,
   );
 
   test(
