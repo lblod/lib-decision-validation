@@ -23,7 +23,7 @@ let PUBLICATION_STORE: Store;
 const MATURITY_LEVEL: string[] = ['Niveau 0', 'Niveau 1', 'Niveau 2', 'Niveau 3'];
 let FOUND_MATURITY = MATURITY_LEVEL[3];
 
-let VALIDATED_SUBJECTS_CACHE: Map<string, any> = new Map();
+const VALIDATED_SUBJECTS_CACHE: Map<string, any> = new Map();
 
 /* determines the document type based on a specific term
   param:

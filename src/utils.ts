@@ -160,7 +160,7 @@ export async function validateSubjectWithSparqlConstraint(subject: ParsedSubject
 
   const queryResults: Bindings[] = await runQueryOverStore(rewrittenSelect, publicationStore);
   // We expect that the query contains ?this, ?path and ?value bindings
-  for (let r of queryResults) {
+  for (const r of queryResults) {
     results.push({
       'focusNode': r.get('this').value,
       'resultPath': path ? path : r.get('path').value,
