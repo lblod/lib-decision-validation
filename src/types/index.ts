@@ -29,8 +29,22 @@ export type ValidatedSubject = {
   shapeName?: string;
   totalCount: number;
   validCount?: number;
+  sparqlValidationResults?: ValidationResult[];
   properties: ValidatedProperty[] | ProcessedProperty[];
 };
+
+export type ValidationResult = {
+  resultSeverity?: string;
+  focusNode?: string;
+  resultPath?: string;
+  value?: string;
+  resultMessage: string;
+}
+
+export type SparqlConstraint = {
+  message: string;
+  select: string
+}
 
 export type ValidatedProperty = {
   name: string;
@@ -44,6 +58,7 @@ export type ValidatedProperty = {
   maturityLevel?: string;
   valid: boolean;
   example?: string;
+  sparqlValidationResults?: ValidationResult[];
 };
 
 export type DocumentType = {
@@ -57,4 +72,5 @@ export type ProcessedProperty = {
   value: string[] | ValidatedSubject[];
   actualCount: number;
   example?: string;
+  sparqlValidationResults?: ValidationResult[];
 };
