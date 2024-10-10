@@ -61,20 +61,22 @@ async function enrichValidationResultWithExample(
   if (!usageNotes) usageNotes = await getTargetClassPropertyPathAndUsageNotesFromBlueprint(blueprint);
 
   for (let result of enrichedResults) {
-    const targetClass = result.class;
-    for (const p of result.properties) {
-      const propertyPath = p.path;
-      const usageNote = getUsageNoteFromBindings(usageNotes, targetClass, propertyPath);
-      if (usageNote !== '') {
-        const exampleElement: Element | null = getElementById(usageNote, example);
-        if (exampleElement != null) {
-          p.example = render(exampleElement);
+    if (result.class) {
+      const targetClass = result.class;
+      for (const p of result.properties) {
+        const propertyPath = p.path;
+        const usageNote = getUsageNoteFromBindings(usageNotes, targetClass, propertyPath);
+        if (usageNote !== '') {
+          const exampleElement: Element | null = getElementById(usageNote, example);
+          if (exampleElement != null) {
+            p.example = render(exampleElement);
+          }
         }
-      }
-      if (p.value.length > 0 && typeof p.value[0] === 'object') {
-        result = (
-          await enrichValidationResultWithExample(p.value as ValidatedSubject[], blueprint, example, usageNotes)
-        )[0];
+        if (p.value.length > 0 && typeof p.value[0] === 'object') {
+          result = (
+            await enrichValidationResultWithExample(p.value as ValidatedSubject[], blueprint, example, usageNotes)
+          )[0];
+        }
       }
     }
   }

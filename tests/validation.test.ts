@@ -303,6 +303,25 @@ describe('As a vendor, I want to see a good example when something is not valid'
   );
 
   test(
+    'Destelbergen should validate',
+    async () => {
+      const publicationLink =
+        'https://destelbergen.powerappsportals.com/zittingen/?id=6e485caa-a879-ef11-ac20-0022489d04d4';
+      const proxy = '';
+
+      const publication: Bindings[] = await fetchDocument(publicationLink, proxy);
+      const documentType = 'Notulen';
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+      const example: DOMNode[] = await getExampleOfDocumentType(documentType);
+      const validationResult = await validatePublication(publication, blueprint, example);
+
+      expect(validationResult).not.toBeNull;
+      
+    },
+    MILLISECONDS * 5,
+  );
+
+  test(
     'Zitting should have a value for isGehoudenDoor',
     async () => {
       const publication: Bindings[] = await fetchDocument(BESLUITEN_LINK3, PROXY);

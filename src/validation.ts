@@ -286,7 +286,7 @@ async function validateSubject(subject: ParsedSubject): Promise<ValidatedSubject
       sparqlValidationResults = sparqlValidationResults.concat(validationResultsOfSparqlConstraint);
     };
 
-    return [{
+    validatedSubjects.push({
       uri: subject.uri,
       class: subject.class,
       className: subject.class ? formatURI(subject.class!) : 'Unknown class',
@@ -296,7 +296,7 @@ async function validateSubject(subject: ParsedSubject): Promise<ValidatedSubject
       validCount,
       sparqlValidationResults: sparqlValidationResults,
       properties: validatedProperties,
-    }];
+    });
   }
   if (validatedSubjects.length) return validatedSubjects;
 
