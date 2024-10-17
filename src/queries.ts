@@ -34,7 +34,6 @@ export async function getPublicationFromFileContent(content: string): Promise<Bi
 }
 
 export async function getBindingsFromTurtleContent(content: string): Promise<Bindings[]> {
-  console.log('get bindings');
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
       SELECT ?s ?p ?o
