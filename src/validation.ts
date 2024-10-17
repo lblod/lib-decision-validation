@@ -237,6 +237,21 @@ export async function validatePublication(
   } as ValidatedPublication;
 }
 
+export async function validateDocument(rdfDocument: Bindings[], blueprint: Bindings[]): Promise<ValidatedSubject[]> {
+  const parsedSubjects = parsePublication(rdfDocument);
+  BLUEPRINT = blueprint;
+
+  let validatedSubjects: ValidatedSubject[] = [];
+  parsedSubjects.forEach((subject) => {
+    if (subject) {
+      const resultSubjects = validateSubject(subject);
+      validatedSubjects = validatedSubjects.concat(resultSubjects);
+    }
+  });
+
+  return validatedSubjects;
+}
+
 /* function to validate the properties of a subject
   param:
   - subject: subject to be validated
