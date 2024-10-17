@@ -4,13 +4,15 @@ import { Bindings } from '@comunica/types';
 
 import HttpRequestMock from 'http-request-mock';
 
-import { determineDocumentType, validatePublication } from '../src/validation';
+import { determineDocumentType, validatePublication, validateDocument } from '../src/validation';
+
 import {
   fetchDocument,
   getBlueprintOfDocumentType,
   getExampleOfDocumentType,
   getExampleURLOfDocumentType,
   getPublicationFromFileContent,
+  getBindingsFromTurtleContent,
 } from '../src/queries';
 
 import { Store, Quad, Term } from 'n3';
@@ -36,6 +38,8 @@ import {
   TESTHTMLSTRING,
   TESTSTRING2,
 } from './data/testData';
+
+import { genericExampleBlueprint, genericExampleData } from './data/genericTestData';
 
 import { getDOMfromString, getStoreFromSPOBindings, runQueryOverStore } from '../src/utils';
 import { ensureDirectoryExistence } from '../src/node-utils';
@@ -239,6 +243,14 @@ describe('As a vendor, I want the tool to automatically determine the type of th
 
       const actual = await validatePublication(publication, blueprint, example);
     fs.writeFileSync('./logs/agenda3.json', `${JSON.stringify(actual)}`);
+  });
+
+  test('Validate generic document', async () => {
+    const document: Bindings[] = await getBindingsFromTurtleContent(genericExampleData);
+    const blueprint: Bindings[] = await getBindingsFromTurtleContent(genericExampleBlueprint);
+
+    const actual = await validateDocument(document, blueprint);
+    console.log(actual);
   });
 
   test(

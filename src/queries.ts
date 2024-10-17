@@ -33,10 +33,34 @@ export async function getPublicationFromFileContent(content: string): Promise<Bi
   return bindingsStream.toArray();
 }
 
+export async function getBindingsFromTurtleContent(content: string): Promise<Bindings[]> {
+  console.log('get bindings');
+  const bindingsStream: BindingsStream = await engine.queryBindings(
+    `
+      SELECT ?s ?p ?o
+      WHERE {
+        ?s ?p ?o .
+      }
+    `,
+    {
+      sources: [
+        {
+          type: 'serialized',
+          value: content,
+          mediaType: 'text/turtle',
+          baseIRI: 'http://example.org/',
+        },
+      ],
+    },
+  );
+
+  return bindingsStream.toArray();
+}
+
 export async function fetchDocument(publicationLink: string, proxy?: string): Promise<Bindings[]> {
   let proxyHandler;
   if (proxy) proxyHandler = new ProxyHandlerStatic(proxy);
-  
+
   const bindingsStream: BindingsStream = await engine.queryBindings(
     `
         SELECT ?s ?p ?o 
