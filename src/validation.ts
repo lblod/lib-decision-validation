@@ -237,9 +237,10 @@ export async function validatePublication(
   } as ValidatedPublication;
 }
 
-export async function validateDocument(rdfDocument: Bindings[], blueprint: Bindings[]): Promise<ValidatedSubject[]> {
+export async function validateDocument(rdfDocument: Bindings[], blueprint: Bindings[]): Promise<ValidatedPublication> {
   const parsedSubjects = parsePublication(rdfDocument);
   BLUEPRINT = blueprint;
+  EXAMPLE = [];
 
   let validatedSubjects: ValidatedSubject[] = [];
   parsedSubjects.forEach((subject) => {
@@ -249,7 +250,10 @@ export async function validateDocument(rdfDocument: Bindings[], blueprint: Bindi
     }
   });
 
-  return validatedSubjects;
+  return {
+    classes: await postProcess(validatedSubjects),
+    maturity: FOUND_MATURITY,
+  } as ValidatedPublication;
 }
 
 /* function to validate the properties of a subject
@@ -486,6 +490,8 @@ async function postProcess(validatedSubjects: ValidatedSubject[]): Promise<Class
       objects,
     });
   });
-  const result: ClassCollection[] = await enrichClassCollectionsWithExample(classes, BLUEPRINT, EXAMPLE);
+  const result: ClassCollection[] = EXAMPLE?.length
+    ? await enrichClassCollectionsWithExample(classes, BLUEPRINT, EXAMPLE)
+    : classes;
   return result;
 }

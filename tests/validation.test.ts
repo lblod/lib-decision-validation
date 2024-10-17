@@ -1,5 +1,7 @@
 import * as fs from 'fs';
 
+import {inspect} from 'util';
+
 import { Bindings } from '@comunica/types';
 
 import HttpRequestMock from 'http-request-mock';
@@ -250,7 +252,8 @@ describe('As a vendor, I want the tool to automatically determine the type of th
     const blueprint: Bindings[] = await getBindingsFromTurtleContent(genericExampleBlueprint);
 
     const actual = await validateDocument(document, blueprint);
-    console.log(actual);
+    
+    console.log(inspect(actual, { depth: null, colors: true }));
   });
 
   test(
