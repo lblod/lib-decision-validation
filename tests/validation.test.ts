@@ -34,7 +34,7 @@ import { getElementById, getElementsByTagName } from 'domutils';
 
 import { DOMNode, Element } from 'html-dom-parser';
 
-import { getDOMfromString, getStoreFromSPOBindings, runQueryOverStore } from '../src/utils';
+import { getDOMfromString, getStoreFromSPOBindings, runQuery } from '../src/utils';
 import { getHTMLExampleOfDocumentType } from '@lblod/lib-decision-shapes';
 import { setupMocker } from './utils';
 
@@ -221,7 +221,7 @@ describe('As a vendor, I want to see a good example when something is not valid'
     const store: Store = getStoreFromSPOBindings(blueprint);
     const query = 'SELECT ?s ?p ?o WHERE { ?s ?p ?o . } LIMIT 1';
 
-    const actual = (await runQueryOverStore(query, store)).length;
+    const actual = (await runQuery(query, { sources: [store]})).length;
     expect(actual).toBe(1);
   });
 
@@ -246,7 +246,7 @@ describe('As a vendor, I want to see a good example when something is not valid'
       }
     `;
 
-    const actual = await runQueryOverStore(query, store);
+    const actual = await runQuery(query, { sources: [store]});
 
     expect(actual.length).toBeGreaterThan(0);
     expect(actual[0].has('targetClass')).toBeTruthy();

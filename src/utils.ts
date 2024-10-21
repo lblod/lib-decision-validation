@@ -94,12 +94,15 @@ export function getStoreFromSPOBindings(bindings: Bindings[]): Store {
   return s;
 }
 
-export async function runQueryOverStore(query: string, store: Store): Promise<Bindings[]> {
-  const myEngine = new QueryEngine();
-  const bindingsStream = await myEngine.queryBindings(query, {
-    sources: [store],
-  });
-  return await bindingsStream.toArray();
+export async function runQuery(query: string, context: any): Promise<Bindings[]> {
+  try {
+    const myEngine = new QueryEngine();
+    const bindingsStream = await myEngine.queryBindings(query, context);
+    return await bindingsStream.toArray();
+  } catch (e) {
+    console.log(`Something went wrong with SPARQL querying ${e}`);
+    return [];
+  }
 }
 
 export async function getLblodURIsFromBindings(b: Bindings[]): Promise<Bindings[]> {
@@ -125,7 +128,9 @@ export async function getLblodURIsFromBindings(b: Bindings[]): Promise<Bindings[
       }
     `;
 
-  return await runQueryOverStore(query, store);
+  return await runQuery(query, {
+    sources: [store]
+  });
 }
 
 export async function processLblodUris(lblodUris: Bindings[], destination: Bindings[]) {
@@ -152,20 +157,33 @@ export async function validateSubjectWithSparqlConstraint(subject: ParsedSubject
   if (!messageBinding.length) return results;
   const message = messageBinding[0].get('o').value;
 
+  let rewrittenSelect = select;
   // Rewrite select query so $this is filled in with subject URI
   // We expect a sparql constraint query to return ?this, ?path and ?value
-  let rewrittenSelect = select.replaceAll('$this', `<${subject.uri}>`).replaceAll('\t', '').replaceAll('\n', ' ');
-  // Fill in $path when sparql constraint on property shape
-  if (path) rewrittenSelect = rewrittenSelect.replaceAll('$path', `<${path}>`);
+  // Check if subject URI is not a blank node
+  if(subject.uri.startsWith('http')) {
+    rewrittenSelect = select.replaceAll('$this', `<${subject.uri}>`);
+    rewrittenSelect = rewrittenSelect.replaceAll('\t', '').replaceAll('\n', ' ');
+    // Fill in $path when sparql constraint on property shape
+    if (path) rewrittenSelect = rewrittenSelect.replaceAll('$path', `<${path}>`);
 
-  const queryResults: Bindings[] = await runQueryOverStore(rewrittenSelect, publicationStore);
-  // We expect that the query contains ?this, ?path and ?value bindings
-  for (const r of queryResults) {
+    const queryResults: Bindings[] = await runQuery(rewrittenSelect, {
+      sources: [publicationStore]
+    });
+    // We expect that the query contains ?this, ?path and ?value bindings
+    for (const r of queryResults) {
+      results.push({
+        'focusNode': r.get('this').value,
+        'resultPath': path ? path : r.get('path').value,
+        'value': r.get('value').value,
+        'resultMessage': message
+      });
+    }
+  } else {
+    // subject is blank node and cannot be used in the format of SHACL-SPARQL queries
     results.push({
-      'focusNode': r.get('this').value,
-      'resultPath': path ? path : r.get('path').value,
-      'value': r.get('value').value,
-      'resultMessage': message
+      'focusNode': subject.uri,
+      'resultMessage': 'Blank nodes mogen niet gebruikt worden.'
     });
   }
   return results;
