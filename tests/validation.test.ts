@@ -46,6 +46,7 @@ import { genericExampleBlueprint, genericExampleData } from './data/genericTestD
 import { getDOMfromString, getStoreFromSPOBindings, runQueryOverStore } from '../src/utils';
 import { ensureDirectoryExistence } from '../src/node-utils';
 import { getHTMLExampleOfDocumentType } from 'lib-decision-shapes';
+import { ValidatedProperty } from '../src/types';
 
 const MILLISECONDS = 7000;
 
@@ -247,15 +248,6 @@ describe('As a vendor, I want the tool to automatically determine the type of th
     fs.writeFileSync('./logs/agenda3.json', `${JSON.stringify(actual)}`);
   });
 
-  test('Validate generic document', async () => {
-    const document: Bindings[] = await getBindingsFromTurtleContent(genericExampleData);
-    const blueprint: Bindings[] = await getBindingsFromTurtleContent(genericExampleBlueprint);
-
-    const actual = await validateDocument(document, blueprint);
-    
-    console.log(inspect(actual, { depth: null, colors: true }));
-  });
-
   test(
     'Validate Notulen',
     async () => {
@@ -284,6 +276,29 @@ describe('As a vendor, I want the tool to automatically determine the type of th
     MILLISECONDS * 10,
   );
 
+  test('Validate generic document', async () => {
+    const document: Bindings[] = await getBindingsFromTurtleContent(genericExampleData);
+    const blueprint: Bindings[] = await getBindingsFromTurtleContent(genericExampleBlueprint);
+
+    const validationReport = await validateDocument(document, blueprint);
+
+    const personClass = validationReport.classes.find((item) => item.classURI === 'http://xmlns.com/foaf/0.1/Person');
+
+    const subject3 = validationReport.classes[0].objects.find((obj) => obj.uri === 'http://example.org/subject3');
+
+    const nameProperty = subject3?.properties.find((prop) => prop.path === 'http://xmlns.com/foaf/0.1/name') as
+      | ValidatedProperty
+      | undefined;
+
+    const ageProperty = subject3?.properties.find((prop) => prop.path === 'http://xmlns.com/foaf/0.1/age') as
+      | ValidatedProperty
+      | undefined;
+
+    expect(personClass?.objects.length).toBe(3);
+    expect(nameProperty?.valid).toBe(false);
+    expect(ageProperty?.valid).toBe(true);
+    expect(ageProperty?.valid).toBe(true);
+  });
 
 });
 
