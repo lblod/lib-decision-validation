@@ -100,7 +100,6 @@ export async function runQuery(query: string, context: any): Promise<Bindings[]>
     const bindingsStream = await myEngine.queryBindings(query, context);
     return await bindingsStream.toArray();
   } catch (e) {
-    console.log(`Something went wrong with SPARQL querying ${e}`);
     return [];
   }
 }
