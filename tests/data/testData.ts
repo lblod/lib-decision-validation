@@ -7,12 +7,13 @@ export const BESLUITEN_LINK4: string = 'https://lblod.zottegem.be/LBLODWeb/Home/
 export const AGENDA_LINK: string =
   'https://machelen-echo.cipalschaubroeck.be/raadpleegomgeving/zittingen/99315f2f-9aed-410a-9872-aeda8a6a9b11/agenda';
 export const AGENDA_LINK_2: string = 'https://boortmeerbeek.meetingburger.net/gr/87efd49b-d951-4f1f-b723-a732642f3dcd/agenda';
-export const AGENDA_LINK_3: string = "https://publicatie.gelinkt-notuleren.vlaanderen.be/Essen/Gemeente/zittingen/a3c147f0-905f-11ee-ae1d-77c537c8924c/agenda"
+export const AGENDA_LINK_3: string = "https://publicatie.gelinkt-notuleren.vlaanderen.be/Essen/Gemeente/zittingen/a3c147f0-905f-11ee-ae1d-77c537c8924c/agenda";
 export const AGENDA_LINK_4: string =
   'https://anzegem-echo.cipalschaubroeck.be/raadpleegomgeving/zittingen/ddc7b84d-1314-48e0-a3a7-110c116d3e7e/agenda';
 export const NOTULEN_LINK: string = 'https://raadpleeg-aalst.onlinesmartcities.be/zittingen/20.0527.2714.7668/notulen';
 export const NOTULEN_LINK_2: string =
   'https://lblod.zottegem.be/LBLODWeb/Home/Overzicht/e3d9480acc0cf400e11ab7afe2bcea144038dd2ef71d77247d5159c7ce8efb1a/GetPublication?filename=Notulen_Gemeenteraad_15-04-2024.html';
+export const NOTULEN_LINK_3: string = 'https://destelbergen.powerappsportals.com/zittingen/?id=6e485caa-a879-ef11-ac20-0022489d04d4';
 export const TESTSTRING2 = `
 <!DOCTYPE html>
 <html lang="nl" xmlns="http://www.w3.org/1999/xhtml">
