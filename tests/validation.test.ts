@@ -1,6 +1,10 @@
 import { Bindings } from '@comunica/types';
-import { ensureDirectoryExistence } from '../src/node-utils';
+import { Store, Quad, Term } from 'n3';
+import { getElementById, getElementsByTagName } from 'domutils';
+import { DOMNode, Element } from 'html-dom-parser';
 import * as fs from 'fs';
+import { ensureDirectoryExistence } from '../src/node-utils';
+
 import {
   AGENDA_LINK,
   AGENDA_LINK_2,
@@ -15,28 +19,23 @@ import {
   TESTHTMLSTRING,
   TESTSTRING2,
 } from './data/testData';
-
-//const PROXY = 'https://corsproxy.io/?';
-const PROXY = '';
-
-import { determineDocumentType, validatePublication } from '../src/validation';
+import { determineDocumentType, validatePublication, validateDocument } from '../src/validation';
 import {
   fetchDocument,
   getBlueprintOfDocumentType,
   getExampleOfDocumentType,
   getExampleURLOfDocumentType,
   getPublicationFromFileContent,
+  getBindingsFromTurtleContent
 } from '../src/queries';
-
-import { Store, Quad, Term } from 'n3';
-
-import { getElementById, getElementsByTagName } from 'domutils';
-
-import { DOMNode, Element } from 'html-dom-parser';
-
 import { getDOMfromString, getStoreFromSPOBindings, runQuery } from '../src/utils';
 import { getHTMLExampleOfDocumentType } from '@lblod/lib-decision-shapes';
+import { genericExampleBlueprint, genericExampleData } from './data/genericTestData';
+import { ValidatedProperty } from '../src/types';
 import { setupMocker } from './utils';
+
+//const PROXY = 'https://corsproxy.io/?';
+const PROXY = '';
 
 const MILLISECONDS = 7000;
 
