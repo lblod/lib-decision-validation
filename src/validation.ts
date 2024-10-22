@@ -253,9 +253,9 @@ export async function validateDocument(rdfDocument: Bindings[], blueprint: Bindi
   EXAMPLE = [];
 
   let validatedSubjects: ValidatedSubject[] = [];
-  parsedSubjects.forEach((subject) => {
+  parsedSubjects.forEach(async (subject) => {
     if (subject) {
-      const resultSubjects = validateSubject(subject);
+      const resultSubjects = await validateSubject(subject);
       validatedSubjects = validatedSubjects.concat(resultSubjects);
     }
   });
