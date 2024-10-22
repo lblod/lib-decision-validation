@@ -2,7 +2,7 @@ import { ProxyHandlerStatic } from '@comunica/actor-http-proxy';
 import { QueryEngine } from '@comunica/query-sparql';
 import { Bindings, BindingsStream } from '@comunica/types';
 import { DocumentType } from './types';
-const { getHTMLExampleOfDocumentType, getShapeOfDocumentType } = require('@lblod/lib-decision-shapes');
+import { getHTMLExampleOfDocumentType, getShapeOfDocumentType } from '@lblod/lib-decision-shapes';
 import { getDOMfromString } from './utils';
 import { DOMNode } from 'html-dom-parser';
 
