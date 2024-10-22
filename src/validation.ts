@@ -253,12 +253,12 @@ export async function validateDocument(rdfDocument: Bindings[], blueprint: Bindi
   EXAMPLE = [];
 
   let validatedSubjects: ValidatedSubject[] = [];
-  parsedSubjects.forEach(async (subject) => {
+  for (const subject of parsedSubjects) {
     if (subject) {
       const resultSubjects = await validateSubject(subject);
       validatedSubjects = validatedSubjects.concat(resultSubjects);
     }
-  });
+  }
 
   return {
     classes: await postProcess(validatedSubjects),
