@@ -1,6 +1,10 @@
 import { Bindings } from '@comunica/types';
-import { ensureDirectoryExistence } from '../src/node-utils';
+import { Store, Quad, Term } from 'n3';
+import { getElementById, getElementsByTagName } from 'domutils';
+import { DOMNode, Element } from 'html-dom-parser';
 import * as fs from 'fs';
+import { ensureDirectoryExistence } from '../src/node-utils';
+
 import {
   AGENDA_LINK,
   AGENDA_LINK_2,
@@ -15,28 +19,23 @@ import {
   TESTHTMLSTRING,
   TESTSTRING2,
 } from './data/testData';
-
-//const PROXY = 'https://corsproxy.io/?';
-const PROXY = '';
-
-import { determineDocumentType, validatePublication } from '../src/validation';
+import { determineDocumentType, validatePublication, validateDocument } from '../src/validation';
 import {
   fetchDocument,
   getBlueprintOfDocumentType,
   getExampleOfDocumentType,
   getExampleURLOfDocumentType,
   getPublicationFromFileContent,
+  getBindingsFromTurtleContent
 } from '../src/queries';
-
-import { Store, Quad, Term } from 'n3';
-
-import { getElementById, getElementsByTagName } from 'domutils';
-
-import { DOMNode, Element } from 'html-dom-parser';
-
 import { getDOMfromString, getStoreFromSPOBindings, runQuery } from '../src/utils';
 import { getHTMLExampleOfDocumentType } from '@lblod/lib-decision-shapes';
+import { genericExampleBlueprint, genericExampleData } from './data/genericTestData';
+import { ValidatedProperty } from '../src/types';
 import { setupMocker } from './utils';
+
+//const PROXY = 'https://corsproxy.io/?';
+const PROXY = '';
 
 const MILLISECONDS = 7000;
 
@@ -170,6 +169,29 @@ describe('As a vendor, I want the tool to automatically determine the type of th
     MILLISECONDS * 10,
   );
 
+  test('Validate generic document', async () => {
+    const document: Bindings[] = await getBindingsFromTurtleContent(genericExampleData);
+    const blueprint: Bindings[] = await getBindingsFromTurtleContent(genericExampleBlueprint);
+
+    const validationReport = await validateDocument(document, blueprint);
+
+    const personClass = validationReport.classes.find((item) => item.classURI === 'http://xmlns.com/foaf/0.1/Person');
+
+    const subject3 = validationReport.classes[0].objects.find((obj) => obj.uri === 'http://example.org/subject3');
+
+    const nameProperty = subject3?.properties.find((prop) => prop.path === 'http://xmlns.com/foaf/0.1/name') as
+      | ValidatedProperty
+      | undefined;
+
+    const ageProperty = subject3?.properties.find((prop) => prop.path === 'http://xmlns.com/foaf/0.1/age') as
+      | ValidatedProperty
+      | undefined;
+
+    expect(personClass?.objects.length).toBe(3);
+    expect(nameProperty?.valid).toBe(false);
+    expect(ageProperty?.valid).toBe(true);
+    expect(ageProperty?.valid).toBe(true);
+  });
 
 });
 
