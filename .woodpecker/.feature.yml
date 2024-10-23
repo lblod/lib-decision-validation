@@ -9,6 +9,7 @@ pipeline:
       token:
         from_secret: npm_access_token
       access: public
+      tag: beta
 when:
   event: push
   branch: feature/*
