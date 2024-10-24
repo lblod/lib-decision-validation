@@ -1,5 +1,5 @@
 import type { ValidatedSubject, ValidatedProperty, ParsedSubject, ParsedProperty, ClassCollection } from './types';
-import { getStoreFromSPOBindings, runQueryOverStore } from './utils';
+import { getStoreFromSPOBindings, runQuery } from './utils';
 import { Store } from 'n3';
 import { Bindings } from '@comunica/types';
 import { DOMNode, Element } from 'html-dom-parser';
@@ -26,7 +26,7 @@ async function getTargetClassPropertyPathAndUsageNotesFromBlueprint(blueprint: B
       }
     `;
 
-  return await runQueryOverStore(query, store);
+  return await runQuery(query, { sources: [store]});
 }
 
 function getUsageNoteFromBindings(bindings: Bindings[], targetClass: string, propertyPath: string) {
@@ -61,20 +61,22 @@ async function enrichValidationResultWithExample(
   if (!usageNotes) usageNotes = await getTargetClassPropertyPathAndUsageNotesFromBlueprint(blueprint);
 
   for (let result of enrichedResults) {
-    const targetClass = result.class;
-    for (const p of result.properties) {
-      const propertyPath = p.path;
-      const usageNote = getUsageNoteFromBindings(usageNotes, targetClass, propertyPath);
-      if (usageNote !== '') {
-        const exampleElement: Element | null = getElementById(usageNote, example);
-        if (exampleElement != null) {
-          p.example = render(exampleElement);
+    if (result.class) {
+      const targetClass = result.class;
+      for (const p of result.properties) {
+        const propertyPath = p.path;
+        const usageNote = getUsageNoteFromBindings(usageNotes, targetClass, propertyPath);
+        if (usageNote !== '') {
+          const exampleElement: Element | null = getElementById(usageNote, example);
+          if (exampleElement != null) {
+            p.example = render(exampleElement);
+          }
         }
-      }
-      if (p.value.length > 0 && typeof p.value[0] === 'object') {
-        result = (
-          await enrichValidationResultWithExample(p.value as ValidatedSubject[], blueprint, example, usageNotes)
-        )[0];
+        if (p.value.length > 0 && typeof p.value[0] === 'object') {
+          result = (
+            await enrichValidationResultWithExample(p.value as ValidatedSubject[], blueprint, example, usageNotes)
+          )[0];
+        }
       }
     }
   }

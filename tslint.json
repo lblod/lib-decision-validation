@@ -3,6 +3,7 @@
   "rules": {
     "no-var-requires": false,
     "no-shadowed-variable": false,
-    "no-unnecessary-initializer": false
+    "no-unnecessary-initializer": false,
+    "object-literal-shorthand": false
   }
 }
