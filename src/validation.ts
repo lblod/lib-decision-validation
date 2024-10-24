@@ -275,7 +275,7 @@ export async function validatePublication(
         : await validateSubject(subject);
       if (!VALIDATED_SUBJECTS_CACHE.has(subject.uri)) VALIDATED_SUBJECTS_CACHE.set(subject.uri, resultSubjects);
       const currentClass = subject.class ? formatURI(subject.class) : 'Onbekende klasse';
-      if (onProgress && currentClass != previousClass) {
+      if (onProgress && currentClass !== previousClass) {
         const stepMessage = `Stap ${currentStep}/${totalUniqueClasses}: Valideren van ${currentClass}`;
         onProgress(stepMessage, 50);
         previousClass = currentClass;
