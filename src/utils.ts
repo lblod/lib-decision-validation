@@ -171,14 +171,14 @@ export async function validateSubjectWithSparqlConstraint(subject: ParsedSubject
     });
     // We expect that the query contains ?this and ?value bindings
     for (const r of queryResults) {
-      let result = {
+      const result: ValidationResult = {
         'focusNode': r.get('this').value,
         'value': r.get('value').value,
         'resultMessage': message
       };
 
-      if (path) result['resultPath'] = path;
-      else if (r.get('path')) result['resultPath'] = r.get('path');
+      if (path) result.resultPath = path;
+      else if (r.get('path')) result.resultPath = r.get('path').value;
 
       results.push(result);
     }
