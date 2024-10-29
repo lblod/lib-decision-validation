@@ -169,14 +169,18 @@ export async function validateSubjectWithSparqlConstraint(subject: ParsedSubject
     const queryResults: Bindings[] = await runQuery(rewrittenSelect, {
       sources: [publicationStore]
     });
-    // We expect that the query contains ?this, ?path and ?value bindings
+    // We expect that the query contains ?this and ?value bindings
     for (const r of queryResults) {
-      results.push({
+      let result = {
         'focusNode': r.get('this').value,
-        'resultPath': path ? path : r.get('path').value,
         'value': r.get('value').value,
         'resultMessage': message
-      });
+      };
+
+      if (path) result['resultPath'] = path;
+      else if (r.get('path')) result['resultPath'] = r.get('path');
+
+      results.push(result);
     }
   } else {
     // subject is blank node and cannot be used in the format of SHACL-SPARQL queries
