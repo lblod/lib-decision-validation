@@ -251,6 +251,7 @@ export async function validateDocument(rdfDocument: Bindings[], blueprint: Bindi
   const parsedSubjects = parsePublication(rdfDocument);
   BLUEPRINT = blueprint;
   EXAMPLE = [];
+  PUBLICATION_STORE = await getStoreFromSPOBindings(rdfDocument);
 
   let validatedSubjects: ValidatedSubject[] = [];
   for (const subject of parsedSubjects) {
