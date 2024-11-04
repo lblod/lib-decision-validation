@@ -196,6 +196,7 @@ export async function validatePublication(
 
   if (onProgress) onProgress(`We starten het validatieproces`, 0);
 
+  if (onProgress) onProgress(`Verrijken van LBLOD URI's`, 10);
   for (const u of lblodUris) {
     const uri = u.get('id').value.split(/[?#]/)[0];
     const dereferencedLblodUri = await fetchDocument(uri);
