@@ -2,6 +2,7 @@ export { determineDocumentType, validatePublication, validateDocument } from './
 export {
   fetchDocument,
   getPublicationFromFileContent,
+  getBindingsFromTurtleContent,
   getBlueprintOfDocumentType,
   getExampleOfDocumentType,
 } from './queries';
