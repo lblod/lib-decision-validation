@@ -196,7 +196,8 @@ export async function validatePublication(
 
   if (onProgress) onProgress(`We starten het validatieproces`, 0);
 
-  if (onProgress) onProgress(`Verrijken van LBLOD URI's`, 10);
+  const totalLblodUris = lblodUris.length;
+  let currentUriCount = 0;
   for (const u of lblodUris) {
     const uri = u.get('id').value.split(/[?#]/)[0];
     const dereferencedLblodUri = await fetchDocument(uri);
@@ -211,6 +212,12 @@ export async function validatePublication(
       }
     }
     retrievedUris.push(uri);
+    currentUriCount++;
+    if (onProgress) {
+      const progressMessage = `Verrijken van LBLOD URI's (${currentUriCount} van ${totalLblodUris})`;
+      const progressPercent = Math.round((currentUriCount / totalLblodUris) * 40) + 10;
+      onProgress(progressMessage, progressPercent);
+    }
   }
 
   const containsBestuurseenheden =
