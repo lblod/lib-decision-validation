@@ -225,7 +225,7 @@ export async function validatePublication(
   if (!containsBestuurseenheden) {
     const lblodUrisFromBestuursorgaan: Bindings[] = await getLblodURIsFromBindings(dereferencedBestuursorgaanLblodUris);
     const totalLblodUrisFromBestuursorgaan = lblodUrisFromBestuursorgaan.length;
-    let currentLblodUriCount = 0;
+    let currentLblodUriFromBestuursorgaanCount = 0;
     for (const ufromb of lblodUrisFromBestuursorgaan) {
       const urifromb = ufromb.get('id').value.split(/[?#]/)[0];
       if (
@@ -239,10 +239,11 @@ export async function validatePublication(
           }
         }
         retrievedUris.push(urifromb);
-        currentLblodUriCount++;
+        currentLblodUriFromBestuursorgaanCount++;
         if (onProgress) {
-          const progressMessage = `Verrijken van LBLOD URI's bestuursorganen (${currentLblodUriCount} van ${totalLblodUrisFromBestuursorgaan})`;
-          const progressPercent = Math.round((currentLblodUriCount / totalLblodUrisFromBestuursorgaan) * 40) + 10;
+          const progressMessage = `Verrijken van LBLOD URI's bestuursorganen (${currentLblodUriFromBestuursorgaanCount} van ${totalLblodUrisFromBestuursorgaan})`;
+          const progressPercent =
+            Math.round((currentLblodUriFromBestuursorgaanCount / totalLblodUrisFromBestuursorgaan) * 40) + 10;
           onProgress(progressMessage, progressPercent);
         }
 
@@ -250,7 +251,7 @@ export async function validatePublication(
           dereferencedBestuursOrgaanOrEenheidLblodUri,
         );
         const totalLblodUrisFromBestuursorgaanOrEenheid = lblodUrisFromBestuursorgaanOrEenheid.length;
-        let currentLblodUriCountFromBestuursorgaanOrEenheid = 0;
+        let currentLblodUriCountFromBestuursorgaanOrEenheidCount = 0;
         for (const ufrombOrEenheid of lblodUrisFromBestuursorgaanOrEenheid) {
           const urifrombOrEenheid = ufrombOrEenheid.get('id').value.split(/[?#]/)[0];
           if (urifrombOrEenheid.indexOf('bestuurseenheden') !== -1 && retrievedUris.indexOf(urifrombOrEenheid) === -1) {
@@ -261,11 +262,13 @@ export async function validatePublication(
               }
             }
             retrievedUris.push(urifrombOrEenheid);
+            currentLblodUriCountFromBestuursorgaanOrEenheidCount++;
             if (onProgress) {
-              const progressMessage = `Verrijken van LBLOD URI's bestuursorganen of eenheden (${currentLblodUriCountFromBestuursorgaanOrEenheid} van ${totalLblodUrisFromBestuursorgaanOrEenheid})`;
+              const progressMessage = `Verrijken van LBLOD URI's bestuursorganen of eenheden (${currentLblodUriCountFromBestuursorgaanOrEenheidCount} van ${totalLblodUrisFromBestuursorgaanOrEenheid})`;
               const progressPercent =
                 Math.round(
-                  (currentLblodUriCountFromBestuursorgaanOrEenheid / totalLblodUrisFromBestuursorgaanOrEenheid) * 40,
+                  (currentLblodUriCountFromBestuursorgaanOrEenheidCount / totalLblodUrisFromBestuursorgaanOrEenheid) *
+                    40,
                 ) + 10;
               onProgress(progressMessage, progressPercent);
             }
