@@ -1,7 +1,8 @@
-export { determineDocumentType, validatePublication } from './validation';
+export { determineDocumentType, validatePublication, validateDocument } from './validation';
 export {
   fetchDocument,
   getPublicationFromFileContent,
+  getBindingsFromTurtleContent,
   getBlueprintOfDocumentType,
   getExampleOfDocumentType,
 } from './queries';
