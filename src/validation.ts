@@ -9,7 +9,16 @@ import type {
   ValidatedPublication,
   ValidationResult,
 } from './types';
-import { filterTermsByValue, findTermByValue, getUniqueValues, formatURI, findTermsByValue, getLblodURIsFromBindings, getStoreFromSPOBindings, validateSubjectWithSparqlConstraint } from './utils';
+import {
+  filterTermsByValue,
+  findTermByValue,
+  getUniqueValues,
+  formatURI,
+  findTermsByValue,
+  getLblodURIsFromBindings,
+  getStoreFromSPOBindings,
+  validateSubjectWithSparqlConstraint,
+} from './utils';
 import { enrichClassCollectionsWithExample } from './examples';
 import { DOMNode } from 'html-dom-parser';
 import { fetchDocument } from './queries';
@@ -54,9 +63,9 @@ export function determineDocumentType(bindings: Bindings[]): string {
   return 'unknown document type';
 }
 
-/* function to parse a publication 
+/* function to parse a publication
   param:
-  - publication: object to be parsed as Comunica bindings 
+  - publication: object to be parsed as Comunica bindings
   returns:
   - the publication as a JSON object structured like a tree
 */
@@ -70,10 +79,10 @@ export function parsePublication(publication: Bindings[]): ParsedSubject[] {
   // Key: subject URI
   // Map: predicate URI -> array of object URIs that are processed
   // Map allows an object to be processed multiple times if different predicate is used
-  const seenSubjects: {[key: string]: Map<string, string[]>} = {};
-  const parsedSubjectsLookup: {[key: string]: ParsedSubject} = {}; // Key: subject URI - Value : ParsedSubject
+  const seenSubjects: { [key: string]: Map<string, string[]> } = {};
+  const parsedSubjectsLookup: { [key: string]: ParsedSubject } = {}; // Key: subject URI - Value : ParsedSubject
   subjectKeys.forEach((subjectKey) => {
-    seenSubjects[subjectKey] = new Map<string, string[]>;
+    seenSubjects[subjectKey] = new Map<string, string[]>();
   });
 
   subjectKeys.forEach((subjectKey) => {
@@ -92,7 +101,12 @@ export function parsePublication(publication: Bindings[]): ParsedSubject[] {
   returns:
   - a parsed subject
 */
-function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects: {[key: string]: Map<string, string[]>}, parsedSubjectsLookup: {[key: string]: ParsedSubject}): ParsedSubject {
+function parseSubject(
+  subject: Bindings[],
+  publication: Bindings[],
+  seenSubjects: { [key: string]: Map<string, string[]> },
+  parsedSubjectsLookup: { [key: string]: ParsedSubject },
+): ParsedSubject {
   const subjectURI: string = subject[0].get('s')!.value;
   if (parsedSubjectsLookup[subjectURI] !== undefined) return parsedSubjectsLookup[subjectURI];
 
@@ -119,15 +133,19 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
       // termType is undefined when referring to blank node
       if (termType === 'NamedNode' || termType === 'BlankNode') {
         const foundRelationKey: string = findTermByValue(publication, 's', 's', b.get('o')!.value);
-        // Go deeper when this subject has not processed this object before 
-        if (foundRelationKey !== undefined && (!seenSubjects[subjectURI].has(predicate) || seenSubjects[subjectURI].get(predicate).indexOf(foundRelationKey) === -1)) {
-          if(!seenSubjects[subjectURI].has(predicate)) seenSubjects[subjectURI].set(predicate, [foundRelationKey]);
+        // Go deeper when this subject has not processed this object before
+        if (
+          foundRelationKey !== undefined &&
+          (!seenSubjects[subjectURI].has(predicate) ||
+            seenSubjects[subjectURI].get(predicate).indexOf(foundRelationKey) === -1)
+        ) {
+          if (!seenSubjects[subjectURI].has(predicate)) seenSubjects[subjectURI].set(predicate, [foundRelationKey]);
           else {
             const extendedKeys = seenSubjects[subjectURI].get(predicate).concat([foundRelationKey]);
             seenSubjects[subjectURI].set(predicate, extendedKeys);
           }
           const foundRelation: Bindings[] = publication.filter((p) => p.get('s')!.value === foundRelationKey);
-          
+
           const parsedSubject = parseSubject(foundRelation, publication, seenSubjects, parsedSubjectsLookup);
           if (parsedSubject !== undefined) {
             properties.push({
@@ -159,7 +177,7 @@ function parseSubject(subject: Bindings[], publication: Bindings[], seenSubjects
   return res;
 }
 
-/* function to validate a publication 
+/* function to validate a publication
   param:
   - publication: object to be validated
   returns:
@@ -169,18 +187,22 @@ export async function validatePublication(
   publication: Bindings[],
   blueprint: Bindings[],
   example: DOMNode[],
+  onProgress?: (message: string, progress: number) => void,
 ): Promise<ValidatedPublication> {
   const enrichedPublication: Bindings[] = publication;
   const lblodUris: Bindings[] = await getLblodURIsFromBindings(publication);
   const retrievedUris: string[] = [];
   const dereferencedBestuursorgaanLblodUris: Bindings[] = [];
 
+  if (onProgress) onProgress(`We starten het validatieproces`, 0);
+
+  const totalLblodUris = lblodUris.length;
+  let currentUriCount = 0;
   for (const u of lblodUris) {
     const uri = u.get('id').value.split(/[?#]/)[0];
     const dereferencedLblodUri = await fetchDocument(uri);
 
     for (const b of dereferencedLblodUri) {
-      // Only add binding when not already exists
       if (enrichedPublication.filter((element) => element.equals(b)).length === 0) {
         enrichedPublication.push(b);
       }
@@ -190,36 +212,66 @@ export async function validatePublication(
       }
     }
     retrievedUris.push(uri);
+    currentUriCount++;
+    if (onProgress) {
+      const progressMessage = `Verrijken van LBLOD URI's (${currentUriCount} van ${totalLblodUris})`;
+      const progressPercent = Math.round((currentUriCount / totalLblodUris) * 40) + 10;
+      onProgress(progressMessage, progressPercent);
+    }
   }
 
-  // If bestuurseenheid is not contained in publication, then we need to go two levels deep in bestuursorgaan. Otherwise one level deep suffices
-  const containsBestuurseenheden = lblodUris.filter((element) => element.get('id').value.indexOf('bestuurseenheden') !== -1).length > 0;
+  const containsBestuurseenheden =
+    lblodUris.filter((element) => element.get('id').value.indexOf('bestuurseenheden') !== -1).length > 0;
   if (!containsBestuurseenheden) {
     const lblodUrisFromBestuursorgaan: Bindings[] = await getLblodURIsFromBindings(dereferencedBestuursorgaanLblodUris);
+    const totalLblodUrisFromBestuursorgaan = lblodUrisFromBestuursorgaan.length;
+    let currentLblodUriFromBestuursorgaanCount = 0;
     for (const ufromb of lblodUrisFromBestuursorgaan) {
       const urifromb = ufromb.get('id').value.split(/[?#]/)[0];
-      if ((urifromb.indexOf('bestuursorganen') !== -1 || urifromb.indexOf('bestuurseenheden') !== -1) && retrievedUris.indexOf(urifromb) === -1) {
+      if (
+        (urifromb.indexOf('bestuursorganen') !== -1 || urifromb.indexOf('bestuurseenheden') !== -1) &&
+        retrievedUris.indexOf(urifromb) === -1
+      ) {
         const dereferencedBestuursOrgaanOrEenheidLblodUri = await fetchDocument(urifromb);
         for (const b of dereferencedBestuursOrgaanOrEenheidLblodUri) {
-          // Only add binding when not already exists
           if (enrichedPublication.filter((element) => element.equals(b)).length === 0) {
             enrichedPublication.push(b);
           }
         }
         retrievedUris.push(urifromb);
+        currentLblodUriFromBestuursorgaanCount++;
+        if (onProgress) {
+          const progressMessage = `Verrijken van LBLOD URI's bestuursorganen (${currentLblodUriFromBestuursorgaanCount} van ${totalLblodUrisFromBestuursorgaan})`;
+          const progressPercent =
+            Math.round((currentLblodUriFromBestuursorgaanCount / totalLblodUrisFromBestuursorgaan) * 40) + 10;
+          onProgress(progressMessage, progressPercent);
+        }
 
-        const lblodUrisFromBestuursorgaanOrEenheid: Bindings[] = await getLblodURIsFromBindings(dereferencedBestuursOrgaanOrEenheidLblodUri);
+        const lblodUrisFromBestuursorgaanOrEenheid: Bindings[] = await getLblodURIsFromBindings(
+          dereferencedBestuursOrgaanOrEenheidLblodUri,
+        );
+        const totalLblodUrisFromBestuursorgaanOrEenheid = lblodUrisFromBestuursorgaanOrEenheid.length;
+        let currentLblodUriCountFromBestuursorgaanOrEenheidCount = 0;
         for (const ufrombOrEenheid of lblodUrisFromBestuursorgaanOrEenheid) {
           const urifrombOrEenheid = ufrombOrEenheid.get('id').value.split(/[?#]/)[0];
           if (urifrombOrEenheid.indexOf('bestuurseenheden') !== -1 && retrievedUris.indexOf(urifrombOrEenheid) === -1) {
             const dereferencedBestuursEenheidLblodUri = await fetchDocument(urifrombOrEenheid);
             for (const b of dereferencedBestuursEenheidLblodUri) {
-              // Only add binding when not already exists
               if (enrichedPublication.filter((element) => element.equals(b)).length === 0) {
                 enrichedPublication.push(b);
               }
             }
             retrievedUris.push(urifrombOrEenheid);
+            currentLblodUriCountFromBestuursorgaanOrEenheidCount++;
+            if (onProgress) {
+              const progressMessage = `Verrijken van LBLOD URI's bestuursorganen of eenheden (${currentLblodUriCountFromBestuursorgaanOrEenheidCount} van ${totalLblodUrisFromBestuursorgaanOrEenheid})`;
+              const progressPercent =
+                Math.round(
+                  (currentLblodUriCountFromBestuursorgaanOrEenheidCount / totalLblodUrisFromBestuursorgaanOrEenheid) *
+                    40,
+                ) + 10;
+              onProgress(progressMessage, progressPercent);
+            }
           }
         }
       }
@@ -233,13 +285,36 @@ export async function validatePublication(
   PUBLICATION_STORE = await getStoreFromSPOBindings(publication);
 
   let validatedSubjects: ValidatedSubject[] = [];
-  for (const subject of parsedPublication) {
+  let currentStep = 1;
+  let previousClass = '';
+
+  const uniqueClasses = Array.from(
+    new Set(parsedPublication.map((subject) => (subject?.class ? formatURI(subject.class) : 'Onbekende klasse'))),
+  );
+  const totalUniqueClasses = uniqueClasses.length;
+  const sortedParsedPublication = parsedPublication.slice().sort((a, b) => {
+    const classA = a?.class ? formatURI(a.class) : 'Onbekende klasse';
+    const classB = b?.class ? formatURI(b.class) : 'Onbekende klasse';
+    return classA.localeCompare(classB);
+  });
+  for (const subject of sortedParsedPublication) {
     if (subject !== undefined) {
-      const resultSubjects = VALIDATED_SUBJECTS_CACHE.has(subject.uri) ? VALIDATED_SUBJECTS_CACHE.get(subject.uri) : await validateSubject(subject);
-      if(!VALIDATED_SUBJECTS_CACHE.has(subject.uri)) VALIDATED_SUBJECTS_CACHE.set(subject.uri, resultSubjects);
+      const resultSubjects = VALIDATED_SUBJECTS_CACHE.has(subject.uri)
+        ? VALIDATED_SUBJECTS_CACHE.get(subject.uri)
+        : await validateSubject(subject);
+      if (!VALIDATED_SUBJECTS_CACHE.has(subject.uri)) VALIDATED_SUBJECTS_CACHE.set(subject.uri, resultSubjects);
+      const currentClass = subject.class ? formatURI(subject.class) : 'Onbekende klasse';
+      if (onProgress && currentClass !== previousClass) {
+        const stepMessage = `Stap ${currentStep}/${totalUniqueClasses}: Valideren van ${currentClass}`;
+        onProgress(stepMessage, 50);
+        previousClass = currentClass;
+        currentStep++;
+        await new Promise((resolve) => setTimeout(resolve, 300));
+      }
       validatedSubjects = validatedSubjects.concat(...resultSubjects);
     }
-  };
+  }
+  if (onProgress) onProgress(`We voltooien de validatie`, 100);
 
   return {
     classes: await postProcess(validatedSubjects),
@@ -280,7 +355,6 @@ async function validateSubject(subject: ParsedSubject): Promise<ValidatedSubject
   const blueprintShapeKeys = BLUEPRINT.filter(
     (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' && b.get('o')!.value === subject.class,
   );
-
   for (const b of blueprintShapeKeys) {
     const blueprintShapeKey = b.get('s')!.value;
     const blueprintShape: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === blueprintShapeKey);
@@ -295,16 +369,25 @@ async function validateSubject(subject: ParsedSubject): Promise<ValidatedSubject
       const validatedProperty: ValidatedProperty = await validateProperty(subject, propertyShape);
       if (validatedProperty.valid) validCount++;
       validatedProperties.push(validatedProperty);
-    };
+    }
 
     // Process sparql-based constraints
     let sparqlValidationResults = [];
-    const sparqlConstraintKeys: string[] = filterTermsByValue(blueprintShape, 'o', 'p', 'http://www.w3.org/ns/shacl#sparql');
+    const sparqlConstraintKeys: string[] = filterTermsByValue(
+      blueprintShape,
+      'o',
+      'p',
+      'http://www.w3.org/ns/shacl#sparql',
+    );
     for (const sparqlConstraintKey of sparqlConstraintKeys) {
       const sparqlConstraintBindings: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === sparqlConstraintKey);
-      const validationResultsOfSparqlConstraint: ValidationResult[] = await validateSubjectWithSparqlConstraint(subject, sparqlConstraintBindings, PUBLICATION_STORE);
+      const validationResultsOfSparqlConstraint: ValidationResult[] = await validateSubjectWithSparqlConstraint(
+        subject,
+        sparqlConstraintBindings,
+        PUBLICATION_STORE,
+      );
       sparqlValidationResults = sparqlValidationResults.concat(validationResultsOfSparqlConstraint);
-    };
+    }
 
     validatedSubjects.push({
       uri: subject.uri,
@@ -325,13 +408,15 @@ async function validateSubject(subject: ParsedSubject): Promise<ValidatedSubject
   for (const p of propertyKeys) {
     processedProperties.push(await processProperty(subject, p));
   }
-  return [{
-    uri: subject.uri,
-    class: subject.class,
-    className: subject.class ? formatURI(subject.class!) : 'Unknown class',
-    properties: processedProperties,
-    totalCount: subject.properties.length,
-  }];
+  return [
+    {
+      uri: subject.uri,
+      class: subject.class,
+      className: subject.class ? formatURI(subject.class!) : 'Unknown class',
+      properties: processedProperties,
+      totalCount: subject.properties.length,
+    },
+  ];
 }
 
 /* function to validate the properties of a subject
@@ -352,7 +437,7 @@ async function validateProperty(subject, propertyShape: Bindings[]): Promise<Val
     minCount: 0,
     actualCount: 0,
     valid: false,
-    sparqlValidationResults: []
+    sparqlValidationResults: [],
   };
   propertyShape.forEach((p) => {
     switch (p.get('p')!.value) {
@@ -391,18 +476,19 @@ async function validateProperty(subject, propertyShape: Bindings[]): Promise<Val
   });
 
   const values = [];
-  const ps = subject.properties
-    .filter((p) => p.path === validatedProperty.path);
+  const ps = subject.properties.filter((p) => p.path === validatedProperty.path);
   for (const s of ps) {
     if (s.value !== undefined && s.value.class !== undefined) {
-      const validatedSubject = VALIDATED_SUBJECTS_CACHE.has(s.value.uri) ? VALIDATED_SUBJECTS_CACHE.get(s.value.uri) : await validateSubject(s.value);
-      if(!VALIDATED_SUBJECTS_CACHE.has(s.value.uri)) VALIDATED_SUBJECTS_CACHE.set(s.value.uri, validatedSubject);
+      const validatedSubject = VALIDATED_SUBJECTS_CACHE.has(s.value.uri)
+        ? VALIDATED_SUBJECTS_CACHE.get(s.value.uri)
+        : await validateSubject(s.value);
+      if (!VALIDATED_SUBJECTS_CACHE.has(s.value.uri)) VALIDATED_SUBJECTS_CACHE.set(s.value.uri, validatedSubject);
       for (const v of validatedSubject) {
         values.push(v);
       }
     } else values.push(s.value);
   }
-  
+
   // Overwrite default value "Waarde niet gevonden" when actual values are found
   if (values.length) {
     validatedProperty.value = values;
@@ -410,10 +496,14 @@ async function validateProperty(subject, propertyShape: Bindings[]): Promise<Val
   }
 
   // Count of isGehoudenDoor is based on distinct instances
-  if (validatedProperty.path === 'http://data.vlaanderen.be/ns/besluit#isGehoudenDoor' || validatedProperty.path === 'https://data.vlaanderen.be/ns/generiek#isTijdspecialisatieVan' || validatedProperty.path === 'http://data.vlaanderen.be/ns/mandaat#isTijdspecialisatieVan') {
+  if (
+    validatedProperty.path === 'http://data.vlaanderen.be/ns/besluit#isGehoudenDoor' ||
+    validatedProperty.path === 'https://data.vlaanderen.be/ns/generiek#isTijdspecialisatieVan' ||
+    validatedProperty.path === 'http://data.vlaanderen.be/ns/mandaat#isTijdspecialisatieVan'
+  ) {
     const distinctBestuursorganen = [];
     for (const v of validatedProperty.value) {
-       // typecast and check if the function exists
+      // typecast and check if the function exists
       if ((v as ValidatedSubject).uri) {
         const uri = (v as ValidatedSubject).uri;
         if (distinctBestuursorganen.indexOf(uri) === -1) distinctBestuursorganen.push(uri);
@@ -424,33 +514,44 @@ async function validateProperty(subject, propertyShape: Bindings[]): Promise<Val
 
   // Process sparql-based constraints
   let sparqlValidationResults = [];
-  const sparqlConstraintKeys: string[] = filterTermsByValue(propertyShape, 'o', 'p', 'http://www.w3.org/ns/shacl#sparql');
+  const sparqlConstraintKeys: string[] = filterTermsByValue(
+    propertyShape,
+    'o',
+    'p',
+    'http://www.w3.org/ns/shacl#sparql',
+  );
   for (const sparqlConstraintKey of sparqlConstraintKeys) {
     const sparqlConstraintBindings: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === sparqlConstraintKey);
-    const validationResultsOfSparqlConstraint: ValidationResult[] = await validateSubjectWithSparqlConstraint(subject, sparqlConstraintBindings, PUBLICATION_STORE, validatedProperty.path);
+    const validationResultsOfSparqlConstraint: ValidationResult[] = await validateSubjectWithSparqlConstraint(
+      subject,
+      sparqlConstraintBindings,
+      PUBLICATION_STORE,
+      validatedProperty.path,
+    );
     sparqlValidationResults = sparqlValidationResults.concat(validationResultsOfSparqlConstraint);
-  };
+  }
 
   validatedProperty.valid =
     (validatedProperty.minCount === undefined || validatedProperty.actualCount >= validatedProperty.minCount) &&
     (validatedProperty.maxCount === undefined || validatedProperty.actualCount <= validatedProperty.maxCount) &&
-    ((validatedProperty.targetClass === undefined ||
+    (validatedProperty.targetClass === undefined ||
       validatedProperty.value === undefined ||
-      !validatedProperty.value.some((v) => v.class !== validatedProperty.targetClass
-      )) ||
+      !validatedProperty.value.some((v) => v.class !== validatedProperty.targetClass) ||
       (validatedProperty.targetClass === 'http://www.w3.org/ns/prov#Location' && validatedProperty.actualCount > 0) ||
-      (validatedProperty.targetClass === 'http://data.lblod.info/vocabularies/leidinggevenden/Functionaris' 
-        && validatedProperty.value.every((v) => {
-          if(typeof v !== "string") {
+      (validatedProperty.targetClass === 'http://data.lblod.info/vocabularies/leidinggevenden/Functionaris' &&
+        validatedProperty.value.every((v) => {
+          if (typeof v !== 'string') {
             const vTyped = v as ValidatedSubject;
-            return vTyped.class === validatedProperty.targetClass || vTyped.class === 'http://data.vlaanderen.be/ns/mandaat#Mandataris'
+            return (
+              vTyped.class === validatedProperty.targetClass ||
+              vTyped.class === 'http://data.vlaanderen.be/ns/mandaat#Mandataris'
+            );
           } else {
             return false;
           }
-      })) ||
+        })) ||
       validatedProperty.value.every((v) => typeof v === 'string' && v.startsWith('http')) ||
-      validatedProperty.actualCount === 0 && validatedProperty.minCount === 0
-    );
+      (validatedProperty.actualCount === 0 && validatedProperty.minCount === 0));
   if (
     !validatedProperty.valid &&
     MATURITY_LEVEL.includes(validatedProperty.maturityLevel) &&
@@ -481,12 +582,13 @@ async function processProperty(subject, propertyKey): Promise<ProcessedProperty>
     processProperty.value = [subject.class];
   } else {
     const values = [];
-    const ps = subject.properties
-      .filter((p) => p.path === processProperty.path);
+    const ps = subject.properties.filter((p) => p.path === processProperty.path);
     for (const s of ps) {
       if (s.value !== undefined && s.value.class !== undefined) {
-        const validatedSubject = VALIDATED_SUBJECTS_CACHE.has(s.value.uri) ? VALIDATED_SUBJECTS_CACHE.get(s.value.uri) : await validateSubject(s.value);
-        if(!VALIDATED_SUBJECTS_CACHE.has(s.value.uri)) VALIDATED_SUBJECTS_CACHE.set(s.value.uri, validatedSubject);
+        const validatedSubject = VALIDATED_SUBJECTS_CACHE.has(s.value.uri)
+          ? VALIDATED_SUBJECTS_CACHE.get(s.value.uri)
+          : await validateSubject(s.value);
+        if (!VALIDATED_SUBJECTS_CACHE.has(s.value.uri)) VALIDATED_SUBJECTS_CACHE.set(s.value.uri, validatedSubject);
         for (const v of validatedSubject) {
           values.push(v);
         }
@@ -498,11 +600,11 @@ async function processProperty(subject, propertyKey): Promise<ProcessedProperty>
       processProperty.value = values;
       processProperty.actualCount = processProperty.value.length;
     }
-  };
+  }
 
   return processProperty;
 }
-  
+
 /* function to aggregate a document
   param:
   - validatedSubjects: subjects that have gone through validation
@@ -510,16 +612,17 @@ async function processProperty(subject, propertyKey): Promise<ProcessedProperty>
   - an array of collections, a collection contains all the root objects in the publication that share the same RDF class
 */
 async function postProcess(validatedSubjects: ValidatedSubject[]): Promise<ClassCollection[]> {
-  const classes: ClassCollection[] = []
+  const classes: ClassCollection[] = [];
   // Combine all Root objects with the same type into one collection
-  const distinctClasses: string[] = getUniqueValues((validatedSubjects.map((p) => p.class))) as string[];
-  const targetClasses: string[] = BLUEPRINT
-    .filter((b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass')
+  const distinctClasses: string[] = getUniqueValues(validatedSubjects.map((p) => p.class)) as string[];
+  const targetClasses: string[] = BLUEPRINT.filter(
+    (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass',
+  )
     .filter((b) => b.get('o')!.value !== 'http://data.vlaanderen.be/ns/besluit#Bestuursorgaan')
     .map((b) => b.get('o')!.value);
   const rootClasses: string[] = distinctClasses.filter((c) => targetClasses.indexOf(c) !== -1);
-  rootClasses.forEach(c => {
-    const objects: ValidatedSubject[] = validatedSubjects.filter(s => s.class === c)
+  rootClasses.forEach((c) => {
+    const objects: ValidatedSubject[] = validatedSubjects.filter((s) => s.class === c);
     classes.push({
       classURI: c,
       className: formatURI(c),
