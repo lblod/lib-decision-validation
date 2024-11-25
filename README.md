@@ -2,7 +2,7 @@
   <img src="https://ui.vlaanderen.be/3.latest/icons/app-icon/icon-highres-precomposed.png" width="100" alt="project-logo">
 </p>
 <p align="center">
-    <h1 align="center">APP-VALIDATION-TOOL</h1>
+    <h1 align="center">LIB-VALIDATION-TOOL</h1>
 </p>
 <p align="center">
 	<img src="https://img.shields.io/github/last-commit/lblod/app-validation-tool?style=default&logo=git&logoColor=white&color=0080ff" alt="last-commit">
