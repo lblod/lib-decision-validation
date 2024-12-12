@@ -3,7 +3,7 @@ export const BESLUITEN_LINK: string =
 export const BESLUITEN_LINK2: string =
     'https://publicatie.gelinkt-notuleren.vlaanderen.be/Essen/Gemeente/zittingen/a3c147f0-905f-11ee-ae1d-77c537c8924c/besluitenlijst';
 export const BESLUITEN_LINK3: string = 'https://raadpleeg-aalter.onlinesmartcities.be/zittingen/23.1221.5932.2362/besluitenlijst';
-export const BESLUITEN_LINK4: string = 'https://lblod.erpe-mere.be/LBLODWeb/Home/Overzicht/96b9b4aaca5d3d29cde6a1c2a8e2860348f1a3124afc281c7c079cc98e8a5050/GetPublication?filename=BesluitenLijst_OCMW%20raad_24-09-2024.html';
+export const BESLUITEN_LINK4: string = 'https://lblod.zottegem.be/LBLODWeb/Home/Overzicht/e3d9480acc0cf400e11ab7afe2bcea144038dd2ef71d77247d5159c7ce8efb1a/GetPublication?filename=Notulen_Gemeenteraad_15-04-2024.html';
 export const AGENDA_LINK: string =
   'https://machelen-echo.cipalschaubroeck.be/raadpleegomgeving/zittingen/99315f2f-9aed-410a-9872-aeda8a6a9b11/agenda';
 export const AGENDA_LINK_2: string = 'https://boortmeerbeek.meetingburger.net/gr/87efd49b-d951-4f1f-b723-a732642f3dcd/agenda';
