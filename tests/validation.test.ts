@@ -16,6 +16,7 @@ import {
   BESLUITEN_LINK4,
   NOTULEN_LINK,
   NOTULEN_LINK_2,
+  NOTULEN_LINK_4,
   TESTHTMLSTRING,
   TESTSTRING2,
 } from './data/testData';
@@ -504,4 +505,20 @@ describe('As a vendor, I want to see a good example when something is not valid'
           expect(containsSparqlValidationResults).toBeTruthy;
         },
         MILLISECONDS * 20);
+
+        test(
+          'Maturity level should be level 2 (with current algorithm)',
+          async () => {
+            const publication: Bindings[] = await fetchDocument(NOTULEN_LINK_4, PROXY);
+            const documentType = determineDocumentType(publication);
+            const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+            const example: DOMNode[] = await getExampleOfDocumentType(documentType);
+            const validationResult =  await validatePublication(publication, blueprint, example);
+            
+            let expectedLevel = 'Niveau 2';
+            let foundLevel = validationResult.maturity;
+
+            expect(foundLevel).toEqual(expectedLevel);
+          },
+          MILLISECONDS * 20);
 });

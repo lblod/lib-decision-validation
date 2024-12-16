@@ -14,6 +14,7 @@ export const NOTULEN_LINK: string = 'https://raadpleeg-aalst.onlinesmartcities.b
 export const NOTULEN_LINK_2: string =
   'https://lblod.zottegem.be/LBLODWeb/Home/Overzicht/e3d9480acc0cf400e11ab7afe2bcea144038dd2ef71d77247d5159c7ce8efb1a/GetPublication?filename=Notulen_Gemeenteraad_15-04-2024.html';
 export const NOTULEN_LINK_3: string = 'https://destelbergen.powerappsportals.com/zittingen/?id=6e485caa-a879-ef11-ac20-0022489d04d4';
+export const NOTULEN_LINK_4: string = 'https://lblod.torhout.be/LBLODWeb/Home/Overzicht/6a7f6ed7610fc6a04422513f7210e5a450455f9b2450dd171f3c87827e9a4d63/GetPublication?filename=Notulen_Gemeenteraad_27-05-2024.html';
 export const TESTSTRING2 = `
 <!DOCTYPE html>
 <html lang="nl" xmlns="http://www.w3.org/1999/xhtml">
