@@ -552,6 +552,10 @@ async function validateProperty(subject, propertyShape: Bindings[]): Promise<Val
         })) ||
       validatedProperty.value.every((v) => typeof v === 'string' && v.startsWith('http')) ||
       (validatedProperty.actualCount === 0 && validatedProperty.minCount === 0));
+
+  // if values are strings, they must contain more than spaces, new lines or tabs to be valid
+  if (validatedProperty.value.every((v) => typeof v === 'string')) validatedProperty.valid = validatedProperty.value.every((v) => v !== 'Waarde niet gevonden' && /[^\s]/.test(String(v)));
+  
   if (
     !validatedProperty.valid &&
     MATURITY_LEVEL.includes(validatedProperty.maturityLevel) &&
