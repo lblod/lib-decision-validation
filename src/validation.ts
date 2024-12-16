@@ -193,6 +193,7 @@ export async function validatePublication(
   const lblodUris: Bindings[] = await getLblodURIsFromBindings(publication);
   const retrievedUris: string[] = [];
   const dereferencedBestuursorgaanLblodUris: Bindings[] = [];
+  FOUND_MATURITY = MATURITY_LEVEL[3]; // reset
 
   if (onProgress) onProgress(`We starten het validatieproces`, 0);
 
