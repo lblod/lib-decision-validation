@@ -622,7 +622,6 @@ async function postProcess(validatedSubjects: ValidatedSubject[]): Promise<Class
   const targetClasses: string[] = BLUEPRINT.filter(
     (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass',
   )
-    .filter((b) => b.get('o')!.value !== 'http://data.vlaanderen.be/ns/besluit#Bestuursorgaan')
     .map((b) => b.get('o')!.value);
   const rootClasses: string[] = distinctClasses.filter((c) => targetClasses.indexOf(c) !== -1);
   rootClasses.forEach((c) => {
