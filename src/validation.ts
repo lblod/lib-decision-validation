@@ -18,6 +18,7 @@ import {
   getLblodURIsFromBindings,
   getStoreFromSPOBindings,
   validateSubjectWithSparqlConstraint,
+  calculateMaturityLevel,
 } from './utils';
 import { enrichClassCollectionsWithExample } from './examples';
 import { DOMNode } from 'html-dom-parser';
@@ -30,8 +31,8 @@ let PUBLICATION: Bindings[] = [];
 let PUBLICATION_STORE: Store;
 
 const MATURITY_LEVEL: string[] = ['Niveau 0', 'Niveau 1', 'Niveau 2', 'Niveau 3'];
-let FOUND_MATURITY = MATURITY_LEVEL[3];
-
+let FOUND_MATURITY = MATURITY_LEVEL[0];
+const invalidPropertiesBymaturityLevel: {string?: ValidatedProperty[]} = {}; 
 const VALIDATED_SUBJECTS_CACHE: Map<string, any> = new Map();
 
 /* determines the document type based on a specific term
@@ -193,7 +194,7 @@ export async function validatePublication(
   const lblodUris: Bindings[] = await getLblodURIsFromBindings(publication);
   const retrievedUris: string[] = [];
   const dereferencedBestuursorgaanLblodUris: Bindings[] = [];
-  FOUND_MATURITY = MATURITY_LEVEL[3]; // reset
+  FOUND_MATURITY = MATURITY_LEVEL[0]; // reset
 
   if (onProgress) onProgress(`We starten het validatieproces`, 0);
 
@@ -283,7 +284,8 @@ export async function validatePublication(
   BLUEPRINT = blueprint;
   EXAMPLE = example;
   PUBLICATION = publication;
-  PUBLICATION_STORE = await getStoreFromSPOBindings(publication);
+  // Blueprint is added to calculate the maturity level
+  PUBLICATION_STORE = await getStoreFromSPOBindings(publication.concat(blueprint));
 
   let validatedSubjects: ValidatedSubject[] = [];
   let currentStep = 1;
@@ -317,6 +319,7 @@ export async function validatePublication(
   }
   if (onProgress) onProgress(`We voltooien de validatie`, 100);
 
+  FOUND_MATURITY = await calculateMaturityLevel(MATURITY_LEVEL, invalidPropertiesBymaturityLevel, PUBLICATION_STORE);
   return {
     classes: await postProcess(validatedSubjects),
     maturity: FOUND_MATURITY,
@@ -557,12 +560,13 @@ async function validateProperty(subject, propertyShape: Bindings[]): Promise<Val
   // if values are strings, they must contain more than spaces, new lines or tabs to be valid
   if (validatedProperty.value.every((v) => typeof v === 'string' && v !== 'Waarde niet gevonden')) validatedProperty.valid = validatedProperty.value.every((v) => /[^\s]/.test(String(v)));
   
+  // Keep invalid properties that effect maturity level
   if (
     !validatedProperty.valid &&
-    MATURITY_LEVEL.includes(validatedProperty.maturityLevel) &&
-    validatedProperty.maturityLevel <= FOUND_MATURITY
+    MATURITY_LEVEL.includes(validatedProperty.maturityLevel)
   ) {
-    FOUND_MATURITY = MATURITY_LEVEL[MATURITY_LEVEL.indexOf(validatedProperty.maturityLevel) - 1];
+    if (!invalidPropertiesBymaturityLevel[validatedProperty.maturityLevel])  invalidPropertiesBymaturityLevel[validatedProperty.maturityLevel] = [];
+    invalidPropertiesBymaturityLevel[validatedProperty.maturityLevel].push(validatedProperty);
   }
   return validatedProperty;
 }
@@ -639,3 +643,4 @@ async function postProcess(validatedSubjects: ValidatedSubject[]): Promise<Class
     : classes;
   return result;
 }
+
