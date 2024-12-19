@@ -215,13 +215,21 @@ export async function getMissingClassesOfMaturityLevel(maturityLevel: string, st
 }
 
 export async function calculateMaturityLevel(maturityLevels: string[], invalidPropertiesBymaturityLevel: {string?: ValidatedProperty[]}, store: Store): Promise<string> {
-  let reached_maturity = maturityLevels[0];
+  let reachedMaturity = maturityLevels[0];
 
   // LEVEL 1
   const missingClassesLevel1 = await getMissingClassesOfMaturityLevel(maturityLevels[1], store);
   const invalidPropertiesOfLevel1: ValidatedProperty[]= invalidPropertiesBymaturityLevel[maturityLevels[1]] ? invalidPropertiesBymaturityLevel[maturityLevels[1]] : [];
   // If no invalid properties of level 1 are found AND all classes are used of the maturity level
-  if (!invalidPropertiesOfLevel1.length && !missingClassesLevel1.length ) reached_maturity = maturityLevels[1];
+  if (!invalidPropertiesOfLevel1.length && !missingClassesLevel1.length ) reachedMaturity = maturityLevels[1];
   
-  return reached_maturity;
+  // LEVEL 2
+
+  // LEVEL 3
+  const missingClassesLevel3 = await getMissingClassesOfMaturityLevel(maturityLevels[3], store);
+  const invalidPropertiesOfLevel3: ValidatedProperty[]= invalidPropertiesBymaturityLevel[maturityLevels[3]] ? invalidPropertiesBymaturityLevel[maturityLevels[3]] : [];
+  // If no invalid properties of level 3 are found AND all classes are used of the maturity level
+  if (!invalidPropertiesOfLevel3.length && !missingClassesLevel3.length ) reachedMaturity = maturityLevels[3];
+  
+  return reachedMaturity;
 }
