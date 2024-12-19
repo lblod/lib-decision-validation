@@ -4,7 +4,7 @@ import parse, { DOMNode } from 'html-dom-parser';
 
 import { QueryEngine } from '@comunica/query-sparql';
 import { fetchDocument } from './queries';
-import { ParsedSubject, ValidationResult } from './types';
+import { ParsedSubject, ValidatedProperty, ValidationResult } from './types';
 
 /* function to filter triples by a certain condition and then get the value of a certain term
   param:
@@ -190,4 +190,38 @@ export async function validateSubjectWithSparqlConstraint(subject: ParsedSubject
     });
   }
   return results;
+}
+
+export async function getMissingClassesOfMaturityLevel(maturityLevel: string, store: Store): Promise<Bindings[]> {
+  const query = `
+      PREFIX sh: <http://www.w3.org/ns/shacl#>
+      PREFIX lblodBesluit: <http://lblod.data.gift/vocabularies/besluit/>
+      
+      SELECT distinct ?targetClass
+      WHERE {
+        ?shape a sh:NodeShape ;
+          sh:targetClass ?targetClass ;
+          sh:property/lblodBesluit:maturiteitsniveau "${maturityLevel}" .
+
+        FILTER NOT EXISTS {
+          ?instance a ?targetClass .
+        }
+      }
+    `;
+
+  return await runQuery(query, {
+    sources: [store]
+  });
+}
+
+export async function calculateMaturityLevel(maturityLevels: string[], invalidPropertiesBymaturityLevel: {string?: ValidatedProperty[]}, store: Store): Promise<string> {
+  let reached_maturity = maturityLevels[0];
+
+  // LEVEL 1
+  const missingClassesLevel1 = await getMissingClassesOfMaturityLevel(maturityLevels[1], store);
+  const invalidPropertiesOfLevel1: ValidatedProperty[]= invalidPropertiesBymaturityLevel[maturityLevels[1]] ? invalidPropertiesBymaturityLevel[maturityLevels[1]] : [];
+  // If no invalid properties of level 1 are found AND all classes are used of the maturity level
+  if (!invalidPropertiesOfLevel1.length && !missingClassesLevel1.length ) reached_maturity = maturityLevels[1];
+  
+  return reached_maturity;
 }
