@@ -298,36 +298,49 @@ export async function calculateMaturityLevel(invalidPropertiesBymaturityLevel: {
 }
 
 export function addMaturityLevelReportToClassCollection(classCollections: ClassCollection[], maturityLevelReport: MaturityLevelReport): ClassCollection[] {
+  const enrichedClassCollections: ClassCollection[] = classCollections;
   // Add errors of maturity level 1
   maturityLevelReport.maturityLevel1Report.missingClasses.forEach(missingClass => {
-    classCollections.forEach(c => {
-      if(c.className === missingClass) c.sparqlValidationResults.push({
-        resultMessage: `Maturiteitslevel 1: klasse ${missingClass} ontbreekt.`
-      })
+    enrichedClassCollections.forEach(c => {
+      if(c.classURI === missingClass) {
+        if(!c.sparqlValidationResults) c.sparqlValidationResults = [];
+        c.sparqlValidationResults.push({
+          resultMessage: `Maturiteitslevel 1: klasse ${missingClass} ontbreekt.`
+        })
+      }
     })
   });
   maturityLevelReport.maturityLevel1Report.missingOptionalProperties.forEach(missingOptionalProperty => {
-    classCollections.forEach(c => {
-      if(c.className === missingOptionalProperty.targetClass) c.sparqlValidationResults.push({
-        resultMessage: `Maturiteitslevel 1: optionele eigenschap ${missingOptionalProperty.path} van klasse ${missingOptionalProperty.targetClass} ontbreekt.`
-      })
+    enrichedClassCollections.forEach(c => {
+      if(c.classURI === missingOptionalProperty.targetClass) {
+        if(!c.sparqlValidationResults) c.sparqlValidationResults = [];
+        c.sparqlValidationResults.push({
+          resultMessage: `Maturiteitslevel 1: optionele eigenschap ${missingOptionalProperty.path} van klasse ${missingOptionalProperty.targetClass} wordt niet minstens 1 keer gebruikt.`
+        })
+      }
     })
   });
   // Add errors of maturity level 3
   maturityLevelReport.maturityLevel3Report.missingClasses.forEach(missingClass => {
-    classCollections.forEach(c => {
-      if(c.className === missingClass) c.sparqlValidationResults.push({
-        resultMessage: `Maturiteitslevel 3: klasse ${missingClass} ontbreekt.`
-      })
+    enrichedClassCollections.forEach(c => {
+      if(c.classURI === missingClass) {
+        if(!c.sparqlValidationResults) c.sparqlValidationResults = [];
+        c.sparqlValidationResults.push({
+          resultMessage: `Maturiteitslevel 3: klasse ${missingClass} ontbreekt.`
+        })
+      }
     })
   });
-  maturityLevelReport.maturityLevel2Report.missingOptionalProperties.forEach(missingOptionalProperty => {
-    classCollections.forEach(c => {
-      if(c.className === missingOptionalProperty.targetClass) c.sparqlValidationResults.push({
-        resultMessage: `Maturiteitslevel 3: optionele eigenschap ${missingOptionalProperty.path} van klasse ${missingOptionalProperty.targetClass} ontbreekt.`
-      })
+  maturityLevelReport.maturityLevel3Report.missingOptionalProperties.forEach(missingOptionalProperty => {
+    enrichedClassCollections.forEach(c => {
+      if(c.classURI === missingOptionalProperty.targetClass) {
+        if(!c.sparqlValidationResults) c.sparqlValidationResults = [];
+        c.sparqlValidationResults.push({
+          resultMessage: `Maturiteitslevel 3: optionele eigenschap ${missingOptionalProperty.path} van klasse ${missingOptionalProperty.targetClass}  wordt niet minstens 1 keer gebruikt.`
+        })
+      }
     })
   });
 
-  return classCollections;
+  return enrichedClassCollections;
 }

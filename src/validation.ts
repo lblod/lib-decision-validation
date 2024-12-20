@@ -633,13 +633,13 @@ async function processProperty(subject, propertyKey): Promise<ProcessedProperty>
 async function postProcess(validatedSubjects: ValidatedSubject[]): Promise<ClassCollection[]> {
   const classes: ClassCollection[] = [];
   // Combine all Root objects with the same type into one collection
-  const distinctClasses: string[] = getUniqueValues(validatedSubjects.map((p) => p.class)) as string[];
-  const targetClasses: string[] = BLUEPRINT.filter(
+  // const distinctClasses: string[] = getUniqueValues(validatedSubjects.map((p) => p.class)) as string[];
+  const targetClasses: string[] = getUniqueValues(BLUEPRINT.filter(
     (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass',
   )
-    .map((b) => b.get('o')!.value);
-  const rootClasses: string[] = distinctClasses.filter((c) => targetClasses.indexOf(c) !== -1);
-  rootClasses.forEach((c) => {
+    .map((b) => b.get('o')!.value));
+  //const rootClasses: string[] = distinctClasses.filter((c) => targetClasses.indexOf(c) !== -1);
+  targetClasses.forEach((c) => {
     const objects: ValidatedSubject[] = validatedSubjects.filter((s) => s.class === c);
     classes.push({
       classURI: c,
