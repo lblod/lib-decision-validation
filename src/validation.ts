@@ -1,13 +1,15 @@
 import { Bindings } from '@comunica/types';
-import type {
-  ValidatedSubject,
-  ValidatedProperty,
-  ParsedSubject,
-  ParsedProperty,
-  ProcessedProperty,
-  ClassCollection,
-  ValidatedPublication,
-  ValidationResult,
+import {
+  type ValidatedSubject,
+  type ValidatedProperty,
+  type ParsedSubject,
+  type ParsedProperty,
+  type ProcessedProperty,
+  type ClassCollection,
+  type ValidatedPublication,
+  type ValidationResult,
+  type MaturityLevelReport,
+  MaturityLevel,
 } from './types';
 import {
   filterTermsByValue,
@@ -19,6 +21,7 @@ import {
   getStoreFromSPOBindings,
   validateSubjectWithSparqlConstraint,
   calculateMaturityLevel,
+  addMaturityLevelReportToClassCollection,
 } from './utils';
 import { enrichClassCollectionsWithExample } from './examples';
 import { DOMNode } from 'html-dom-parser';
@@ -30,9 +33,12 @@ let EXAMPLE: DOMNode[] = [];
 let PUBLICATION: Bindings[] = [];
 let PUBLICATION_STORE: Store;
 
-const MATURITY_LEVEL: string[] = ['Niveau 0', 'Niveau 1', 'Niveau 2', 'Niveau 3'];
-let FOUND_MATURITY = MATURITY_LEVEL[0];
-const invalidPropertiesBymaturityLevel: {string?: ValidatedProperty[]} = {}; 
+const invalidPropertiesByMaturityLevel: { [key in MaturityLevel]: ValidatedProperty[] } = {
+  [MaturityLevel.Niveau0]: [],
+  [MaturityLevel.Niveau1]: [],
+  [MaturityLevel.Niveau2]: [],
+  [MaturityLevel.Niveau3]: []
+};
 const VALIDATED_SUBJECTS_CACHE: Map<string, any> = new Map();
 
 /* determines the document type based on a specific term
@@ -194,7 +200,6 @@ export async function validatePublication(
   const lblodUris: Bindings[] = await getLblodURIsFromBindings(publication);
   const retrievedUris: string[] = [];
   const dereferencedBestuursorgaanLblodUris: Bindings[] = [];
-  FOUND_MATURITY = MATURITY_LEVEL[0]; // reset
 
   if (onProgress) onProgress(`We starten het validatieproces`, 0);
 
@@ -318,11 +323,13 @@ export async function validatePublication(
     }
   }
   if (onProgress) onProgress(`We voltooien de validatie`, 100);
+  const maturityLevelReport: MaturityLevelReport = await calculateMaturityLevel(invalidPropertiesByMaturityLevel, PUBLICATION_STORE);
 
-  FOUND_MATURITY = await calculateMaturityLevel(MATURITY_LEVEL, invalidPropertiesBymaturityLevel, PUBLICATION_STORE);
+  const classCollections = await postProcess(validatedSubjects);
+  const enrichedClassCollections = addMaturityLevelReportToClassCollection(classCollections, maturityLevelReport);
   return {
-    classes: await postProcess(validatedSubjects),
-    maturity: FOUND_MATURITY,
+    classes: enrichedClassCollections,
+    maturity: maturityLevelReport.foundMaturity,
   } as ValidatedPublication;
 }
 
@@ -340,9 +347,10 @@ export async function validateDocument(rdfDocument: Bindings[], blueprint: Bindi
     }
   }
 
+  // Maturity levels are not applicable with generic validate document
   return {
     classes: await postProcess(validatedSubjects),
-    maturity: FOUND_MATURITY,
+    maturity: MaturityLevel.Niveau0,
   } as ValidatedPublication;
 }
 
@@ -470,7 +478,10 @@ async function validateProperty(subject, propertyShape: Bindings[]): Promise<Val
         break;
       }
       case 'http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau': {
-        validatedProperty.maturityLevel = p.get('o')!.value;
+        const mat = p.get('o')!.value;
+        if (p.get('o')!.value === 'Niveau 1') validatedProperty.maturityLevel = MaturityLevel.Niveau1;
+        if (p.get('o')!.value === 'Niveau 2') validatedProperty.maturityLevel = MaturityLevel.Niveau2;
+        if (p.get('o')!.value === 'Niveau 3') validatedProperty.maturityLevel = MaturityLevel.Niveau3;
         break;
       }
       default: {
@@ -562,11 +573,10 @@ async function validateProperty(subject, propertyShape: Bindings[]): Promise<Val
   
   // Keep invalid properties that effect maturity level
   if (
-    !validatedProperty.valid &&
-    MATURITY_LEVEL.includes(validatedProperty.maturityLevel)
+    !validatedProperty.valid
   ) {
-    if (!invalidPropertiesBymaturityLevel[validatedProperty.maturityLevel])  invalidPropertiesBymaturityLevel[validatedProperty.maturityLevel] = [];
-    invalidPropertiesBymaturityLevel[validatedProperty.maturityLevel].push(validatedProperty);
+    if (!invalidPropertiesByMaturityLevel[validatedProperty.maturityLevel])  invalidPropertiesByMaturityLevel[validatedProperty.maturityLevel] = [];
+    invalidPropertiesByMaturityLevel[validatedProperty.maturityLevel].push(validatedProperty);
   }
   return validatedProperty;
 }

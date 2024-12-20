@@ -4,7 +4,7 @@ import parse, { DOMNode } from 'html-dom-parser';
 
 import { QueryEngine } from '@comunica/query-sparql';
 import { fetchDocument } from './queries';
-import { ParsedSubject, ValidatedProperty, ValidationResult } from './types';
+import { ClassCollection, MaturityLevel, MaturityLevelReport, ParsedSubject, Property, ValidatedProperty, ValidationResult } from './types';
 
 /* function to filter triples by a certain condition and then get the value of a certain term
   param:
@@ -192,7 +192,7 @@ export async function validateSubjectWithSparqlConstraint(subject: ParsedSubject
   return results;
 }
 
-export async function getMissingClassesOfMaturityLevel(maturityLevel: string, store: Store): Promise<Bindings[]> {
+export async function getMissingClassesOfMaturityLevel(maturityLevel: string, store: Store): Promise<string[]> {
   const query = `
       PREFIX sh: <http://www.w3.org/ns/shacl#>
       PREFIX lblodBesluit: <http://lblod.data.gift/vocabularies/besluit/>
@@ -209,27 +209,125 @@ export async function getMissingClassesOfMaturityLevel(maturityLevel: string, st
       }
     `;
 
-  return await runQuery(query, {
+  const res = await runQuery(query, {
     sources: [store]
   });
+  return res.map((b) => b.get('targetClass').value);
 }
 
-export async function calculateMaturityLevel(maturityLevels: string[], invalidPropertiesBymaturityLevel: {string?: ValidatedProperty[]}, store: Store): Promise<string> {
-  let reachedMaturity = maturityLevels[0];
+export async function getMissingOptionalPropertiesOfMaturityLevel(maturityLevel: string, store: Store): Promise<Property[]> {
+  // Exceptions are "heeftTegenstander" and "heeftOnthouder"
+  const query = `
+      PREFIX sh: <http://www.w3.org/ns/shacl#>
+      PREFIX lblodBesluit: <http://lblod.data.gift/vocabularies/besluit/>
+      
+      SELECT distinct ?targetClass ?path
+      WHERE {
+        ?shape a sh:NodeShape ;
+          sh:targetClass ?targetClass ;
+          sh:property ?prop .
+
+        ?prop lblodBesluit:maturiteitsniveau "${maturityLevel}" ;
+          sh:minCount 0 ;
+          sh:path ?path .
+
+        FILTER NOT EXISTS {
+          ?instance a ?targetClass ;
+            ?path ?propertyValue .
+        }
+
+        FILTER (?path NOT IN (<http://data.vlaanderen.be/ns/besluit#heeftOnthouder> <http://data.vlaanderen.be/ns/besluit#heeftTegenstander>))
+      }
+    `;
+
+  const res = await runQuery(query, {
+    sources: [store]
+  });
+
+  return res.map(b => ({
+      targetClass: b.get('targetClass').value,
+      path: b.get('path').value
+  }));
+}
+
+export async function calculateMaturityLevel(invalidPropertiesBymaturityLevel: { [key in MaturityLevel]: ValidatedProperty[] }, store: Store): Promise<MaturityLevelReport> {
+  let reachedMaturity: MaturityLevel = MaturityLevel.Niveau0;
 
   // LEVEL 1
-  const missingClassesLevel1 = await getMissingClassesOfMaturityLevel(maturityLevels[1], store);
-  const invalidPropertiesOfLevel1: ValidatedProperty[]= invalidPropertiesBymaturityLevel[maturityLevels[1]] ? invalidPropertiesBymaturityLevel[maturityLevels[1]] : [];
-  // If no invalid properties of level 1 are found AND all classes are used of the maturity level
-  if (!invalidPropertiesOfLevel1.length && !missingClassesLevel1.length ) reachedMaturity = maturityLevels[1];
+  const missingClassesLevel1 = await getMissingClassesOfMaturityLevel(MaturityLevel.Niveau1, store);
+  const invalidPropertiesOfLevel1: ValidatedProperty[]= invalidPropertiesBymaturityLevel[MaturityLevel.Niveau1] ? invalidPropertiesBymaturityLevel[MaturityLevel.Niveau1] : [];
+  // Check optional properties of level 1 are used (but not by every instance)
+  const missingOptionalPropertiesOfLevel1 = await getMissingOptionalPropertiesOfMaturityLevel(MaturityLevel.Niveau1, store);
+
+  // If no invalid properties of level 1 are found 
+  // AND all classes are used of the maturity level
+  // AND optional properties are used at least once (except heeftTegenstander, heeftOnthouder)
+  if (!invalidPropertiesOfLevel1.length && !missingClassesLevel1.length && !missingOptionalPropertiesOfLevel1.length) reachedMaturity = MaturityLevel.Niveau1;
   
   // LEVEL 2
 
   // LEVEL 3
-  const missingClassesLevel3 = await getMissingClassesOfMaturityLevel(maturityLevels[3], store);
-  const invalidPropertiesOfLevel3: ValidatedProperty[]= invalidPropertiesBymaturityLevel[maturityLevels[3]] ? invalidPropertiesBymaturityLevel[maturityLevels[3]] : [];
+  const missingClassesLevel3 = await getMissingClassesOfMaturityLevel(MaturityLevel.Niveau3, store);
+  const invalidPropertiesOfLevel3: ValidatedProperty[]= invalidPropertiesBymaturityLevel[MaturityLevel.Niveau3] ? invalidPropertiesBymaturityLevel[MaturityLevel.Niveau3] : [];
+  // Check optional properties of level 1 are used (but not by every instance)
+  const missingOptionalPropertiesOfLevel3 = await getMissingOptionalPropertiesOfMaturityLevel(MaturityLevel.Niveau3, store);
   // If no invalid properties of level 3 are found AND all classes are used of the maturity level
-  if (!invalidPropertiesOfLevel3.length && !missingClassesLevel3.length ) reachedMaturity = maturityLevels[3];
+  if (!invalidPropertiesOfLevel3.length && !missingClassesLevel3.length && !missingOptionalPropertiesOfLevel1.length) reachedMaturity = MaturityLevel.Niveau3;
   
-  return reachedMaturity;
+  return {
+    foundMaturity: reachedMaturity,
+    maturityLevel1Report: {
+      maturityLevel: MaturityLevel.Niveau1,
+      missingClasses: missingClassesLevel1,
+      missingOptionalProperties: missingOptionalPropertiesOfLevel1,
+      invalidProperties: invalidPropertiesOfLevel1
+    },
+    maturityLevel2Report: {
+      maturityLevel: MaturityLevel.Niveau2,
+      missingClasses: [],
+      missingOptionalProperties: [],
+      invalidProperties: []
+    },
+    maturityLevel3Report: {
+      maturityLevel: MaturityLevel.Niveau3,
+      missingClasses: missingClassesLevel3,
+      missingOptionalProperties: missingOptionalPropertiesOfLevel3,
+      invalidProperties: invalidPropertiesOfLevel3
+    }
+  }
+}
+
+export function addMaturityLevelReportToClassCollection(classCollections: ClassCollection[], maturityLevelReport: MaturityLevelReport): ClassCollection[] {
+  // Add errors of maturity level 1
+  maturityLevelReport.maturityLevel1Report.missingClasses.forEach(missingClass => {
+    classCollections.forEach(c => {
+      if(c.className === missingClass) c.sparqlValidationResults.push({
+        resultMessage: `Maturiteitslevel 1: klasse ${missingClass} ontbreekt.`
+      })
+    })
+  });
+  maturityLevelReport.maturityLevel1Report.missingOptionalProperties.forEach(missingOptionalProperty => {
+    classCollections.forEach(c => {
+      if(c.className === missingOptionalProperty.targetClass) c.sparqlValidationResults.push({
+        resultMessage: `Maturiteitslevel 1: optionele eigenschap ${missingOptionalProperty.path} van klasse ${missingOptionalProperty.targetClass} ontbreekt.`
+      })
+    })
+  });
+  // Add errors of maturity level 3
+  maturityLevelReport.maturityLevel3Report.missingClasses.forEach(missingClass => {
+    classCollections.forEach(c => {
+      if(c.className === missingClass) c.sparqlValidationResults.push({
+        resultMessage: `Maturiteitslevel 3: klasse ${missingClass} ontbreekt.`
+      })
+    })
+  });
+  maturityLevelReport.maturityLevel2Report.missingOptionalProperties.forEach(missingOptionalProperty => {
+    classCollections.forEach(c => {
+      if(c.className === missingOptionalProperty.targetClass) c.sparqlValidationResults.push({
+        resultMessage: `Maturiteitslevel 3: optionele eigenschap ${missingOptionalProperty.path} van klasse ${missingOptionalProperty.targetClass} ontbreekt.`
+      })
+    })
+  });
+
+  return classCollections;
 }

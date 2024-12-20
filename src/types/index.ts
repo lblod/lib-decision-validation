@@ -1,6 +1,6 @@
 export type ValidatedPublication = {
   classes: ClassCollection[];
-  maturity: string;
+  maturity: MaturityLevel;
 };
 
 export type ClassCollection = {
@@ -8,6 +8,7 @@ export type ClassCollection = {
   className: string;
   count: number;
   objects: ValidatedSubject[];
+  sparqlValidationResults?: ValidationResult[];
 };
 
 export type ParsedSubject = {
@@ -55,7 +56,7 @@ export type ValidatedProperty = {
   minCount: number;
   maxCount?: number;
   actualCount: number;
-  maturityLevel?: string;
+  maturityLevel?: MaturityLevel;
   valid: boolean;
   example?: string;
   sparqlValidationResults?: ValidationResult[];
@@ -74,3 +75,29 @@ export type ProcessedProperty = {
   example?: string;
   sparqlValidationResults?: ValidationResult[];
 };
+
+export type MaturityLevelReport = {
+  foundMaturity: MaturityLevel;
+  maturityLevel1Report: specificMaturityLevelReport;
+  maturityLevel2Report: specificMaturityLevelReport;
+  maturityLevel3Report: specificMaturityLevelReport;
+}
+
+export type specificMaturityLevelReport = {
+  maturityLevel?: MaturityLevel;
+  missingOptionalProperties: Property[];
+  missingClasses: string[];
+  invalidProperties: ValidatedProperty[];
+}
+
+export type Property = {
+  targetClass: string;
+  path: string;
+}
+
+export enum MaturityLevel {
+  Niveau0 = "Niveau 0",
+  Niveau1 = "Niveau 1",
+  Niveau2 = "Niveau 2",
+  Niveau3 = "Niveau 3"
+}
