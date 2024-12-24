@@ -195,7 +195,8 @@ function parseSubject(
   returns:
   - contains a report of all missing requirements for a publication
 */
-export async function validatePublication(
+export async function 
+validatePublication(
   publication: Bindings[],
   blueprint: Bindings[],
   example: DOMNode[],
@@ -205,7 +206,13 @@ export async function validatePublication(
   const lblodUris: Bindings[] = await getLblodURIsFromBindings(publication);
   const retrievedUris: string[] = [];
   const dereferencedBestuursorgaanLblodUris: Bindings[] = [];
-
+  const invalidPropertiesByMaturityLevel: { [key in MaturityLevel]: ValidatedProperty[] } = {
+    [MaturityLevel.Niveau0]: [],
+    [MaturityLevel.Niveau1]: [],
+    [MaturityLevel.Niveau2]: [],
+    [MaturityLevel.Niveau3]: []
+  };
+  
   if (onProgress) onProgress(`We starten het validatieproces`, 0);
 
   const totalLblodUris = lblodUris.length;
