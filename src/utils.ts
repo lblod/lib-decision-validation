@@ -107,23 +107,23 @@ export async function runQuery(query: string, context: any): Promise<Bindings[]>
 export async function getLblodURIsFromBindings(b: Bindings[]): Promise<Bindings[]> {
   const store: Store = getStoreFromSPOBindings(b);
   const query = `
-      select distinct ?id
+      select distinct ?id ?idWithHttp
       where {
         {
-          select distinct ?idWithoutHttp
+          select distinct ?idWithHttp
           where {
-            ?idWithoutHttp ?p ?o .
-            filter(regex(str(?idWithoutHttp), "data.lblod.info/id/(mandatarissen|personen|persoon|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
+            ?idWithHttp ?p ?o .
+            filter(regex(str(?idWithHttp), "data.lblod.info/id/(mandatarissen|personen|persoon|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
           }
         }
         UNION {
-          select distinct ?idWithoutHttp
+          select distinct ?idWithHttp
           where {
-            ?s ?p ?idWithoutHttp .
-            filter(regex(str(?idWithoutHttp), "data.lblod.info/id/(mandatarissen|personen|persoon|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
+            ?s ?p ?idWithHttp .
+            filter(regex(str(?idWithHttp), "data.lblod.info/id/(mandatarissen|personen|persoon|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
           }
         }
-        BIND(replace(str(?idWithoutHttp), 'http://', 'https://') as ?id)
+        BIND(replace(str(?idWithHttp), 'http://', 'https://') as ?id)
       }
     `;
 
@@ -250,8 +250,31 @@ export async function getMissingOptionalPropertiesOfMaturityLevel(maturityLevel:
   }));
 }
 
+export async function getMandatarissenThatAreNotDereferenced(store: Store): Promise<string[]> {
+  const query = `
+      PREFIX mandaat: <http://data.vlaanderen.be/ns/mandaat#>
+      PREFIX besluit: <http://data.vlaanderen.be/ns/besluit#>
+
+      SELECT distinct ?mandataris
+      WHERE {
+        ?s besluit:heeftVoorstander|besluit:heeftSecretaris|besluit:heeftAanwezigeBijStart|besluit:heeftAanwezige|besluit:heeftVoorstander|besluit:heeftTegenstander|besluit:heeftOnthouder|besluit:heeftStemmer ?mandataris
+         
+        FILTER NOT EXISTS {
+          ?mandataris dcterms:source ?mandataris .
+        }
+      }
+    `;
+
+  const res = await runQuery(query, {
+    sources: [store]
+  });
+  return res.map((b) => b.get('mandataris').value);
+}
 export async function calculateMaturityLevel(invalidPropertiesBymaturityLevel: { [key in MaturityLevel]: ValidatedProperty[] }, store: Store): Promise<MaturityLevelReport> {
   let reachedMaturity: MaturityLevel = MaturityLevel.Niveau0;
+  let missingClassesLevel3 = [];
+  let invalidPropertiesOfLevel3: ValidatedProperty[] = [];
+  let missingOptionalPropertiesOfLevel3 = [];
 
   // LEVEL 1
   const missingClassesLevel1 = await getMissingClassesOfMaturityLevel(MaturityLevel.Niveau1, store);
@@ -262,17 +285,23 @@ export async function calculateMaturityLevel(invalidPropertiesBymaturityLevel: {
   // If no invalid properties of level 1 are found 
   // AND all classes are used of the maturity level
   // AND optional properties are used at least once (except heeftTegenstander, heeftOnthouder)
-  if (!invalidPropertiesOfLevel1.length && !missingClassesLevel1.length && !missingOptionalPropertiesOfLevel1.length) reachedMaturity = MaturityLevel.Niveau1;
+  if (!invalidPropertiesOfLevel1.length && !missingClassesLevel1.length && !missingOptionalPropertiesOfLevel1.length) {
+    reachedMaturity = MaturityLevel.Niveau1;
   
-  // LEVEL 2
+    // LEVEL 2
+    const mandatarissenThatAreNotDereferenced = await getMandatarissenThatAreNotDereferenced(store);
+    if (!mandatarissenThatAreNotDereferenced.length) {
+      reachedMaturity = MaturityLevel.Niveau2;
 
-  // LEVEL 3
-  const missingClassesLevel3 = await getMissingClassesOfMaturityLevel(MaturityLevel.Niveau3, store);
-  const invalidPropertiesOfLevel3: ValidatedProperty[]= invalidPropertiesBymaturityLevel[MaturityLevel.Niveau3] ? invalidPropertiesBymaturityLevel[MaturityLevel.Niveau3] : [];
-  // Check optional properties of level 1 are used (but not by every instance)
-  const missingOptionalPropertiesOfLevel3 = await getMissingOptionalPropertiesOfMaturityLevel(MaturityLevel.Niveau3, store);
-  // If no invalid properties of level 3 are found AND all classes are used of the maturity level
-  if (!invalidPropertiesOfLevel3.length && !missingClassesLevel3.length && !missingOptionalPropertiesOfLevel1.length) reachedMaturity = MaturityLevel.Niveau3;
+      // LEVEL 3
+      missingClassesLevel3 = await getMissingClassesOfMaturityLevel(MaturityLevel.Niveau3, store);
+      invalidPropertiesOfLevel3 = invalidPropertiesBymaturityLevel[MaturityLevel.Niveau3] ? invalidPropertiesBymaturityLevel[MaturityLevel.Niveau3] : [];
+      // Check optional properties of level 1 are used (but not by every instance)
+      missingOptionalPropertiesOfLevel3 = await getMissingOptionalPropertiesOfMaturityLevel(MaturityLevel.Niveau3, store);
+      // If no invalid properties of level 3 are found AND all classes are used of the maturity level
+      if (!invalidPropertiesOfLevel3.length && !missingClassesLevel3.length && !missingOptionalPropertiesOfLevel1.length) reachedMaturity = MaturityLevel.Niveau3;
+    }
+  }
   
   return {
     foundMaturity: reachedMaturity,

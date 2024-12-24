@@ -1,4 +1,9 @@
 import { Bindings } from '@comunica/types';
+import { DataFactory } from 'rdf-data-factory';
+import { BindingsFactory } from '@comunica/utils-bindings-factory';
+const DF = new DataFactory();
+const BF = new BindingsFactory(DF);
+
 import {
   type ValidatedSubject,
   type ValidatedProperty,
@@ -208,7 +213,11 @@ export async function validatePublication(
   for (const u of lblodUris) {
     const uri = u.get('id').value.split(/[?#]/)[0];
     const dereferencedLblodUri = await fetchDocument(uri);
-
+    if(dereferencedLblodUri.length) enrichedPublication.push(BF.fromRecord({
+      s: DF.namedNode(u.get('idWithHttp').value.split(/[?#]/)[0]),
+      p: DF.namedNode('http://purl.org/dc/terms/source'),
+      o: DF.namedNode(u.get('idWithHttp').value.split(/[?#]/)[0])
+    }));
     for (const b of dereferencedLblodUri) {
       if (enrichedPublication.filter((element) => element.equals(b)).length === 0) {
         enrichedPublication.push(b);
@@ -240,6 +249,11 @@ export async function validatePublication(
         retrievedUris.indexOf(urifromb) === -1
       ) {
         const dereferencedBestuursOrgaanOrEenheidLblodUri = await fetchDocument(urifromb);
+        if(dereferencedBestuursOrgaanOrEenheidLblodUri.length) enrichedPublication.push(BF.fromRecord({
+          s: DF.namedNode(ufromb.get('idWithHttp').value.split(/[?#]/)[0]),
+          p: DF.namedNode('http://purl.org/dc/terms/source'),
+          o: DF.namedNode(ufromb.get('idWithHttp').value.split(/[?#]/)[0])
+        }));
         for (const b of dereferencedBestuursOrgaanOrEenheidLblodUri) {
           if (enrichedPublication.filter((element) => element.equals(b)).length === 0) {
             enrichedPublication.push(b);
@@ -263,6 +277,11 @@ export async function validatePublication(
           const urifrombOrEenheid = ufrombOrEenheid.get('id').value.split(/[?#]/)[0];
           if (urifrombOrEenheid.indexOf('bestuurseenheden') !== -1 && retrievedUris.indexOf(urifrombOrEenheid) === -1) {
             const dereferencedBestuursEenheidLblodUri = await fetchDocument(urifrombOrEenheid);
+            if(dereferencedBestuursEenheidLblodUri.length) enrichedPublication.push(BF.fromRecord({
+              s: DF.namedNode(ufrombOrEenheid.get('idWithHttp').value.split(/[?#]/)[0]),
+              p: DF.namedNode('http://purl.org/dc/terms/source'),
+              o: DF.namedNode(ufrombOrEenheid.get('idWithHttp').value.split(/[?#]/)[0])
+            }));
             for (const b of dereferencedBestuursEenheidLblodUri) {
               if (enrichedPublication.filter((element) => element.equals(b)).length === 0) {
                 enrichedPublication.push(b);
@@ -326,7 +345,7 @@ export async function validatePublication(
   const maturityLevelReport: MaturityLevelReport = await calculateMaturityLevel(invalidPropertiesByMaturityLevel, PUBLICATION_STORE);
 
   const classCollections = await postProcess(validatedSubjects);
-  const enrichedClassCollections = addMaturityLevelReportToClassCollection(classCollections, maturityLevelReport);
+  const enrichedClassCollections =  addMaturityLevelReportToClassCollection(classCollections, maturityLevelReport);
   return {
     classes: enrichedClassCollections,
     maturity: maturityLevelReport.foundMaturity,
@@ -633,12 +652,11 @@ async function processProperty(subject, propertyKey): Promise<ProcessedProperty>
 async function postProcess(validatedSubjects: ValidatedSubject[]): Promise<ClassCollection[]> {
   const classes: ClassCollection[] = [];
   // Combine all Root objects with the same type into one collection
-  // const distinctClasses: string[] = getUniqueValues(validatedSubjects.map((p) => p.class)) as string[];
+  // All targetClasses are listed to provide feedback when class is not used for maturity level
   const targetClasses: string[] = getUniqueValues(BLUEPRINT.filter(
     (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass',
   )
     .map((b) => b.get('o')!.value));
-  //const rootClasses: string[] = distinctClasses.filter((c) => targetClasses.indexOf(c) !== -1);
   targetClasses.forEach((c) => {
     const objects: ValidatedSubject[] = validatedSubjects.filter((s) => s.class === c);
     classes.push({
