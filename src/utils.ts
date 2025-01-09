@@ -4,7 +4,7 @@ import parse, { DOMNode } from 'html-dom-parser';
 
 import { QueryEngine } from '@comunica/query-sparql';
 import { fetchDocument } from './queries';
-import { ParsedSubject, ValidationResult } from './types';
+import { ClassCollection, MaturityLevel, MaturityLevelReport, ParsedSubject, Property, ValidatedProperty, ValidationResult } from './types';
 
 /* function to filter triples by a certain condition and then get the value of a certain term
   param:
@@ -107,23 +107,23 @@ export async function runQuery(query: string, context: any): Promise<Bindings[]>
 export async function getLblodURIsFromBindings(b: Bindings[]): Promise<Bindings[]> {
   const store: Store = getStoreFromSPOBindings(b);
   const query = `
-      select distinct ?id
+      select distinct ?id ?idWithHttp
       where {
         {
-          select distinct ?idWithoutHttp
+          select distinct ?idWithHttp
           where {
-            ?idWithoutHttp ?p ?o .
-            filter(regex(str(?idWithoutHttp), "data.lblod.info/id/(mandatarissen|personen|persoon|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
+            ?idWithHttp ?p ?o .
+            filter(regex(str(?idWithHttp), "data.lblod.info/id/(mandatarissen|personen|persoon|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
           }
         }
         UNION {
-          select distinct ?idWithoutHttp
+          select distinct ?idWithHttp
           where {
-            ?s ?p ?idWithoutHttp .
-            filter(regex(str(?idWithoutHttp), "data.lblod.info/id/(mandatarissen|personen|persoon|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
+            ?s ?p ?idWithHttp .
+            filter(regex(str(?idWithHttp), "data.lblod.info/id/(mandatarissen|personen|persoon|functionarissen|bestuursorganen|bestuurseenheden|werkingsgebieden)", "i"))
           }
         }
-        BIND(replace(str(?idWithoutHttp), 'http://', 'https://') as ?id)
+        BIND(replace(str(?idWithHttp), 'http://', 'https://') as ?id)
       }
     `;
 
@@ -190,4 +190,186 @@ export async function validateSubjectWithSparqlConstraint(subject: ParsedSubject
     });
   }
   return results;
+}
+
+export async function getMissingClassesOfMaturityLevel(maturityLevel: string, store: Store): Promise<string[]> {
+  const query = `
+      PREFIX sh: <http://www.w3.org/ns/shacl#>
+      PREFIX lblodBesluit: <http://lblod.data.gift/vocabularies/besluit/>
+      
+      SELECT distinct ?targetClass
+      WHERE {
+        ?shape a sh:NodeShape ;
+          sh:targetClass ?targetClass ;
+          sh:property/lblodBesluit:maturiteitsniveau "${maturityLevel}" .
+
+        FILTER NOT EXISTS {
+          ?instance a ?targetClass .
+        }
+      }
+    `;
+
+  const res = await runQuery(query, {
+    sources: [store]
+  });
+  return res.map((b) => b.get('targetClass').value);
+}
+
+export async function getMissingOptionalPropertiesOfMaturityLevel(maturityLevel: string, store: Store): Promise<Property[]> {
+  // Exceptions are "heeftTegenstander" and "heeftOnthouder"
+  const query = `
+      PREFIX sh: <http://www.w3.org/ns/shacl#>
+      PREFIX lblodBesluit: <http://lblod.data.gift/vocabularies/besluit/>
+      
+      SELECT distinct ?targetClass ?path
+      WHERE {
+        ?shape a sh:NodeShape ;
+          sh:targetClass ?targetClass ;
+          sh:property ?prop .
+
+        ?prop lblodBesluit:maturiteitsniveau "${maturityLevel}" ;
+          sh:minCount 0 ;
+          sh:path ?path .
+
+        FILTER NOT EXISTS {
+          ?instance a ?targetClass ;
+            ?path ?propertyValue .
+        }
+
+        FILTER (?path NOT IN (<http://data.vlaanderen.be/ns/besluit#heeftOnthouder> <http://data.vlaanderen.be/ns/besluit#heeftTegenstander>))
+      }
+    `;
+
+  const res = await runQuery(query, {
+    sources: [store]
+  });
+
+  return res.map(b => ({
+      targetClass: b.get('targetClass').value,
+      path: b.get('path').value
+  }));
+}
+
+export async function getMandatarissenThatAreNotDereferenced(store: Store): Promise<string[]> {
+  const query = `
+      PREFIX mandaat: <http://data.vlaanderen.be/ns/mandaat#>
+      PREFIX besluit: <http://data.vlaanderen.be/ns/besluit#>
+
+      SELECT distinct ?mandataris
+      WHERE {
+        ?s besluit:heeftVoorstander|besluit:heeftSecretaris|besluit:heeftAanwezigeBijStart|besluit:heeftAanwezige|besluit:heeftVoorstander|besluit:heeftTegenstander|besluit:heeftOnthouder|besluit:heeftStemmer ?mandataris
+         
+        FILTER NOT EXISTS {
+          ?mandataris dcterms:source ?mandataris .
+        }
+      }
+    `;
+
+  const res = await runQuery(query, {
+    sources: [store]
+  });
+  return res.map((b) => b.get('mandataris').value);
+}
+export async function calculateMaturityLevel(invalidPropertiesBymaturityLevel: { [key in MaturityLevel]: ValidatedProperty[] }, store: Store): Promise<MaturityLevelReport> {
+  let reachedMaturity: MaturityLevel = MaturityLevel.Niveau0;
+  let missingClassesLevel3 = [];
+  let invalidPropertiesOfLevel3: ValidatedProperty[] = [];
+  let missingOptionalPropertiesOfLevel3 = [];
+
+  // LEVEL 1
+  const missingClassesLevel1 = await getMissingClassesOfMaturityLevel(MaturityLevel.Niveau1, store);
+  const invalidPropertiesOfLevel1: ValidatedProperty[]= invalidPropertiesBymaturityLevel[MaturityLevel.Niveau1] ? invalidPropertiesBymaturityLevel[MaturityLevel.Niveau1] : [];
+  // Check optional properties of level 1 are used (but not by every instance)
+  const missingOptionalPropertiesOfLevel1 = await getMissingOptionalPropertiesOfMaturityLevel(MaturityLevel.Niveau1, store);
+
+  // If no invalid properties of level 1 are found 
+  // AND all classes are used of the maturity level
+  // AND optional properties are used at least once (except heeftTegenstander, heeftOnthouder)
+  if (!invalidPropertiesOfLevel1.length && !missingClassesLevel1.length && !missingOptionalPropertiesOfLevel1.length) {
+    reachedMaturity = MaturityLevel.Niveau1;
+  
+    // LEVEL 2
+    const mandatarissenThatAreNotDereferenced = await getMandatarissenThatAreNotDereferenced(store);
+    if (!mandatarissenThatAreNotDereferenced.length) {
+      reachedMaturity = MaturityLevel.Niveau2;
+
+      // LEVEL 3
+      missingClassesLevel3 = await getMissingClassesOfMaturityLevel(MaturityLevel.Niveau3, store);
+      invalidPropertiesOfLevel3 = invalidPropertiesBymaturityLevel[MaturityLevel.Niveau3] ? invalidPropertiesBymaturityLevel[MaturityLevel.Niveau3] : [];
+      // Check optional properties of level 1 are used (but not by every instance)
+      missingOptionalPropertiesOfLevel3 = await getMissingOptionalPropertiesOfMaturityLevel(MaturityLevel.Niveau3, store);
+      // If no invalid properties of level 3 are found AND all classes are used of the maturity level
+      if (!invalidPropertiesOfLevel3.length && !missingClassesLevel3.length && !missingOptionalPropertiesOfLevel1.length) reachedMaturity = MaturityLevel.Niveau3;
+    }
+  }
+  
+  return {
+    foundMaturity: reachedMaturity,
+    maturityLevel1Report: {
+      maturityLevel: MaturityLevel.Niveau1,
+      missingClasses: missingClassesLevel1,
+      missingOptionalProperties: missingOptionalPropertiesOfLevel1,
+      invalidProperties: invalidPropertiesOfLevel1
+    },
+    maturityLevel2Report: {
+      maturityLevel: MaturityLevel.Niveau2,
+      missingClasses: [],
+      missingOptionalProperties: [],
+      invalidProperties: []
+    },
+    maturityLevel3Report: {
+      maturityLevel: MaturityLevel.Niveau3,
+      missingClasses: missingClassesLevel3,
+      missingOptionalProperties: missingOptionalPropertiesOfLevel3,
+      invalidProperties: invalidPropertiesOfLevel3
+    }
+  }
+}
+
+export function addMaturityLevelReportToClassCollection(classCollections: ClassCollection[], maturityLevelReport: MaturityLevelReport): ClassCollection[] {
+  const enrichedClassCollections: ClassCollection[] = classCollections;
+  // Add errors of maturity level 1
+  maturityLevelReport.maturityLevel1Report.missingClasses.forEach(missingClass => {
+    enrichedClassCollections.forEach(c => {
+      if(c.classURI === missingClass) {
+        if(!c.sparqlValidationResults) c.sparqlValidationResults = [];
+        c.sparqlValidationResults.push({
+          resultMessage: `Maturiteitslevel 1: klasse ${missingClass} ontbreekt.`
+        })
+      }
+    })
+  });
+  maturityLevelReport.maturityLevel1Report.missingOptionalProperties.forEach(missingOptionalProperty => {
+    enrichedClassCollections.forEach(c => {
+      if(c.classURI === missingOptionalProperty.targetClass) {
+        if(!c.sparqlValidationResults) c.sparqlValidationResults = [];
+        c.sparqlValidationResults.push({
+          resultMessage: `Maturiteitslevel 1: optionele eigenschap ${missingOptionalProperty.path} van klasse ${missingOptionalProperty.targetClass} wordt niet minstens 1 keer gebruikt.`
+        })
+      }
+    })
+  });
+  // Add errors of maturity level 3
+  maturityLevelReport.maturityLevel3Report.missingClasses.forEach(missingClass => {
+    enrichedClassCollections.forEach(c => {
+      if(c.classURI === missingClass) {
+        if(!c.sparqlValidationResults) c.sparqlValidationResults = [];
+        c.sparqlValidationResults.push({
+          resultMessage: `Maturiteitslevel 3: klasse ${missingClass} ontbreekt.`
+        })
+      }
+    })
+  });
+  maturityLevelReport.maturityLevel3Report.missingOptionalProperties.forEach(missingOptionalProperty => {
+    enrichedClassCollections.forEach(c => {
+      if(c.classURI === missingOptionalProperty.targetClass) {
+        if(!c.sparqlValidationResults) c.sparqlValidationResults = [];
+        c.sparqlValidationResults.push({
+          resultMessage: `Maturiteitslevel 3: optionele eigenschap ${missingOptionalProperty.path} van klasse ${missingOptionalProperty.targetClass}  wordt niet minstens 1 keer gebruikt.`
+        })
+      }
+    })
+  });
+
+  return enrichedClassCollections;
 }

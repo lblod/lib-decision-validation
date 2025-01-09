@@ -1,6 +1,6 @@
 {
   "name": "@lblod/lib-decision-validation",
-  "version": "1.0.46",
+  "version": "1.0.47",
   "publishConfig": {
     "access": "public"
   },
@@ -46,10 +46,11 @@
   "dependencies": {
     "@comunica/actor-http-proxy": "^3.0.3",
     "@comunica/query-sparql": "^3.0.3",
+    "@comunica/utils-bindings-factory": "^4.0.2",
+    "@lblod/lib-decision-shapes": "^0.0.20",
     "dom-serializer": "^2.0.0",
     "domutils": "^3.1.0",
     "html-dom-parser": "^5.0.8",
-    "@lblod/lib-decision-shapes": "^0.0.20",
     "n3": "^1.17.3",
     "tsup": "^8.0.2"
   }
