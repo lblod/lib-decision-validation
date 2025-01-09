@@ -161,6 +161,8 @@ export async function validateSubjectWithSparqlConstraint(subject: ParsedSubject
   // We expect a sparql constraint query to return ?this, ?path and ?value
   // Check if subject URI is not a blank node
   if(subject.uri.startsWith('http')) {
+    // Replace first occurence, which is expected in the SELECT
+    rewrittenSelect = select.replace(' $this ', `($this as ?this)`);
     rewrittenSelect = select.replaceAll('$this', `<${subject.uri}>`);
     rewrittenSelect = rewrittenSelect.replaceAll('\t', '').replaceAll('\n', ' ');
     // Fill in $path when sparql constraint on property shape
