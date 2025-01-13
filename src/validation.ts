@@ -38,7 +38,7 @@ let EXAMPLE: DOMNode[] = [];
 let PUBLICATION: Bindings[] = [];
 let PUBLICATION_STORE: Store;
 
-const invalidPropertiesByMaturityLevel: { [key in MaturityLevel]: ValidatedProperty[] } = {
+let invalidPropertiesByMaturityLevel: { [key in MaturityLevel]: ValidatedProperty[] } = {
   [MaturityLevel.Niveau0]: [],
   [MaturityLevel.Niveau1]: [],
   [MaturityLevel.Niveau2]: [],
@@ -206,7 +206,7 @@ validatePublication(
   const lblodUris: Bindings[] = await getLblodURIsFromBindings(publication);
   const retrievedUris: string[] = [];
   const dereferencedBestuursorgaanLblodUris: Bindings[] = [];
-  const invalidPropertiesByMaturityLevel: { [key in MaturityLevel]: ValidatedProperty[] } = {
+  invalidPropertiesByMaturityLevel = {
     [MaturityLevel.Niveau0]: [],
     [MaturityLevel.Niveau1]: [],
     [MaturityLevel.Niveau2]: [],
@@ -356,6 +356,7 @@ validatePublication(
   return {
     classes: enrichedClassCollections,
     maturity: maturityLevelReport.foundMaturity,
+    maturityLevelReport: maturityLevelReport
   } as ValidatedPublication;
 }
 
@@ -594,14 +595,13 @@ async function validateProperty(subject, propertyShape: Bindings[]): Promise<Val
       validatedProperty.value.every((v) => typeof v === 'string' && v.startsWith('http')) ||
       (validatedProperty.actualCount === 0 && validatedProperty.minCount === 0));
 
-  // if values are strings, they must contain more than spaces, new lines or tabs to be valid
-  if (validatedProperty.value.every((v) => typeof v === 'string' && v !== 'Waarde niet gevonden')) validatedProperty.valid = validatedProperty.value.every((v) => /[^\s]/.test(String(v)));
+  // if property is not optional and values are strings, they must contain more than spaces, new lines or tabs to be valid
+  if (validatedProperty.minCount && validatedProperty.minCount != 0 && validatedProperty.value.every((v) => typeof v === 'string' && v !== 'Waarde niet gevonden')) validatedProperty.valid = validatedProperty.value.every((v) => /[^\s]/.test(String(v)));
   
   // Keep invalid properties that effect maturity level
   if (
-    !validatedProperty.valid
+    validatedProperty.maturityLevel && !validatedProperty.valid
   ) {
-    if (!invalidPropertiesByMaturityLevel[validatedProperty.maturityLevel])  invalidPropertiesByMaturityLevel[validatedProperty.maturityLevel] = [];
     invalidPropertiesByMaturityLevel[validatedProperty.maturityLevel].push(validatedProperty);
   }
   return validatedProperty;
