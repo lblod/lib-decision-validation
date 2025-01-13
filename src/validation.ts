@@ -596,7 +596,7 @@ async function validateProperty(subject, propertyShape: Bindings[]): Promise<Val
       (validatedProperty.actualCount === 0 && validatedProperty.minCount === 0));
 
   // if property is not optional and values are strings, they must contain more than spaces, new lines or tabs to be valid
-  if (validatedProperty.minCount && validatedProperty.minCount != 0 && validatedProperty.value.every((v) => typeof v === 'string' && v !== 'Waarde niet gevonden')) validatedProperty.valid = validatedProperty.value.every((v) => /[^\s]/.test(String(v)));
+  if (validatedProperty.minCount && validatedProperty.minCount !== 0 && validatedProperty.value.every((v) => typeof v === 'string' && v !== 'Waarde niet gevonden')) validatedProperty.valid = validatedProperty.value.every((v) => /[^\s]/.test(String(v)));
   
   // Keep invalid properties that effect maturity level
   if (
