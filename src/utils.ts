@@ -278,6 +278,7 @@ export async function calculateMaturityLevel(invalidPropertiesBymaturityLevel: {
   let missingClassesLevel3 = [];
   let invalidPropertiesOfLevel3: ValidatedProperty[] = [];
   let missingOptionalPropertiesOfLevel3 = [];
+  let mandatarissenThatAreNotDereferenced = [];
 
   // LEVEL 1
   const missingClassesLevel1 = await getMissingClassesOfMaturityLevel(MaturityLevel.Niveau1, store);
@@ -292,7 +293,7 @@ export async function calculateMaturityLevel(invalidPropertiesBymaturityLevel: {
     reachedMaturity = MaturityLevel.Niveau1;
   
     // LEVEL 2
-    const mandatarissenThatAreNotDereferenced = await getMandatarissenThatAreNotDereferenced(store);
+    mandatarissenThatAreNotDereferenced = await getMandatarissenThatAreNotDereferenced(store);
     if (!mandatarissenThatAreNotDereferenced.length) {
       reachedMaturity = MaturityLevel.Niveau2;
 
@@ -318,7 +319,8 @@ export async function calculateMaturityLevel(invalidPropertiesBymaturityLevel: {
       maturityLevel: MaturityLevel.Niveau2,
       missingClasses: [],
       missingOptionalProperties: [],
-      invalidProperties: []
+      invalidProperties: [],
+      mandatarissenThatAreNotDereferenced: mandatarissenThatAreNotDereferenced
     },
     maturityLevel3Report: {
       maturityLevel: MaturityLevel.Niveau3,

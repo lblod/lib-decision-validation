@@ -1,6 +1,7 @@
 export type ValidatedPublication = {
   classes: ClassCollection[];
   maturity: MaturityLevel;
+  maturityLevelReport?: MaturityLevelReport;
 };
 
 export type ClassCollection = {
@@ -88,6 +89,7 @@ export type specificMaturityLevelReport = {
   missingOptionalProperties: Property[];
   missingClasses: string[];
   invalidProperties: ValidatedProperty[];
+  mandatarissenThatAreNotDereferenced?: string[];
 }
 
 export type Property = {
