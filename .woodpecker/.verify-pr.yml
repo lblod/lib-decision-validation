@@ -1,4 +1,4 @@
-pipeline:
+steps:
   install:
     image: woodpeckerci/plugin-node-pm
     commands: 
