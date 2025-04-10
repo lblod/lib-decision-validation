@@ -212,6 +212,7 @@ validatePublication(
     [MaturityLevel.Niveau2]: [],
     [MaturityLevel.Niveau3]: []
   };
+  VALIDATED_SUBJECTS_CACHE.clear();
   
   if (onProgress) onProgress(`We starten het validatieproces`, 0);
 

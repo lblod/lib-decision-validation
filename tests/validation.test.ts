@@ -521,4 +521,23 @@ describe('As a vendor, I want to see a good example when something is not valid'
             expect(foundLevel).toEqual(expectedLevel);
           },
           MILLISECONDS * 20);
+
+        test(
+          'Maturity level should be consistent over multiple runs',
+          async () => {
+            let publication: Bindings[] = await fetchDocument(BESLUITEN_LINK, PROXY);
+            const documentType = determineDocumentType(publication);
+            const blueprint: Bindings[] = await getBlueprintOfDocumentType("Notulen");
+            const validationResult1 =  await validatePublication(publication, blueprint, []);
+            publication = await fetchDocument(BESLUITEN_LINK, PROXY); // reset publication, because the publication gets enriched in the first run
+            const validationResult2 =  await validatePublication(publication, blueprint, []);
+
+            const expectedLevel = 'Niveau 0';
+            const foundLevel1 = validationResult1.maturity;
+            const foundLevel2 = validationResult2.maturity;
+
+            expect(foundLevel1).toEqual(expectedLevel);
+            expect(foundLevel2).toEqual(expectedLevel);
+          },
+          MILLISECONDS * 50);
 });
