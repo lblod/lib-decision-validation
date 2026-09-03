@@ -62,6 +62,59 @@ export function getUniqueValues<T>(array: T[]): T[] {
   return [...new Set(array)];
 }
 
+/* a predicate used by filterData to decide whether an item should be kept
+  param:
+  - item: the item under consideration
+  - allItems: the full array the item came from, so a filter can look at related items
+  returns:
+  - whether the item should be kept
+*/
+export type FilterPredicate<T> = (item: T, allItems: T[]) => boolean;
+
+/* generic filter function that applies a list of predicates to an array of any type of data
+  new predicates can be added later, for other types of data or other criteria, without changing this function
+  param:
+  - data: array of data to filter
+  - predicates: predicates that all need to pass for an item to be kept
+  returns:
+  - the filtered array
+*/
+export function filterData<T>(data: T[], predicates: FilterPredicate<T>[]): T[] {
+  return data.filter((item) => predicates.every((predicate) => predicate(item, data)));
+}
+
+/* filter predicate that removes a Bestuursorgaan from a parsed publication when it is not the one
+  the Zitting was actually held by. A publication can end up containing multiple dereferenced
+  bestuursorganen (see enrichment in validatePublication), but only the one linked through
+  besluit:isGehoudenDoor should be validated
+  param:
+  - subject: subject under consideration
+  - allSubjects: the full parsed publication
+  returns:
+  - false when the subject is an unlinked Bestuursorgaan, true otherwise
+*/
+export function isLinkedBestuursorgaanFilter(subject: ParsedSubject, allSubjects: ParsedSubject[]): boolean {
+  const BESTUURSORGAAN_CLASS = 'http://data.vlaanderen.be/ns/besluit#Bestuursorgaan';
+  const ZITTING_CLASS = 'http://data.vlaanderen.be/ns/besluit#Zitting';
+  const IS_GEHOUDEN_DOOR = 'http://data.vlaanderen.be/ns/besluit#isGehoudenDoor';
+
+  if (subject === undefined || subject.class !== BESTUURSORGAAN_CLASS) return true;
+
+  const linkedBestuursorgaanUris = new Set<string>();
+  allSubjects
+    .filter((s) => s !== undefined && s.class === ZITTING_CLASS)
+    .forEach((zitting) => {
+      zitting.properties
+        .filter((p) => p.path === IS_GEHOUDEN_DOOR)
+        .forEach((p) => {
+          const uri = typeof p.value === 'string' ? p.value : (p.value as ParsedSubject).uri;
+          linkedBestuursorgaanUris.add(uri);
+        });
+    });
+
+  return linkedBestuursorgaanUris.has(subject.uri);
+}
+
 /* function to format the uris into names
   param:
   - uri to be formatted

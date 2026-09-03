@@ -27,6 +27,8 @@ import {
   validateSubjectWithSparqlConstraint,
   calculateMaturityLevel,
   addMaturityLevelReportToClassCollection,
+  filterData,
+  isLinkedBestuursorgaanFilter,
 } from './utils';
 import { enrichClassCollectionsWithExample } from './examples';
 import { DOMNode } from 'html-dom-parser';
@@ -37,6 +39,11 @@ let BLUEPRINT: Bindings[] = [];
 let EXAMPLE: DOMNode[] = [];
 let PUBLICATION: Bindings[] = [];
 let PUBLICATION_STORE: Store;
+
+const IS_TIJDSPECIALISATIE_VAN_PATHS = [
+  'https://data.vlaanderen.be/ns/generiek#isTijdspecialisatieVan',
+  'http://data.vlaanderen.be/ns/mandaat#isTijdspecialisatieVan',
+];
 
 let invalidPropertiesByMaturityLevel: { [key in MaturityLevel]: ValidatedProperty[] } = {
   [MaturityLevel.Niveau0]: [],
@@ -332,7 +339,8 @@ validatePublication(
     const classB = b?.class ? formatURI(b.class) : 'Onbekende klasse';
     return classA.localeCompare(classB);
   });
-  for (const subject of sortedParsedPublication) {
+  const filteredParsedPublication = filterData(sortedParsedPublication, [isLinkedBestuursorgaanFilter]);
+  for (const subject of filteredParsedPublication) {
     if (subject !== undefined) {
       const resultSubjects = VALIDATED_SUBJECTS_CACHE.has(subject.uri)
         ? VALIDATED_SUBJECTS_CACHE.get(subject.uri)
@@ -382,6 +390,22 @@ export async function validateDocument(rdfDocument: Bindings[], blueprint: Bindi
   } as ValidatedPublication;
 }
 
+/* checks whether a SHACL shape declares a property targeting isTijdspecialisatieVan
+  param:
+  - shapeKey: URI of the sh:NodeShape to check
+  returns:
+  - whether the shape has a sh:property with sh:path isTijdspecialisatieVan (generiek or mandaat)
+*/
+function shapeHasTijdspecialisatieVanProperty(shapeKey: string): boolean {
+  const shape: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === shapeKey);
+  const propertyKeys: string[] = filterTermsByValue(shape, 'o', 'p', 'http://www.w3.org/ns/shacl#property');
+  return propertyKeys.some((propertyKey) => {
+    const propertyShape: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === propertyKey);
+    const path = findTermByValue(propertyShape, 'o', 'p', 'http://www.w3.org/ns/shacl#path');
+    return IS_TIJDSPECIALISATIE_VAN_PATHS.includes(path);
+  });
+}
+
 /* function to validate the properties of a subject
   param:
   - subject: subject to be validated
@@ -391,10 +415,20 @@ export async function validateDocument(rdfDocument: Bindings[], blueprint: Bindi
 async function validateSubject(subject: ParsedSubject): Promise<ValidatedSubject[]> {
   const validatedSubjects: ValidatedSubject[] = [];
 
-  // In case of Bestuursorgaan, multiple shapes can match the subject
-  const blueprintShapeKeys = BLUEPRINT.filter(
+  // In case of Bestuursorgaan, both a time-specialized shape and a plain shape target the class.
+  // Only the shape matching whether the subject itself carries isTijdspecialisatieVan should be
+  // used, otherwise the same subject gets validated once per shape and shows up as a duplicate.
+  let blueprintShapeKeys = BLUEPRINT.filter(
     (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' && b.get('o')!.value === subject.class,
   );
+  if (blueprintShapeKeys.length > 1) {
+    const subjectHasTijdspecialisatieVan = subject.properties.some((p) =>
+      IS_TIJDSPECIALISATIE_VAN_PATHS.includes(p.path),
+    );
+    blueprintShapeKeys = blueprintShapeKeys.filter(
+      (b) => shapeHasTijdspecialisatieVanProperty(b.get('s')!.value) === subjectHasTijdspecialisatieVan,
+    );
+  }
   for (const b of blueprintShapeKeys) {
     const blueprintShapeKey = b.get('s')!.value;
     const blueprintShape: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === blueprintShapeKey);
@@ -541,8 +575,7 @@ async function validateProperty(subject, propertyShape: Bindings[]): Promise<Val
   // Count of isGehoudenDoor is based on distinct instances
   if (
     validatedProperty.path === 'http://data.vlaanderen.be/ns/besluit#isGehoudenDoor' ||
-    validatedProperty.path === 'https://data.vlaanderen.be/ns/generiek#isTijdspecialisatieVan' ||
-    validatedProperty.path === 'http://data.vlaanderen.be/ns/mandaat#isTijdspecialisatieVan'
+    IS_TIJDSPECIALISATIE_VAN_PATHS.includes(validatedProperty.path)
   ) {
     const distinctBestuursorganen = [];
     for (const v of validatedProperty.value) {
