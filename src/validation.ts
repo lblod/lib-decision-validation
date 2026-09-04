@@ -202,17 +202,13 @@ function parseSubject(
   returns:
   - contains a report of all missing requirements for a publication
 */
-export async function 
+export async function
 validatePublication(
   publication: Bindings[],
   blueprint: Bindings[],
   example: DOMNode[],
   onProgress?: (message: string, progress: number) => void,
 ): Promise<ValidatedPublication> {
-  const enrichedPublication: Bindings[] = publication;
-  const lblodUris: Bindings[] = await getLblodURIsFromBindings(publication);
-  const retrievedUris: string[] = [];
-  const dereferencedBestuursorgaanLblodUris: Bindings[] = [];
   invalidPropertiesByMaturityLevel = {
     [MaturityLevel.Niveau0]: [],
     [MaturityLevel.Niveau1]: [],
@@ -220,8 +216,49 @@ validatePublication(
     [MaturityLevel.Niveau3]: []
   };
   VALIDATED_SUBJECTS_CACHE.clear();
-  
+
   if (onProgress) onProgress(`We starten het validatieproces`, 0);
+
+  const enrichedPublication = await enrichPublicationWithLblodUris(publication, onProgress);
+
+  const parsedPublication = await parsePublication(enrichedPublication);
+  BLUEPRINT = blueprint;
+  EXAMPLE = example;
+  PUBLICATION = publication;
+  // Blueprint is added to calculate the maturity level
+  PUBLICATION_STORE = await getStoreFromSPOBindings(publication.concat(blueprint));
+
+  const validatedSubjects = await validateSubjects(parsedPublication, onProgress);
+
+  if (onProgress) onProgress(`We voltooien de validatie`, 100);
+  const maturityLevelReport: MaturityLevelReport = await calculateMaturityLevel(invalidPropertiesByMaturityLevel, PUBLICATION_STORE);
+
+  const classCollections = await postProcess(validatedSubjects);
+  const enrichedClassCollections =  addMaturityLevelReportToClassCollection(classCollections, maturityLevelReport);
+  return {
+    classes: enrichedClassCollections,
+    maturity: maturityLevelReport.foundMaturity,
+    maturityLevelReport: maturityLevelReport
+  } as ValidatedPublication;
+}
+
+/* dereferences and appends LBLOD URIs found in a publication (bestuursorganen, bestuurseenheden, ...)
+  so their triples become available for validation. Mutates and returns the same array so that
+  callers relying on the input publication getting enriched in place keep working.
+  param:
+  - publication: publication to enrich
+  - onProgress: optional progress callback
+  returns:
+  - the enriched publication
+*/
+async function enrichPublicationWithLblodUris(
+  publication: Bindings[],
+  onProgress?: (message: string, progress: number) => void,
+): Promise<Bindings[]> {
+  const enrichedPublication: Bindings[] = publication;
+  const lblodUris: Bindings[] = await getLblodURIsFromBindings(publication);
+  const retrievedUris: string[] = [];
+  const dereferencedBestuursorgaanLblodUris: Bindings[] = [];
 
   const totalLblodUris = lblodUris.length;
   let currentUriCount = 0;
@@ -319,13 +356,20 @@ validatePublication(
     }
   }
 
-  const parsedPublication = await parsePublication(enrichedPublication);
-  BLUEPRINT = blueprint;
-  EXAMPLE = example;
-  PUBLICATION = publication;
-  // Blueprint is added to calculate the maturity level
-  PUBLICATION_STORE = await getStoreFromSPOBindings(publication.concat(blueprint));
+  return enrichedPublication;
+}
 
+/* validates every parsed subject of a publication, reporting progress once per unique class
+  param:
+  - parsedPublication: subjects to validate
+  - onProgress: optional progress callback
+  returns:
+  - all validated subjects
+*/
+async function validateSubjects(
+  parsedPublication: ParsedSubject[],
+  onProgress?: (message: string, progress: number) => void,
+): Promise<ValidatedSubject[]> {
   let validatedSubjects: ValidatedSubject[] = [];
   let currentStep = 1;
   let previousClass = '';
@@ -357,16 +401,7 @@ validatePublication(
       validatedSubjects = validatedSubjects.concat(...resultSubjects);
     }
   }
-  if (onProgress) onProgress(`We voltooien de validatie`, 100);
-  const maturityLevelReport: MaturityLevelReport = await calculateMaturityLevel(invalidPropertiesByMaturityLevel, PUBLICATION_STORE);
-
-  const classCollections = await postProcess(validatedSubjects);
-  const enrichedClassCollections =  addMaturityLevelReportToClassCollection(classCollections, maturityLevelReport);
-  return {
-    classes: enrichedClassCollections,
-    maturity: maturityLevelReport.foundMaturity,
-    maturityLevelReport: maturityLevelReport
-  } as ValidatedPublication;
+  return validatedSubjects;
 }
 
 export async function validateDocument(rdfDocument: Bindings[], blueprint: Bindings[]): Promise<ValidatedPublication> {
