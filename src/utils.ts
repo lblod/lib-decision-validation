@@ -80,7 +80,11 @@ export type FilterPredicate<T> = (item: T, allItems: T[]) => boolean;
   - the filtered array
 */
 export function filterData<T>(data: T[], predicates: FilterPredicate<T>[]): T[] {
-  return data.filter((item) => predicates.every((predicate) => predicate(item, data)));
+  return data.filter((item) => {
+    return predicates.every((predicate) => {
+      return predicate(item, data);
+    });
+  });
 }
 
 /* filter predicate that removes a Bestuursorgaan from a parsed publication when it is not the one
