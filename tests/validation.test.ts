@@ -29,10 +29,10 @@ import {
   getPublicationFromFileContent,
   getBindingsFromTurtleContent
 } from '../src/queries';
-import { getDOMfromString, getStoreFromSPOBindings, runQuery } from '../src/utils';
+import { getDOMfromString, getStoreFromSPOBindings, runQuery, getUniqueValues } from '../src/utils';
 import { getHTMLExampleOfDocumentType } from '@lblod/lib-decision-shapes';
 import { genericExampleBlueprint, genericExampleData } from './data/genericTestData';
-import { ValidatedProperty } from '../src/types';
+import { ValidatedProperty, ValidatedSubject } from '../src/types';
 import { setupMocker } from './utils';
 
 //const PROXY = 'https://corsproxy.io/?';
@@ -40,7 +40,7 @@ const PROXY = '';
 
 const MILLISECONDS = 7000;
 
-describe('As a vendor, I want the tool to automatically determine the type of the document (agenda, besluitenlijst, notulen)', () => {
+describe('As a vendor, I want the tool to validate different types of document (agenda, besluitenlijst, notulen)', () => {
   beforeAll(() => {
     setupMocker();
     ensureDirectoryExistence('./logs/');
@@ -194,6 +194,35 @@ describe('As a vendor, I want the tool to automatically determine the type of th
     expect(ageProperty?.valid).toBe(true);
   });
 
+  test(
+    'Only the bestuursorgaan that is linked with besluit:isGehoudenDoor should be validated, and with the relevant shape (time specialization or not)',
+    async () => {
+      const documentType: string = 'Notulen'
+      const blueprint: Bindings[] = await getBlueprintOfDocumentType(documentType);
+      const example: DOMNode[] = await getExampleOfDocumentType(documentType);
+      const publication: Bindings[] = await fetchDocument(NOTULEN_LINK, PROXY);
+
+      const validationResult = await validatePublication(publication, blueprint, example);
+
+      const zittingResult = validationResult.classes.find((c) => c.className === 'Zitting');
+      const isGehoudenDoorProperty = zittingResult?.objects[0]?.properties.find(
+        (p) => p.path === 'http://data.vlaanderen.be/ns/besluit#isGehoudenDoor',
+      ) as ValidatedProperty | undefined;
+      const linkedBestuursorgaanUris = getUniqueValues(
+        ((isGehoudenDoorProperty?.value ?? []) as ValidatedSubject[]).map((v) => v.uri),
+      );
+
+      const bestuursorgaanResult = validationResult.classes.find((c) => c.className === 'Bestuursorgaan');
+      const validatedBestuursorgaanUris = (bestuursorgaanResult?.objects ?? []).map((o) => o.uri);
+
+      expect(validatedBestuursorgaanUris.length).toBeGreaterThan(0);
+      // each linked bestuursorgaan must be validated once
+      expect(validatedBestuursorgaanUris.length).toBe(getUniqueValues(validatedBestuursorgaanUris).length);
+      expect(validatedBestuursorgaanUris.length).toBe(linkedBestuursorgaanUris.length);
+      expect(validatedBestuursorgaanUris.every((uri) => linkedBestuursorgaanUris.includes(uri))).toBe(true);
+    },
+    MILLISECONDS * 20,
+  );
 });
 
 describe('As a vendor, I want to see a good example when something is not valid', () => {
