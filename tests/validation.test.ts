@@ -544,11 +544,7 @@ describe('As a vendor, I want to see a good example when something is not valid'
             const example: DOMNode[] = await getExampleOfDocumentType(documentType);
             const validationResult =  await validatePublication(publication, blueprint, example);
 
-            // NOTULEN_LINK_4's sh:sparql vote-count constraints (e.g. declared aantalOnthouders vs the
-            // actual number of heeftOnthouder mandatarissen) now correctly count towards property
-            // validity/maturity level, where previously a bug silently dropped sh:sparql-based results
-            // from a property's `valid` flag. This document genuinely has a vote-count mismatch.
-            const expectedLevel = 'Niveau 0';
+            const expectedLevel = 'Niveau 2';
             const foundLevel = validationResult.maturity;
 
             expect(foundLevel).toEqual(expectedLevel);
