@@ -31,28 +31,6 @@ const SH_SOURCE_SHAPE = sh('sourceShape');
 const SH_SOURCE_CONSTRAINT_COMPONENT = sh('sourceConstraintComponent');
 const SH_SPARQL_CONSTRAINT_COMPONENT = sh('SPARQLConstraintComponent');
 
-// @lblod/lib-decision-shapes writes sh:sparql SELECT queries for a previous, string-substitution based
-// SPARQL constraint implementation: $this was textually replaced by the focus node IRI, so casting it
-// back into a projected variable ("select ($this as ?this) ...") was needed to get a ?this binding back
-// out. shacl-engine instead pre-binds ?this as a real SPARQL variable before running the query, and
-// SPARQL does not allow rebinding an already-bound variable, so that redundant cast now fails with
-// "Tried to bind variable ?this in a BIND operator". It is safe to drop: ?this is already the focus node.
-const THIS_AS_THIS_PATTERN = /\(\s*\$this\s+as\s+\?this\s*\)/gi;
-
-function sanitizeShapeBindings(shapeBindings: Bindings[]): Bindings[] {
-  return shapeBindings.map((b) => {
-    const select = b.get('p')?.value === SH_SELECT ? b.get('o') : undefined;
-    if (!select || select.termType !== 'Literal') return b;
-    const sanitized = select.value.replace(THIS_AS_THIS_PATTERN, '$this');
-    if (sanitized === select.value) return b;
-    return BF.fromRecord({
-      s: b.get('s')!,
-      p: b.get('p')!,
-      o: DF.literal(sanitized, (select as any).language || (select as any).datatype),
-    });
-  });
-}
-
 export type ShaclValidationReport = {
   conforms: boolean;
   // the SHACL Validation Report as linked data, see https://www.w3.org/TR/shacl/#validation-report
@@ -96,7 +74,7 @@ function toFocusNodeTerm(uri: string): Term {
    - the SHACL validation report, exposing both a `conforms` flag and the report as linked data
 */
 export async function runShaclValidation(dataBindings: Bindings[], shapeBindings: Bindings[]): Promise<ShaclValidationReport> {
-  const shapesDataset = toDataset(sanitizeShapeBindings(shapeBindings));
+  const shapesDataset = toDataset(shapeBindings);
   const dataDataset = toDataset(dataBindings);
   const validator = new Validator(shapesDataset, { factory: rdf, targetResolvers, validations });
   const report = await validator.validate({ dataset: dataDataset });
