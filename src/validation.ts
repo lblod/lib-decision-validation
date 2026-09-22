@@ -24,21 +24,23 @@ import {
   findTermsByValue,
   getLblodURIsFromBindings,
   getStoreFromSPOBindings,
-  validateSubjectWithSparqlConstraint,
   calculateMaturityLevel,
   addMaturityLevelReportToClassCollection,
   filterData,
   isLinkedBestuursorgaanFilter,
+  getSparqlConstraintMaturityLevel,
 } from './utils';
 import { enrichClassCollectionsWithExample } from './examples';
 import { DOMNode } from 'html-dom-parser';
 import { fetchDocument } from './queries';
 import { Store } from 'n3';
+import { runShaclValidation, isPropertyConform, getSparqlValidationResults, type ShaclValidationReport } from './shacl';
 
 let BLUEPRINT: Bindings[] = [];
 let EXAMPLE: DOMNode[] = [];
 let PUBLICATION: Bindings[] = [];
 let PUBLICATION_STORE: Store;
+let SHACL_REPORT: ShaclValidationReport;
 
 const IS_TIJDSPECIALISATIE_VAN_PATHS = [
   'https://data.vlaanderen.be/ns/generiek#isTijdspecialisatieVan',
@@ -208,6 +210,7 @@ validatePublication(
   blueprint: Bindings[],
   example: DOMNode[],
   onProgress?: (message: string, progress: number) => void,
+  options?: { includeRdfReport?: boolean },
 ): Promise<ValidatedPublication> {
   invalidPropertiesByMaturityLevel = {
     [MaturityLevel.Niveau0]: [],
@@ -227,7 +230,7 @@ validatePublication(
   PUBLICATION = publication;
   // Blueprint is added to calculate the maturity level
   PUBLICATION_STORE = await getStoreFromSPOBindings(publication.concat(blueprint));
-
+  SHACL_REPORT = await runShaclValidation(publication, blueprint);
   const validatedSubjects = await validateSubjects(parsedPublication, onProgress);
 
   if (onProgress) onProgress(`We voltooien de validatie`, 100);
@@ -238,7 +241,8 @@ validatePublication(
   return {
     classes: enrichedClassCollections,
     maturity: maturityLevelReport.foundMaturity,
-    maturityLevelReport: maturityLevelReport
+    maturityLevelReport: maturityLevelReport,
+    ...(options?.includeRdfReport ? { shaclReport: SHACL_REPORT.dataset } : {}),
   } as ValidatedPublication;
 }
 
@@ -404,11 +408,16 @@ async function validateSubjects(
   return validatedSubjects;
 }
 
-export async function validateDocument(rdfDocument: Bindings[], blueprint: Bindings[]): Promise<ValidatedPublication> {
+export async function validateDocument(
+  rdfDocument: Bindings[],
+  blueprint: Bindings[],
+  options?: { includeRdfReport?: boolean },
+): Promise<ValidatedPublication> {
   const parsedSubjects = parsePublication(rdfDocument);
   BLUEPRINT = blueprint;
   EXAMPLE = [];
   PUBLICATION_STORE = await getStoreFromSPOBindings(rdfDocument);
+  SHACL_REPORT = await runShaclValidation(rdfDocument, blueprint);
 
   let validatedSubjects: ValidatedSubject[] = [];
   for (const subject of parsedSubjects) {
@@ -422,6 +431,7 @@ export async function validateDocument(rdfDocument: Bindings[], blueprint: Bindi
   return {
     classes: await postProcess(validatedSubjects),
     maturity: MaturityLevel.Niveau0,
+    ...(options?.includeRdfReport ? { shaclReport: SHACL_REPORT.dataset } : {}),
   } as ValidatedPublication;
 }
 
@@ -454,7 +464,10 @@ async function validateSubject(subject: ParsedSubject): Promise<ValidatedSubject
   // Only the shape matching whether the subject itself carries isTijdspecialisatieVan should be
   // used, otherwise the same subject gets validated once per shape and shows up as a duplicate.
   let blueprintShapeKeys = BLUEPRINT.filter(
-    (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' && b.get('o')!.value === subject.class,
+    (b) =>
+      (b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' ||
+        b.get('p')!.value === 'http://mu.semte.ch/vocabularies/ext/targetClass') &&
+      b.get('o')!.value === subject.class,
   );
   if (blueprintShapeKeys.length > 1) {
     const subjectHasTijdspecialisatieVan = subject.properties.some((p) =>
@@ -466,6 +479,7 @@ async function validateSubject(subject: ParsedSubject): Promise<ValidatedSubject
   }
   for (const b of blueprintShapeKeys) {
     const blueprintShapeKey = b.get('s')!.value;
+    const blueprintShapeTerm = b.get('s')!;
     const blueprintShape: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === blueprintShapeKey);
     // Process property shapes
     const propertyKeys: string[] = filterTermsByValue(blueprintShape, 'o', 'p', 'http://www.w3.org/ns/shacl#property');
@@ -480,23 +494,13 @@ async function validateSubject(subject: ParsedSubject): Promise<ValidatedSubject
       validatedProperties.push(validatedProperty);
     }
 
-    // Process sparql-based constraints
-    let sparqlValidationResults = [];
-    const sparqlConstraintKeys: string[] = filterTermsByValue(
-      blueprintShape,
-      'o',
-      'p',
-      'http://www.w3.org/ns/shacl#sparql',
-    );
-    for (const sparqlConstraintKey of sparqlConstraintKeys) {
-      const sparqlConstraintBindings: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === sparqlConstraintKey);
-      const validationResultsOfSparqlConstraint: ValidationResult[] = await validateSubjectWithSparqlConstraint(
-        subject,
-        sparqlConstraintBindings,
-        PUBLICATION_STORE,
-      );
-      sparqlValidationResults = sparqlValidationResults.concat(validationResultsOfSparqlConstraint);
-    }
+    // Process sparql-based constraints declared directly on this shape, read from the SHACL validation report
+    const sparqlConstraintMaturityLevel = getSparqlConstraintMaturityLevel(blueprintShape, BLUEPRINT);
+    const sparqlValidationResults: ValidationResult[] = getSparqlValidationResults(
+      SHACL_REPORT,
+      subject.uri,
+      blueprintShapeTerm,
+    ).map((result) => (sparqlConstraintMaturityLevel ? { ...result, maturityLevel: sparqlConstraintMaturityLevel } : result));
 
     validatedSubjects.push({
       uri: subject.uri,
@@ -607,66 +611,31 @@ async function validateProperty(subject, propertyShape: Bindings[]): Promise<Val
     validatedProperty.actualCount = validatedProperty.value.length;
   }
 
-  // Count of isGehoudenDoor is based on distinct instances
-  if (
-    validatedProperty.path === 'http://data.vlaanderen.be/ns/besluit#isGehoudenDoor' ||
-    IS_TIJDSPECIALISATIE_VAN_PATHS.includes(validatedProperty.path)
-  ) {
-    const distinctBestuursorganen = [];
-    for (const v of validatedProperty.value) {
-      // typecast and check if the function exists
-      if ((v as ValidatedSubject).uri) {
-        const uri = (v as ValidatedSubject).uri;
-        if (distinctBestuursorganen.indexOf(uri) === -1) distinctBestuursorganen.push(uri);
-      }
-    }
-    validatedProperty.actualCount = distinctBestuursorganen.length;
+  // For object-valued properties, count distinct referenced instances rather than raw triple count
+  const objectUris = validatedProperty.value
+    .filter((v): v is ValidatedSubject => Boolean((v as ValidatedSubject).uri))
+    .map((v) => v.uri);
+  if (objectUris.length) {
+    validatedProperty.actualCount = [...new Set(objectUris)].length;
   }
 
-  // Process sparql-based constraints
-  let sparqlValidationResults = [];
-  const sparqlConstraintKeys: string[] = filterTermsByValue(
-    propertyShape,
-    'o',
-    'p',
-    'http://www.w3.org/ns/shacl#sparql',
-  );
-  for (const sparqlConstraintKey of sparqlConstraintKeys) {
-    const sparqlConstraintBindings: Bindings[] = BLUEPRINT.filter((b) => b.get('s')!.value === sparqlConstraintKey);
-    const validationResultsOfSparqlConstraint: ValidationResult[] = await validateSubjectWithSparqlConstraint(
-      subject,
-      sparqlConstraintBindings,
-      PUBLICATION_STORE,
-      validatedProperty.path,
-    );
-    sparqlValidationResults = sparqlValidationResults.concat(validationResultsOfSparqlConstraint);
-  }
+  // SHACL conformance for this specific property shape, based on the SHACL validation report
+  // (covers sh:minCount, sh:maxCount, sh:class, sh:datatype, sh:sparql declared on the property shape
+  // itself — node-shape-level sh:sparql constraints are surfaced separately via sparqlValidationResults
+  // below and intentionally do not affect this property's own valid flag)
+  const propertyShapeTerm = propertyShape[0]?.get('s');
+  validatedProperty.valid = propertyShapeTerm
+    ? isPropertyConform(SHACL_REPORT, subject.uri, validatedProperty.path, [propertyShapeTerm])
+    : true;
 
-  validatedProperty.valid =
-    (validatedProperty.minCount === undefined || validatedProperty.actualCount >= validatedProperty.minCount) &&
-    (validatedProperty.maxCount === undefined || validatedProperty.actualCount <= validatedProperty.maxCount) &&
-    (validatedProperty.targetClass === undefined ||
-      validatedProperty.value === undefined ||
-      !validatedProperty.value.some((v) => v.class !== validatedProperty.targetClass) ||
-      (validatedProperty.targetClass === 'http://www.w3.org/ns/prov#Location' && validatedProperty.actualCount > 0) ||
-      (validatedProperty.targetClass === 'http://data.lblod.info/vocabularies/leidinggevenden/Functionaris' &&
-        validatedProperty.value.every((v) => {
-          if (typeof v !== 'string') {
-            const vTyped = v as ValidatedSubject;
-            return (
-              vTyped.class === validatedProperty.targetClass ||
-              vTyped.class === 'http://data.vlaanderen.be/ns/mandaat#Mandataris'
-            );
-          } else {
-            return false;
-          }
-        })) ||
-      validatedProperty.value.every((v) => typeof v === 'string' && v.startsWith('http')) ||
-      (validatedProperty.actualCount === 0 && validatedProperty.minCount === 0));
+  // Process sparql-based constraints declared on this property shape, read from the SHACL validation report
+  const propertySparqlConstraintMaturityLevel = getSparqlConstraintMaturityLevel(propertyShape, BLUEPRINT);
+  validatedProperty.sparqlValidationResults = propertyShapeTerm
+    ? getSparqlValidationResults(SHACL_REPORT, subject.uri, propertyShapeTerm).map((result) =>
+        propertySparqlConstraintMaturityLevel ? { ...result, maturityLevel: propertySparqlConstraintMaturityLevel } : result,
+      )
+    : [];
 
-  // if property is not optional and values are strings, they must contain more than spaces, new lines or tabs to be valid
-  if (validatedProperty.minCount && validatedProperty.minCount !== 0 && validatedProperty.value.every((v) => typeof v === 'string' && v !== 'Waarde niet gevonden')) validatedProperty.valid = validatedProperty.value.every((v) => /[^\s]/.test(String(v)));
-  
   // Keep invalid properties that effect maturity level
   if (
     validatedProperty.maturityLevel && !validatedProperty.valid
@@ -730,7 +699,9 @@ async function postProcess(validatedSubjects: ValidatedSubject[]): Promise<Class
   // Combine all Root objects with the same type into one collection
   // All targetClasses are listed to provide feedback when class is not used for maturity level
   const targetClasses: string[] = getUniqueValues(BLUEPRINT.filter(
-    (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass',
+    (b) =>
+      b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' ||
+      b.get('p')!.value === 'http://mu.semte.ch/vocabularies/ext/targetClass',
   )
     .map((b) => b.get('o')!.value));
   targetClasses.forEach((c) => {

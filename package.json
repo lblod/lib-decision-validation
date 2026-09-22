@@ -17,7 +17,8 @@
   ],
   "scripts": {
     "build": "tsup",
-    "test": "jest",
+    "watch": "tsup --watch",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "lint:fix": "tslint -p tsconfig.json --fix",
@@ -27,6 +28,9 @@
   "include": [
     "src/**/*"
   ],
+  "engines": {
+    "node": ">=20.19.0 || >=22.12.0"
+  },
   "devDependencies": {
     "@comunica/types": "^3.1.0",
     "@types/jest": "^29.5.12",
@@ -48,10 +52,13 @@
     "@comunica/query-sparql": "^3.0.3",
     "@comunica/utils-bindings-factory": "^4.0.2",
     "@lblod/lib-decision-shapes": "^0.0.20",
+    "@rdfjs/types": "^1.1.2",
     "dom-serializer": "^2.0.0",
     "domutils": "^3.1.0",
     "html-dom-parser": "^5.0.8",
     "n3": "^1.17.3",
+    "rdf-ext": "^2.6.0",
+    "shacl-engine": "^1.1.2",
     "tsup": "^8.0.2"
   }
 }

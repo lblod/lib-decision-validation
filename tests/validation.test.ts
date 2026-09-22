@@ -543,7 +543,7 @@ describe('As a vendor, I want to see a good example when something is not valid'
             const blueprint: Bindings[] = await getBlueprintOfDocumentType("Notulen");
             const example: DOMNode[] = await getExampleOfDocumentType(documentType);
             const validationResult =  await validatePublication(publication, blueprint, example);
-            
+
             const expectedLevel = 'Niveau 2';
             const foundLevel = validationResult.maturity;
 
