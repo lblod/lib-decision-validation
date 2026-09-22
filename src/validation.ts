@@ -612,17 +612,12 @@ async function validateProperty(subject, propertyShape: Bindings[]): Promise<Val
     validatedProperty.actualCount = validatedProperty.value.length;
   }
 
-  // Count of isGehoudenDoor is based on distinct instances
-  if (DISTINCT_COUNT_PATHS.includes(validatedProperty.path)) {
-    const distinctBestuursorganen = [];
-    for (const v of validatedProperty.value) {
-      // typecast and check if the function exists
-      if ((v as ValidatedSubject).uri) {
-        const uri = (v as ValidatedSubject).uri;
-        if (distinctBestuursorganen.indexOf(uri) === -1) distinctBestuursorganen.push(uri);
-      }
-    }
-    validatedProperty.actualCount = distinctBestuursorganen.length;
+  // For object-valued properties, count distinct referenced instances rather than raw triple count
+  const objectUris = validatedProperty.value
+    .filter((v): v is ValidatedSubject => Boolean((v as ValidatedSubject).uri))
+    .map((v) => v.uri);
+  if (objectUris.length) {
+    validatedProperty.actualCount = [...new Set(objectUris)].length;
   }
 
   // SHACL conformance for this specific property shape, based on the SHACL validation report
@@ -630,26 +625,9 @@ async function validateProperty(subject, propertyShape: Bindings[]): Promise<Val
   // itself — node-shape-level sh:sparql constraints are surfaced separately via sparqlValidationResults
   // below and intentionally do not affect this property's own valid flag)
   const propertyShapeTerm = propertyShape[0]?.get('s');
-  const conforms = propertyShapeTerm
+  validatedProperty.valid = propertyShapeTerm
     ? isPropertyConform(SHACL_REPORT, subject.uri, validatedProperty.path, [propertyShapeTerm])
     : true;
-
-  validatedProperty.valid =
-    (conforms ||
-    // LBLOD-specific exceptions that go beyond what the shapes themselves express in plain SHACL:
-    // a Location is considered valid as soon as one is present, regardless of its own conformance
-    (validatedProperty.targetClass === 'http://www.w3.org/ns/prov#Location' && validatedProperty.actualCount > 0) ||
-    // an external reference that was never dereferenced cannot be checked against sh:class
-    (validatedProperty.value !== undefined &&
-      validatedProperty.value.every((v) => typeof v === 'string' && v.startsWith('http'))) ||
-    // the actual count of some paths is based on distinct referenced instances rather than raw triple
-    // count (see above), so re-check minCount/maxCount against that recomputed count
-    (DISTINCT_COUNT_PATHS.includes(validatedProperty.path) &&
-      validatedProperty.actualCount >= validatedProperty.minCount &&
-      (validatedProperty.maxCount === undefined || validatedProperty.actualCount <= validatedProperty.maxCount)));
-
-  // if property is not optional and values are strings, they must contain more than spaces, new lines or tabs to be valid
-  if (validatedProperty.minCount && validatedProperty.minCount !== 0 && validatedProperty.value.every((v) => typeof v === 'string' && v !== 'Waarde niet gevonden')) validatedProperty.valid = validatedProperty.value.every((v) => /[^\s]/.test(String(v)));
 
   // Process sparql-based constraints declared on this property shape, read from the SHACL validation report
   const propertySparqlConstraintMaturityLevel = getSparqlConstraintMaturityLevel(propertyShape, BLUEPRINT);
