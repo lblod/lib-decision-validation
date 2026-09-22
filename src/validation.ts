@@ -464,7 +464,10 @@ async function validateSubject(subject: ParsedSubject): Promise<ValidatedSubject
   // Only the shape matching whether the subject itself carries isTijdspecialisatieVan should be
   // used, otherwise the same subject gets validated once per shape and shows up as a duplicate.
   let blueprintShapeKeys = BLUEPRINT.filter(
-    (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' && b.get('o')!.value === subject.class,
+    (b) =>
+      (b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' ||
+        b.get('p')!.value === 'http://mu.semte.ch/vocabularies/ext/targetClass') &&
+      b.get('o')!.value === subject.class,
   );
   if (blueprintShapeKeys.length > 1) {
     const subjectHasTijdspecialisatieVan = subject.properties.some((p) =>
@@ -696,7 +699,9 @@ async function postProcess(validatedSubjects: ValidatedSubject[]): Promise<Class
   // Combine all Root objects with the same type into one collection
   // All targetClasses are listed to provide feedback when class is not used for maturity level
   const targetClasses: string[] = getUniqueValues(BLUEPRINT.filter(
-    (b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass',
+    (b) =>
+      b.get('p')!.value === 'http://www.w3.org/ns/shacl#targetClass' ||
+      b.get('p')!.value === 'http://mu.semte.ch/vocabularies/ext/targetClass',
   )
     .map((b) => b.get('o')!.value));
   targetClasses.forEach((c) => {
