@@ -47,10 +47,6 @@ const IS_TIJDSPECIALISATIE_VAN_PATHS = [
   'http://data.vlaanderen.be/ns/mandaat#isTijdspecialisatieVan',
 ];
 
-// paths where the actual count of values is based on distinct referenced instances rather than the raw
-// number of triples, since enrichment can end up asserting the same conceptual instance more than once
-const DISTINCT_COUNT_PATHS = ['http://data.vlaanderen.be/ns/besluit#isGehoudenDoor', ...IS_TIJDSPECIALISATIE_VAN_PATHS];
-
 let invalidPropertiesByMaturityLevel: { [key in MaturityLevel]: ValidatedProperty[] } = {
   [MaturityLevel.Niveau0]: [],
   [MaturityLevel.Niveau1]: [],
