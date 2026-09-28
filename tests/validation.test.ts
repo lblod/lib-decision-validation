@@ -536,7 +536,7 @@ describe('As a vendor, I want to see a good example when something is not valid'
         MILLISECONDS * 20);
 
         test(
-          'Maturity level should be level 2',
+          'Maturity level should be level 0',
           async () => {
             const publication: Bindings[] = await fetchDocument(NOTULEN_LINK_4, PROXY);
             const documentType = determineDocumentType(publication);
@@ -544,7 +544,7 @@ describe('As a vendor, I want to see a good example when something is not valid'
             const example: DOMNode[] = await getExampleOfDocumentType(documentType);
             const validationResult =  await validatePublication(publication, blueprint, example);
 
-            const expectedLevel = 'Niveau 2';
+            const expectedLevel = 'Niveau 0';
             const foundLevel = validationResult.maturity;
 
             expect(foundLevel).toEqual(expectedLevel);
