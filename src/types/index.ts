@@ -1,7 +1,12 @@
+import type { DatasetCore } from '@rdfjs/types';
+
 export type ValidatedPublication = {
   classes: ClassCollection[];
   maturity: MaturityLevel;
   maturityLevelReport?: MaturityLevelReport;
+  // the SHACL validation report as linked data, only present when validatePublication/validateDocument
+  // is called with { includeRdfReport: true }
+  shaclReport?: DatasetCore;
 };
 
 export type ClassCollection = {
@@ -41,6 +46,7 @@ export type ValidationResult = {
   resultPath?: string;
   value?: string;
   resultMessage: string;
+  maturityLevel?: MaturityLevel;
 }
 
 export type SparqlConstraint = {

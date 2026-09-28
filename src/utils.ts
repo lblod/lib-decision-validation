@@ -4,7 +4,14 @@ import parse, { DOMNode } from 'html-dom-parser';
 
 import { QueryEngine } from '@comunica/query-sparql';
 import { fetchDocument } from './queries';
-import { ClassCollection, MaturityLevel, MaturityLevelReport, ParsedSubject, Property, ValidatedProperty, ValidationResult } from './types';
+import { ClassCollection, MaturityLevel, MaturityLevelReport, ParsedSubject, Property, ValidatedProperty } from './types';
+
+const MATURITY_LEVEL_BY_LABEL: Record<string, MaturityLevel> = {
+  'Niveau 0': MaturityLevel.Niveau0,
+  'Niveau 1': MaturityLevel.Niveau1,
+  'Niveau 2': MaturityLevel.Niveau2,
+  'Niveau 3': MaturityLevel.Niveau3,
+};
 
 /* function to filter triples by a certain condition and then get the value of a certain term
   param:
@@ -50,6 +57,23 @@ export function filterTermsByValue(
   termValue: string,
 ): string[] {
   return source.filter((b) => b.get(givenTerm)!.value === termValue).map((b) => b.get(desiredTerm)!.value);
+}
+
+/* reads lblodBesluit:maturiteitsniveau declared on the sh:sparql constraint node of a shape
+  param:
+  - shapeTriples: triples of the sh:NodeShape or sh:property shape that may declare a sh:sparql constraint
+  - blueprint: complete blueprint, used to look up the triples of the sh:sparql blank node itself
+  returns:
+  - the maturity level declared on that shape's sh:sparql constraint, or undefined when absent
+*/
+export function getSparqlConstraintMaturityLevel(shapeTriples: Bindings[], blueprint: Bindings[]): MaturityLevel | undefined {
+  const sparqlNodeKey = shapeTriples.find((b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#sparql')?.get('o')!.value;
+  if (!sparqlNodeKey) return undefined;
+  const sparqlNodeTriples = blueprint.filter((b) => b.get('s')!.value === sparqlNodeKey);
+  const label = sparqlNodeTriples.find(
+    (b) => b.get('p')!.value === 'http://lblod.data.gift/vocabularies/besluit/maturiteitsniveau',
+  )?.get('o')!.value;
+  return label ? MATURITY_LEVEL_BY_LABEL[label] : undefined;
 }
 
 /* Removes duplicate values from an array
@@ -200,56 +224,6 @@ export async function processLblodUris(lblodUris: Bindings[], destination: Bindi
       }
     }
   }
-}
-
-export async function validateSubjectWithSparqlConstraint(subject: ParsedSubject, sparqlConstraintBindings: Bindings[], publicationStore: Store, path?: string): Promise<ValidationResult[]> {
-  const results: ValidationResult[] = [];
-
-  const selectBinding = sparqlConstraintBindings.filter((b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#select');
-  if (!selectBinding.length) return results;
-  const select = selectBinding[0].get('o').value;
-
-  const messageBinding = sparqlConstraintBindings.filter((b) => b.get('p')!.value === 'http://www.w3.org/ns/shacl#message');
-  if (!messageBinding.length) return results;
-  const message = messageBinding[0].get('o').value;
-
-  let rewrittenSelect = select;
-  // Rewrite select query so $this is filled in with subject URI
-  // We expect a sparql constraint query to return ?this, ?path and ?value
-  // Check if subject URI is not a blank node
-  if(subject.uri.startsWith('http')) {
-    // Replace first occurence of $this, which is expected in the SELECT
-    rewrittenSelect = rewrittenSelect.toLowerCase().replace('select $this ', `select ($this as ?this) `);
-    rewrittenSelect = rewrittenSelect.toLowerCase().replace('select distinct $this ', `select distinct ($this as ?this) `);
-    rewrittenSelect = rewrittenSelect.replaceAll('$this', `<${subject.uri}>`);
-    rewrittenSelect = rewrittenSelect.replaceAll('\t', '').replaceAll('\n', ' ');
-    // Fill in $path when sparql constraint on property shape
-    if (path) rewrittenSelect = rewrittenSelect.replaceAll('$path', `<${path}>`);
-
-    const queryResults: Bindings[] = await runQuery(rewrittenSelect, {
-      sources: [publicationStore]
-    });
-    // We expect that the query contains ?this and ?value bindings
-    for (const r of queryResults) {
-      const result: ValidationResult = {
-        'focusNode': r.get('this').value,
-        'value': r.get('value').value,
-        'resultMessage': message
-      };
-
-      if (path) result.resultPath = path;
-      else if (r.get('path')) result.resultPath = r.get('path').value;
-
-      results.push(result);
-    }
-  } else {
-    // subject is blank node and cannot be used in the format of SHACL-SPARQL queries
-    results.push({
-      'focusNode': subject.uri,
-      'resultMessage': 'Blank nodes mogen niet gebruikt worden.'
-    });
-  }
-  return results;
 }
 
 export async function getMissingClassesOfMaturityLevel(maturityLevel: string, store: Store): Promise<string[]> {

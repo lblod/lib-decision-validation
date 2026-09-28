@@ -7,3 +7,4 @@ export {
   getExampleOfDocumentType,
 } from './queries';
 export { enrichClassCollectionsWithExample } from './examples';
+export { serializeRdfDataset } from './shacl';
