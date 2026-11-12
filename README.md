@@ -77,7 +77,6 @@ In order to properly validate an agenda item exists in a publication, we need to
     │   └── validation.ts
     ├── tsconfig.json
     ├── tslint.json
-    ├── tsup.config.ts
     └── yarn.lock
 ```
 

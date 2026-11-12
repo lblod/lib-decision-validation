@@ -16,8 +16,8 @@
     "/dist"
   ],
   "scripts": {
-    "build": "tsup",
-    "watch": "tsup --watch",
+    "build": "rm -rf dist && tsc",
+    "watch": "tsc --watch",
     "test": "node --experimental-vm-modules node_modules/.bin/jest",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
@@ -51,7 +51,7 @@
     "@comunica/actor-http-proxy": "^3.0.3",
     "@comunica/query-sparql": "^3.0.3",
     "@comunica/utils-bindings-factory": "^4.0.2",
-    "@lblod/lib-decision-shapes": "^0.0.27",
+    "@lblod/lib-decision-shapes": "^0.0.28",
     "@rdfjs/types": "^1.1.2",
     "dom-serializer": "^2.0.0",
     "domutils": "^3.1.0",
